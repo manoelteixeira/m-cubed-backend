@@ -11,6 +11,7 @@ const cn = {
 
 const db = pgp(cn);
 //test function
+//test2
 db.connect()
   .then((cn) => {
     const { user, host, port, database } = cn.client;
