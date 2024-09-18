@@ -10,7 +10,7 @@ const cn = {
 };
 
 const db = pgp(cn);
-
+//test function
 db.connect()
   .then((cn) => {
     const { user, host, port, database } = cn.client;
