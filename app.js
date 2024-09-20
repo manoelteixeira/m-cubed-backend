@@ -4,7 +4,6 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const { error } = require("console");
 const borrowersController = require("./controllers/borrowersController");
 
 /* Configuration */

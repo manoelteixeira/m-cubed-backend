@@ -21,7 +21,7 @@ INSERT INTO "loan_requests" (title, description, value, created_at, funded_at, b
 ('Warehouse Purchase', 'Loan to purchase a new warehouse for inventory storage.', 200000.00, '2023-04-12', NULL, 4),
 ('Clinic Expansion', 'Loan to expand clinic services and add new equipment.', 150000.00, '2023-05-18', NULL, 5);
 
-INSERT INTO "loan_propositions" (title, description, created_at, lender_id, loan_request_id) VALUES
+INSERT INTO "loan_proposals" (title, description, created_at, lender_id, loan_request_id) VALUES
 ('Low-Interest Proposal', 'Offering a low-interest loan with flexible repayment options.', '2023-01-20', 1, 1),
 ('Fast Approval', 'Fast approval process and moderate interest rates.', '2023-02-12', 2, 2),
 ('Flexible Terms', 'Offering flexible repayment terms to suit your business needs.', '2023-03-10', 3, 3),
