@@ -31,7 +31,7 @@ CREATE TABLE "loan_requests" (
   "description" TEXT NOT NULL,
   "value" FLOAT NOT NULL,
   "created_at" DATE NOT NULL,
-  "funded_at" DATE DEFAULT null,
+  "funded_at" DATE DEFAULT NULL,
   "borrower_id" INTEGER  REFERENCES "borrowers" ("id") ON DELETE CASCADE
 );
 
@@ -40,6 +40,7 @@ CREATE TABLE "loan_proposals" (
   "title" VARCHAR(140) NOT NULL,
   "description" TEXT NOT NULL,
   "created_at" DATE NOT NULL,
+  "accepted" BOOLEAN DEFAULT NULL,
   "lender_id" INTEGER REFERENCES "lenders" ("id") ON DELETE CASCADE,
   "loan_request_id" INTEGER REFERENCES "loan_requests" ("id") ON DELETE CASCADE
 );

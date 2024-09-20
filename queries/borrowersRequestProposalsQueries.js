@@ -11,6 +11,21 @@ async function getProposals(id) {
   }
 }
 
+async function getProposal(request_id, id) {
+  const queryStr =
+    "SELECT * FROM loan_proposals WHERE loan_request_id=$[request_id] AND id=$[id]";
+  try {
+    const proposal = await db.one(queryStr, {
+      request_id: request_id,
+      id: id,
+    });
+    return proposal;
+  } catch (err) {
+    return err;
+  }
+}
+
 module.exports = {
   getProposals,
+  getProposal,
 };
