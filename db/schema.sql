@@ -32,20 +32,14 @@ CREATE TABLE "loan_requests" (
   "value" FLOAT NOT NULL,
   "created_at" DATE NOT NULL,
   "funded_at" DATE DEFAULT null,
-  "borrower_id" INTEGER
+  "borrower_id" INTEGER  REFERENCES "borrowers" ("id") ON DELETE CASCADE
 );
 
-CREATE TABLE "loan_propositions" (
+CREATE TABLE "loan_proposals" (
   "id" SERIAL PRIMARY KEY,
   "title" VARCHAR(140) NOT NULL,
   "description" TEXT NOT NULL,
   "created_at" DATE NOT NULL,
-  "lender_id" INTEGER,
-  "loan_request_id" INTEGER
+  "lender_id" INTEGER REFERENCES "lenders" ("id") ON DELETE CASCADE,
+  "loan_request_id" INTEGER REFERENCES "loan_requests" ("id") ON DELETE CASCADE
 );
-
-ALTER TABLE "loan_requests" ADD FOREIGN KEY ("borrower_id") REFERENCES "borrowers" ("id");
-
-ALTER TABLE "loan_propositions" ADD FOREIGN KEY ("lender_id") REFERENCES "lenders" ("id");
-
-ALTER TABLE "loan_propositions" ADD FOREIGN KEY ("loan_request_id") REFERENCES "loan_requests" ("id");
