@@ -1,5 +1,7 @@
 \c m3_dev
 
+
+-- Insert data into the lenders table
 INSERT INTO "lenders" (email, password, business_name) VALUES
 ('lender1@example.com', 'password123', 'Lender Corp'),
 ('lender2@example.com', 'securePass!45', 'Finance Solutions'),
@@ -7,6 +9,7 @@ INSERT INTO "lenders" (email, password, business_name) VALUES
 ('lender4@example.com', '4Lend!P@ss', 'Smart Financing Inc.'),
 ('lender5@example.com', 'P@ssw0rd456', 'Capital Partners');
 
+-- Insert data into the borrowers table
 INSERT INTO "borrowers" (email, password, city, street, state, zip_code, phone, business_name, credit_score, start_date, industry) VALUES
 ('borrower1@example.com', 'b0rr0wPass', 'New York', '123 Main St', 'NY', '10001', '1234567890', 'Small Biz LLC', 720, '2020-05-15', 'Retail'),
 ('borrower2@example.com', 'SecureBorr2', 'Los Angeles', '456 Elm St', 'CA', '90001', '0987654321', 'Tech Innovators', 680, '2019-03-10', 'Technology'),
@@ -14,6 +17,7 @@ INSERT INTO "borrowers" (email, password, city, street, state, zip_code, phone, 
 ('borrower4@example.com', 'passwordPass4', 'Houston', '321 Pine St', 'TX', '77001', '3456789012', 'Construction Pros', 700, '2021-01-20', 'Construction'),
 ('borrower5@example.com', '5BorrowMe!', 'Miami', '987 Maple St', 'FL', '33101', '4567890123', 'Healthcare Hub', 740, '2022-10-05', 'Healthcare');
 
+-- Insert data into the loan_requests table
 INSERT INTO "loan_requests" (title, description, value, created_at, funded_at, borrower_id) VALUES
 ('Expansion Loan', 'Loan to expand operations and purchase new equipment.', 50000.00, '2023-01-15', NULL, 1),
 ('Tech Upgrade', 'Loan to upgrade software and IT infrastructure.', 75000.00, '2023-02-10', '2023-03-01', 2),
@@ -21,9 +25,10 @@ INSERT INTO "loan_requests" (title, description, value, created_at, funded_at, b
 ('Warehouse Purchase', 'Loan to purchase a new warehouse for inventory storage.', 200000.00, '2023-04-12', NULL, 4),
 ('Clinic Expansion', 'Loan to expand clinic services and add new equipment.', 150000.00, '2023-05-18', NULL, 5);
 
-INSERT INTO "loan_proposals" (title, description, created_at, lender_id, loan_request_id) VALUES
-('Low-Interest Proposal', 'Offering a low-interest loan with flexible repayment options.', '2023-01-20', 1, 1),
-('Fast Approval', 'Fast approval process and moderate interest rates.', '2023-02-12', 2, 2),
-('Flexible Terms', 'Offering flexible repayment terms to suit your business needs.', '2023-03-10', 3, 3),
-('Quick Disbursement', 'Loan can be disbursed within 5 business days upon approval.', '2023-04-15', 4, 4),
-('No Prepayment Penalty', 'No penalties for early repayment of the loan.', '2023-05-20', 5, 5);
+-- Insert data into the loan_proposals table with accepted values
+INSERT INTO "loan_proposals" (title, description, created_at, accepted, lender_id, loan_request_id) VALUES
+('Low-Interest Proposal', 'Offering a low-interest loan with flexible repayment options.', '2023-01-20', NULL, 1, 1),
+('Fast Approval', 'Fast approval process and moderate interest rates.', '2023-02-12', true, 2, 2),
+('Flexible Terms', 'Offering flexible repayment terms to suit your business needs.', '2023-03-10', NULL, 3, 3),
+('Quick Disbursement', 'Loan can be disbursed within 5 business days upon approval.', '2023-04-15', false, 4, 4),
+('No Prepayment Penalty', 'No penalties for early repayment of the loan.', '2023-05-20', NULL, 5, 5);
