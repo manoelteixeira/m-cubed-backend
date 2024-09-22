@@ -53,12 +53,17 @@ proposals.get("/:proposal_id", async (req, res) => {
 // URL: POST /lenders/:lender_id/proposals
 proposals.post("/", async (req, res) => {
   const { lender_id } = req.params;
-  const { request_id, title, description } = req.body;
+  const { loan_request_id, title, description } = req.body;
+  console.log("request_id", loan_request_id);
   try {
-    const newProposal = await createProposalFromRequest(lender_id, request_id, {
-      title,
-      description,
-    });
+    const newProposal = await createProposalFromRequest(
+      lender_id,
+      loan_request_id,
+      {
+        title,
+        description,
+      }
+    );
     res.status(201).json(newProposal);
   } catch (error) {
     console.error("Error creating loan proposal:", error);
