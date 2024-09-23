@@ -22,27 +22,32 @@ const {
   validateStartDate,
   validateIndustry,
 } = require("../validators/borrowersValidators");
+const { authenticateToken } = require("../validators/loginValidators");
 
 /* Configurations */
 borrowersController = express.Router();
 
 /* Routes */
 const borrowersRequestsController = require("./borrowersRequestsController");
-borrowersController.use("/:borrower_id/requests", borrowersRequestsController);
+borrowersController.use(
+  "/:borrower_id/requests",
+  authenticateToken,
+  borrowersRequestsController
+);
 
 /**
  * DONT LEAVE ON THE FINAL CODE !!!!!
  * GET all borrowers
  * ROUTE: localhost:4001/borrowers
  */
-borrowersController.get("/", async (req, res) => {
-  try {
-    const borrowers = await getBorrowers();
-    res.status(200).json(borrowers);
-  } catch (err) {
-    res.status(400).json({ error: err });
-  }
-});
+// borrowersController.get("/", async (req, res) => {
+//   try {
+//     const borrowers = await getBorrowers();
+//     res.status(200).json(borrowers);
+//   } catch (err) {
+//     res.status(400).json({ error: err });
+//   }
+// });
 
 /**
  * CREATE a new borrower
@@ -97,7 +102,7 @@ borrowersController.get("/:id", async (req, res) => {
  * DELETE a single borrower
  * ROUTE: localhost:4001/borrowers/:id
  */
-borrowersController.delete("/:id", async (req, res) => {
+borrowersController.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const borrower = await deleteBorrower(Number(id));
@@ -127,6 +132,7 @@ borrowersController.put(
   validateCreditScore,
   validateStartDate,
   validateIndustry,
+  authenticateToken,
   async (req, res) => {
     try {
       const { id } = req.params;

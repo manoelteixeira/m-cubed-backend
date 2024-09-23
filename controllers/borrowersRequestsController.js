@@ -29,6 +29,7 @@ requestsController.use("/:request_id/proposals", requestProposalsController);
  * ROUTE: localhost:4001/:borrower_id/requests
  */
 requestsController.get("/", async (req, res) => {
+  console.log(req.user);
   const { borrower_id } = req.params;
   try {
     const requests = await getRequests(Number(borrower_id));
