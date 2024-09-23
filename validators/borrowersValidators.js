@@ -83,7 +83,7 @@ function validateZipCode(req, res, next) {
     res.status(400).json({ error: "zip_code cannot be an empty string." });
   } else if (req.body.zip_code.length > 11) {
     res.status(400).json({ error: "zip_code exceeds 11 characters." });
-  } else if (zipCodePattern.test(req.body.zip_code)) {
+  } else if (!zipCodePattern.test(req.body.zip_code)) {
     res.status(400).json({ error: "Invalid zip_code." });
   } else {
     next();

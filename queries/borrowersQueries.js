@@ -1,4 +1,5 @@
 // queries/borrowersQueries.js
+const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig.js");
 
 /**
@@ -54,6 +55,10 @@ async function deleteBorrower(id) {
  * @returns {Object} - New borrower
  */
 async function createBorrower(borrower) {
+  const salt = 10;
+  const { password } = borrower;
+  const hash = await bcrypt.hash(password, salt);
+  borrower.password = hash;
   const queryStr =
     "INSERT INTO borrowers (email, password, city, street, state, zip_code, phone, business_name, credit_score, start_date, industry) " +
     "VALUES($[email], $[password], $[city], $[street], $[state], $[zip_code], $[phone], $[business_name], $[credit_score], $[start_date], $[industry]) " +
