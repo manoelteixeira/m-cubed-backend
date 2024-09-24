@@ -30,6 +30,8 @@ const { authenticateToken } = require("../validators/loginValidators");
 /* Configurations */
 const secret = process.env.SECRET;
 borrowersController = express.Router();
+require("dotenv").config();
+const secret = process.env.SECRET;
 
 /* Routes */
 const borrowersRequestsController = require("./borrowersRequestsController");
@@ -73,6 +75,11 @@ borrowersController.post(
   async (req, res) => {
     try {
       const newBorrower = await createBorrower(req.body);
+      const token = jwt.sign(
+        { userId: newBorrower.id, email: newBorrower.email },
+        secret
+      );
+      delete newBorrower.password;
       if (newBorrower.id) {
         const token = jwt.sign(
           { userId: newBorrower.id, email: newBorrower.email },

@@ -125,13 +125,11 @@ lenders.delete(
   }
 );
 
-/**
- * POST update a lender
- * ROUTE: localhost:4001/lenders/:id
- */
+// Route to update a lender by ID with validation middleware
 lenders.put(
   "/:id",
   validateEmail,
+  validatePassword,
   validateBusinessName,
   // authenticateToken,
   async (req, res) => {
@@ -139,11 +137,7 @@ lenders.put(
     const lender = req.body;
     try {
       const updatedLender = await updateLender(id, lender);
-      if (updatedLender.id) {
-        res.status(200).json(updatedLender);
-      } else {
-        res.status(404).json({ error: "Lender not found." });
-      }
+      res.status(200).json(updatedLender);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

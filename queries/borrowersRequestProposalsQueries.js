@@ -65,6 +65,8 @@ async function acceptProposal(borrower_id, request_id, proposal_id) {
   }
 }
 
+async function acceptProposal(params) {}
+
 module.exports = {
   getProposals,
   getProposal,
