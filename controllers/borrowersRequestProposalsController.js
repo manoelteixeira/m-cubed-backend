@@ -46,6 +46,6 @@ requestProposalsController.get("/:id", async (req, res) => {
  * Accept a specific proposal
  * ROUTE: localhost:4001/:borrower_id/requests/:request_id/proposals/:id
  */
-// requestProposalsController.get(":/id", async (req, res) => {});
+requestProposalsController.get(":/id", async (req, res) => {});
 
 module.exports = requestProposalsController;

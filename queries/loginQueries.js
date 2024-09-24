@@ -1,7 +1,6 @@
 // queries/loginQueries.js
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig");
-const { use } = require("../app");
 
 // FIX THIS
 async function logInUser(credentials) {

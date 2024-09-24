@@ -1,4 +1,5 @@
 const db = require("../db/dbConfig.js");
+const bcrypt = require("bcrypt");
 
 // Get all lenders
 const getAllLenders = async () => {
@@ -24,12 +25,13 @@ const getLender = async (id) => {
 
 // Create a new lender
 const createLender = async (lender) => {
+  const salt = 10;
   try {
     const { email, password, business_name } = lender;
-
+    const password_hash = await bcrypt.hash(password, salt);
     const newLender = await db.one(
       "INSERT INTO lenders (email, password, business_name) VALUES ($1, $2, $3) RETURNING *",
-      [email, password, business_name]
+      [email, password_hash, business_name]
     );
 
     return newLender;
