@@ -19,17 +19,17 @@ INSERT INTO "borrowers" (email, password, city, street, state, zip_code, phone, 
 ('borrower5@example.com', '5BorrowMe!', 'Miami', '987 Maple St', 'FL', '33101', '4567890123', 'Healthcare Hub', 740, '2022-10-05', 'Healthcare');
 
 -- Insert data into the loan_requests table
-INSERT INTO "loan_requests" (title, description, value, created_at, funded_at, borrower_id) VALUES
-('Expansion Loan', 'Loan to expand operations and purchase new equipment.', 50000.00, '2023-01-15', NULL, 1),
-('Tech Upgrade', 'Loan to upgrade software and IT infrastructure.', 75000.00, '2023-02-10', '2023-03-01', 2),
-('Restaurant Renovation', 'Loan to renovate restaurant and improve kitchen facilities.', 100000.00, '2023-03-05', NULL, 3),
-('Warehouse Purchase', 'Loan to purchase a new warehouse for inventory storage.', 200000.00, '2023-04-12', NULL, 4),
-('Clinic Expansion', 'Loan to expand clinic services and add new equipment.', 150000.00, '2023-05-18', NULL, 5);
+INSERT INTO "loan_requests" (title, description, value, created_at, funded_at, accepted_proposal_id, borrower_id) VALUES
+('Expansion Loan', 'Loan to expand operations and purchase new equipment.', 50000.00, '2023-01-15', NULL, NULL, 1),
+('Tech Upgrade', 'Loan to upgrade software and IT infrastructure.', 75000.00, '2023-02-10', '2023-03-01', 2, 2),
+('Restaurant Renovation', 'Loan to renovate restaurant and improve kitchen facilities.', 100000.00, '2023-03-05', NULL, NULL, 3),
+('Warehouse Purchase', 'Loan to purchase a new warehouse for inventory storage.', 200000.00, '2023-04-12', NULL, NULL, 4),
+('Clinic Expansion', 'Loan to expand clinic services and add new equipment.', 150000.00, '2023-05-18', NULL, NULL, 5);
 
 -- Insert data into the loan_proposals table with accepted values
 INSERT INTO "loan_proposals" (title, description, created_at, accepted, lender_id, loan_request_id) VALUES
 ('Low-Interest Proposal', 'Offering a low-interest loan with flexible repayment options.', '2023-01-20', NULL, 1, 1),
 ('Fast Approval', 'Fast approval process and moderate interest rates.', '2023-02-12', true, 2, 2),
 ('Flexible Terms', 'Offering flexible repayment terms to suit your business needs.', '2023-03-10', NULL, 3, 3),
-('Quick Disbursement', 'Loan can be disbursed within 5 business days upon approval.', '2023-04-15', false, 4, 4),
+('Quick Disbursement', 'Loan can be disbursed within 5 business days upon approval.', '2023-04-15', NULL, 4, 4),
 ('No Prepayment Penalty', 'No penalties for early repayment of the loan.', '2023-05-20', NULL, 5, 5);

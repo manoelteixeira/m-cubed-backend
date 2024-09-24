@@ -33,6 +33,7 @@ CREATE TABLE "loan_requests" (
   "value" FLOAT NOT NULL,
   "created_at" DATE NOT NULL,
   "funded_at" DATE DEFAULT NULL,
+  "accepted_proposal_id" INTEGER DEFAULT NULL,
   "borrower_id" INTEGER  REFERENCES "borrowers" ("id") ON DELETE CASCADE
 );
 
