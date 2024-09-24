@@ -1,6 +1,7 @@
 const express = require("express");
 const lenders = express.Router();
 const lendersProposalsController = require("./lendersProposalsController");
+const lendersRequestsController = require("./lendersRequestsController");
 
 // Import validation middleware
 const {
@@ -11,6 +12,7 @@ const {
 
 // Middleware to handle proposals routes for specific lenders
 lenders.use("/:lender_id/proposals", lendersProposalsController);
+lenders.use("/:lender_id/requests", lendersRequestsController);
 
 const {
   getAllLenders,
