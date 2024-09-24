@@ -1,6 +1,7 @@
 // controllers/borrowersController.js
 /* Dependencies */
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const {
   getBorrowers,
   getBorrower,
@@ -26,6 +27,8 @@ const { authenticateToken } = require("../validators/loginValidators");
 
 /* Configurations */
 borrowersController = express.Router();
+require("dotenv").config();
+const secret = process.env.SECRET;
 
 /* Routes */
 const borrowersRequestsController = require("./borrowersRequestsController");
@@ -69,8 +72,13 @@ borrowersController.post(
   async (req, res) => {
     try {
       const newBorrower = await createBorrower(req.body);
+      const token = jwt.sign(
+        { userId: newBorrower.id, email: newBorrower.email },
+        secret
+      );
+      delete newBorrower.password;
       if (newBorrower.id) {
-        res.status(200).json(newBorrower);
+        res.status(200).json({ borrower: { ...newBorrower }, token });
       } else {
         res.status(400).json({ error: "Someting went wrong! (°_o)" });
       }
@@ -84,7 +92,7 @@ borrowersController.post(
  * GET a single borrower
  * ROUTE: localhost:4001/borrowers/:id
  */
-borrowersController.get("/:id", async (req, res) => {
+borrowersController.get("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const borrower = await getBorrower(Number(id));

@@ -25,6 +25,8 @@ async function getProposal(request_id, id) {
   }
 }
 
+async function acceptProposal(params) {}
+
 module.exports = {
   getProposals,
   getProposal,

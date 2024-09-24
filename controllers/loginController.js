@@ -12,7 +12,7 @@ require("dotenv").config();
 const secret = process.env.SECRET;
 const loginController = express.Router();
 
-loginController.post("/", async (req, res) => {
+loginController.post("/", validateEmail, validatePassword, async (req, res) => {
   try {
     const user = await logInUser(req.body);
     if (user.error) {
