@@ -43,14 +43,14 @@ borrowersController.use(
  * GET all borrowers
  * ROUTE: localhost:4001/borrowers
  */
-// borrowersController.get("/", async (req, res) => {
-//   try {
-//     const borrowers = await getBorrowers();
-//     res.status(200).json(borrowers);
-//   } catch (err) {
-//     res.status(400).json({ error: err });
-//   }
-// });
+borrowersController.get("/", async (req, res) => {
+  try {
+    const borrowers = await getBorrowers();
+    res.status(200).json(borrowers);
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
+});
 
 /**
  * CREATE a new borrower
