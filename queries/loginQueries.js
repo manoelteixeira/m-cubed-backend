@@ -16,15 +16,18 @@ async function logInUser(credentials) {
     if (!user) {
       return { error: "User Not Found." };
     }
-
-    const passwordMatch = await bcrypt.compare(
-      credentials.password,
-      user.password
-    );
-
-    if (!passwordMatch) {
+    if (credentials.password != user.password) {
       return { error: "Incorrect Password" };
     }
+
+    // const passwordMatch = await bcrypt.compare(
+    //   credentials.password,
+    //   user.password
+    // );
+
+    // if (!passwordMatch) {
+    //   return { error: "Incorrect Password" };
+    // }
 
     if (user.role == "borrowers") {
       queryStr = "SELECT * FROM borrowers WHERE email=$[email]";
