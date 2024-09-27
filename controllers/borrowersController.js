@@ -2,6 +2,8 @@
 /* Dependencies */
 const express = require("express");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
+// Queries
 const {
   getBorrowers,
   getBorrower,
@@ -9,7 +11,7 @@ const {
   deleteBorrower,
   updateBorrower,
 } = require("../queries/borrowersQueries");
-
+// Validators
 const {
   validateEmail,
   validatePassword,
@@ -26,9 +28,8 @@ const {
 const { authenticateToken } = require("../validators/loginValidators");
 
 /* Configurations */
-borrowersController = express.Router();
-require("dotenv").config();
 const secret = process.env.SECRET;
+borrowersController = express.Router();
 
 /* Routes */
 const borrowersRequestsController = require("./borrowersRequestsController");
@@ -72,12 +73,12 @@ borrowersController.post(
   async (req, res) => {
     try {
       const newBorrower = await createBorrower(req.body);
-      const token = jwt.sign(
-        { userId: newBorrower.id, email: newBorrower.email },
-        secret
-      );
-      delete newBorrower.password;
       if (newBorrower.id) {
+        const token = jwt.sign(
+          { userId: newBorrower.id, email: newBorrower.email },
+          secret
+        );
+        delete newBorrower.password;
         res.status(200).json({ borrower: { ...newBorrower }, token });
       } else {
         res.status(400).json({ error: "Someting went wrong! (°_o)" });
