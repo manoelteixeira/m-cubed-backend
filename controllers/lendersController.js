@@ -132,7 +132,6 @@ lenders.delete(
 lenders.put(
   "/:id",
   validateEmail,
-  validatePassword,
   validateBusinessName,
   // authenticateToken,
   async (req, res) => {
