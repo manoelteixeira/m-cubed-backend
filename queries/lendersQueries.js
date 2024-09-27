@@ -1,108 +1,78 @@
 const db = require("../db/dbConfig.js");
 const bcrypt = require("bcrypt");
 
-// Get all lenders
+/**
+ * Get all lenders
+ * @returns {Array} - List of All lenders
+ */
 const getAllLenders = async () => {
+  const queryStr = "SELECT * FROM lenders";
   try {
-    const allLenders = await db.any("SELECT * FROM lenders");
+    const allLenders = await db.any(queryStr);
     return allLenders;
   } catch (error) {
-    console.error("Error getting all lenders:", error);
-    throw new Error("Error retrieving lenders");
+    return error;
   }
 };
 
 // Get a specific lender by ID
 const getLender = async (id) => {
+  const queryStr = "SELECT * FROM lenders WHERE id=$[id]";
   try {
-    const oneLender = await db.one("SELECT * FROM lenders WHERE id=$1", id);
+    const oneLender = await db.one(queryStr, { id });
     return oneLender;
   } catch (error) {
-    console.error(`Error getting lender with ID ${id}:`, error);
-    throw new Error(`Error retrieving lender with ID ${id}`);
+    return error;
   }
 };
 
 // Create a new lender
 const createLender = async (lender) => {
   const salt = 10;
+  const queryStr =
+    "INSERT INTO lenders (email, password, business_name) " +
+    "VALUES ($[email], $[password_hash], $[business_name]) " +
+    "RETURNING *";
+
   try {
     const { email, password, business_name } = lender;
-    // const password_hash = await bcrypt.hash(password, salt);
-    const newLender = await db.one(
-      "INSERT INTO lenders (email, password, business_name) VALUES ($1, $2, $3) RETURNING *",
-      [email, password, business_name]
-    );
+    const password_hash = await bcrypt.hash(password, salt);
+    const newLender = await db.one(queryStr, {
+      email,
+      password_hash,
+      business_name,
+    });
 
     return newLender;
   } catch (error) {
-    console.error("Error creating new lender:", error);
-    throw new Error("Error creating lender");
+    return error;
   }
 };
 
 // Delete a lender by ID
 const deleteLender = async (id) => {
+  const queryStr = "DELETE FROM lenders WHERE id = $[id] RETURNING *";
   try {
-    const deletedLender = await db.one(
-      "DELETE FROM lenders WHERE id = $1 RETURNING *",
-      id
-    );
+    const deletedLender = await db.one(queryStr, { id });
     return deletedLender;
   } catch (error) {
-    console.error(`Error deleting lender with ID ${id}:`, error);
-    throw new Error(`Error deleting lender with ID ${id}`);
+    return error;
   }
 };
 
 // Update a lender by ID
 const updateLender = async (id, lender) => {
+  const queryStr =
+    "UPDATE lenders " +
+    "SET email = $[email], business_name = $[business_name] " +
+    "WHERE id = $[id] RETURNING * ";
+
   try {
-    const { email, password, business_name } = lender;
-
-    const query = `
-      UPDATE lenders
-      SET email = $1,
-          password = $2,
-          business_name = $3
-      WHERE id = $4
-      RETURNING *;
-    `;
-
-    const updatedLender = await db.one(query, [
-      email,
-      password,
-      business_name,
-      id,
-    ]);
+    const updatedLender = await db.one(queryStr, { ...lender, id });
 
     return updatedLender;
   } catch (error) {
-    console.error(`Error updating lender with ID ${id}:`, error);
-    throw new Error(`Error updating lender with ID ${id}`);
-  }
-};
-
-// Get lender by proposal ID
-const getLenderByProposalID = async (proposal_id) => {
-  try {
-    // Step 1: Get lender_id from loan_proposals using proposal_id
-    const { lender_id } = await db.one(
-      "SELECT lender_id FROM loan_proposals WHERE id = $1",
-      proposal_id
-    );
-
-    // Step 2: Use lender_id to get the lender from lenders table
-    const lender = await db.one(
-      "SELECT * FROM lenders WHERE id = $1",
-      lender_id
-    );
-    return lender;
-  } catch (error) {
-    console.error(`Error getting lender by proposal ID ${proposal_id}:`, error);
-    throw new Error(
-      `Error retrieving lender for proposal with ID ${proposal_id}`
-    );
+    return error;
   }
 };
 
