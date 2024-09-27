@@ -28,10 +28,10 @@ const createLender = async (lender) => {
   const salt = 10;
   try {
     const { email, password, business_name } = lender;
-    const password_hash = await bcrypt.hash(password, salt);
+    // const password_hash = await bcrypt.hash(password, salt);
     const newLender = await db.one(
       "INSERT INTO lenders (email, password, business_name) VALUES ($1, $2, $3) RETURNING *",
-      [email, password_hash, business_name]
+      [email, password, business_name]
     );
 
     return newLender;
