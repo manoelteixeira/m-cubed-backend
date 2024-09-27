@@ -1,25 +1,9 @@
+// controllers/lendersController.js
+/* Dependencies */
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const lenders = express.Router();
-const lendersProposalsController = require("./lendersProposalsController");
 require("dotenv").config();
-const secret = process.env.SECRET;
-
-// Import validation middleware
-const {
-  validateEmail,
-  validatePassword,
-  validateBusinessName,
-} = require("../validators/lendersValidators");
-const { authenticateToken } = require("../validators/loginValidators");
-
-// Middleware to handle proposals routes for specific lenders
-lenders.use(
-  "/:lender_id/proposals",
-  // authenticateToken,
-  lendersProposalsController
-);
-
+// Queries
 const {
   getAllLenders,
   getLender,
@@ -28,8 +12,31 @@ const {
   updateLender,
   getLenderByProposalID,
 } = require("../queries/lendersQueries");
+// Validators
+const {
+  validateEmail,
+  validatePassword,
+  validateBusinessName,
+} = require("../validators/lendersValidators");
+const { authenticateToken } = require("../validators/loginValidators");
 
-// Route to get all lenders
+/* Configurations */
+const lenders = express.Router();
+const secret = process.env.SECRET;
+
+/* Routes */
+const lendersProposalsController = require("./lendersProposalsController");
+lenders.use(
+  "/:lender_id/proposals",
+  // authenticateToken,
+  lendersProposalsController
+);
+
+/**
+ * DONT LEAVE ON THE FINAL CODE !!!!!
+ * GET all lenders
+ * ROUTE: localhost:4001/lenders
+ */
 lenders.get("/", async (req, res) => {
   try {
     const lendersList = await getAllLenders();
@@ -39,26 +46,10 @@ lenders.get("/", async (req, res) => {
   }
 });
 
-// Route to get a specific lender by ID
-lenders.get(
-  "/:id",
-  // authenticateToken,
-  async (req, res) => {
-    const { id } = req.params;
-    try {
-      const lender = await getLender(id);
-      if (lender) {
-        res.status(200).json(lender);
-      } else {
-        res.status(404).json({ error: "Lender not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-);
-
-// Route to create a new lender with validation middleware
+/**
+ * CREATE a new lender
+ * ROUTE: localhost:4001/lenders
+ */
 lenders.post(
   "/",
   validateEmail,
@@ -68,19 +59,48 @@ lenders.post(
     const lender = req.body;
     try {
       const newLender = await createLender(lender);
-      const token = jwt.sign(
-        { userId: newLender.id, email: newLender.email },
-        secret
-      );
-      delete newLender.password;
-      res.status(201).json({ lender: { ...newLender }, token });
+      if (newLender.id) {
+        const token = jwt.sign(
+          { userId: newLender.id, email: newLender.email },
+          secret
+        );
+        delete newLender.password;
+        res.status(201).json({ lender: { ...newLender }, token });
+      } else {
+        res.status(400).json({ error: "Someting went wrong! (°_o)" });
+      }
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 );
 
-// Route to delete a lender by ID
+/**
+ * GET a single lender
+ * ROUTE: localhost:4001/lenders/:id
+ */
+lenders.get(
+  "/:id",
+  // authenticateToken,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const lender = await getLender(id);
+      if (lender.id) {
+        res.status(200).json(lender);
+      } else {
+        res.status(404).json({ error: "Lender not found." });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+/**
+ * DELETE a single lender
+ * ROUTE: localhost:4001/lenders/:id
+ */
 lenders.delete(
   "/:id",
   // authenticateToken,
@@ -88,14 +108,21 @@ lenders.delete(
     const { id } = req.params;
     try {
       const deletedLender = await deleteLender(id);
-      res.status(200).json(deletedLender);
+      if (deletedLender.id) {
+        res.status(200).json(deletedLender);
+      } else {
+        res.status(404).json({ error: "Lender not found." });
+      }
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 );
 
-// Route to update a lender by ID with validation middleware
+/**
+ * POST update a lender
+ * ROUTE: localhost:4001/lenders/:id
+ */
 lenders.put(
   "/:id",
   validateEmail,
@@ -107,26 +134,15 @@ lenders.put(
     const lender = req.body;
     try {
       const updatedLender = await updateLender(id, lender);
-      res.status(200).json(updatedLender);
+      if (updatedLender.id) {
+        res.status(200).json(updatedLender);
+      } else {
+        res.status(404).json({ error: "Lender not found." });
+      }
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 );
-
-// Route to get a lender by proposal ID
-// lenders.get("/proposal/:proposal_id", async (req, res) => {
-//   const { proposal_id } = req.params;
-//   try {
-//     const lender = await getLenderByProposalID(proposal_id);
-//     if (lender) {
-//       res.status(200).json(lender);
-//     } else {
-//       res.status(404).json({ error: "Lender not found for proposal" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 module.exports = lenders;
