@@ -16,7 +16,7 @@ const { authenticateToken } = require("../validators/loginValidators");
 // Middleware to handle proposals routes for specific lenders
 lenders.use(
   "/:lender_id/proposals",
-  authenticateToken,
+  // authenticateToken,
   lendersProposalsController
 );
 
@@ -40,19 +40,23 @@ lenders.get("/", async (req, res) => {
 });
 
 // Route to get a specific lender by ID
-lenders.get("/:id", authenticateToken, async (req, res) => {
-  const { id } = req.params;
-  try {
-    const lender = await getLender(id);
-    if (lender) {
-      res.status(200).json(lender);
-    } else {
-      res.status(404).json({ error: "Lender not found" });
+lenders.get(
+  "/:id",
+  // authenticateToken,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const lender = await getLender(id);
+      if (lender) {
+        res.status(200).json(lender);
+      } else {
+        res.status(404).json({ error: "Lender not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
-});
+);
 
 // Route to create a new lender with validation middleware
 lenders.post(
@@ -77,15 +81,19 @@ lenders.post(
 );
 
 // Route to delete a lender by ID
-lenders.delete("/:id", authenticateToken, async (req, res) => {
-  const { id } = req.params;
-  try {
-    const deletedLender = await deleteLender(id);
-    res.status(200).json(deletedLender);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+lenders.delete(
+  "/:id",
+  // authenticateToken,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const deletedLender = await deleteLender(id);
+      res.status(200).json(deletedLender);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 
 // Route to update a lender by ID with validation middleware
 lenders.put(
@@ -93,7 +101,7 @@ lenders.put(
   validateEmail,
   validatePassword,
   validateBusinessName,
-  authenticateToken,
+  // authenticateToken,
   async (req, res) => {
     const { id } = req.params;
     const lender = req.body;

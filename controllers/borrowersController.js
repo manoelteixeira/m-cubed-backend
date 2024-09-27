@@ -34,7 +34,7 @@ const secret = process.env.SECRET;
 const borrowersRequestsController = require("./borrowersRequestsController");
 borrowersController.use(
   "/:borrower_id/requests",
-  authenticateToken,
+  // authenticateToken,
   borrowersRequestsController
 );
 
@@ -92,37 +92,45 @@ borrowersController.post(
  * GET a single borrower
  * ROUTE: localhost:4001/borrowers/:id
  */
-borrowersController.get("/:id", authenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const borrower = await getBorrower(Number(id));
-    if (borrower.id) {
-      res.status(200).json(borrower);
-    } else {
-      res.status(404).json({ error: "Borrower not found." });
+borrowersController.get(
+  "/:id",
+  // authenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const borrower = await getBorrower(Number(id));
+      if (borrower.id) {
+        res.status(200).json(borrower);
+      } else {
+        res.status(404).json({ error: "Borrower not found." });
+      }
+    } catch (err) {
+      res.status(400).json({ error: err });
     }
-  } catch (err) {
-    res.status(400).json({ error: err });
   }
-});
+);
 
 /**
  * DELETE a single borrower
  * ROUTE: localhost:4001/borrowers/:id
  */
-borrowersController.delete("/:id", authenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const borrower = await deleteBorrower(Number(id));
-    if (borrower.id) {
-      res.status(200).json(borrower);
-    } else {
-      res.status(404).json({ error: "Borrower not found." });
+borrowersController.delete(
+  "/:id",
+  // authenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const borrower = await deleteBorrower(Number(id));
+      if (borrower.id) {
+        res.status(200).json(borrower);
+      } else {
+        res.status(404).json({ error: "Borrower not found." });
+      }
+    } catch (err) {
+      res.status(400).json({ error: err });
     }
-  } catch (err) {
-    res.status(400).json({ error: err });
   }
-});
+);
 
 /**
  * POST update a borrower
@@ -140,7 +148,7 @@ borrowersController.put(
   validateCreditScore,
   validateStartDate,
   validateIndustry,
-  authenticateToken,
+  // authenticateToken,
   async (req, res) => {
     try {
       const { id } = req.params;
