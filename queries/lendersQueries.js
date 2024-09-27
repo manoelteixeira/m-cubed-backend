@@ -82,5 +82,4 @@ module.exports = {
   createLender,
   deleteLender,
   updateLender,
-  getLenderByProposalID,
 };
