@@ -125,7 +125,10 @@ lenders.delete(
   }
 );
 
-// Route to update a lender by ID with validation middleware
+/**
+ * POST update a lender
+ * ROUTE: localhost:4001/lenders/:id
+ */
 lenders.put(
   "/:id",
   validateEmail,
@@ -137,7 +140,11 @@ lenders.put(
     const lender = req.body;
     try {
       const updatedLender = await updateLender(id, lender);
-      res.status(200).json(updatedLender);
+      if (updatedLender.id) {
+        res.status(200).json(updatedLender);
+      } else {
+        res.status(404).json({ error: "Lender not found." });
+      }
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

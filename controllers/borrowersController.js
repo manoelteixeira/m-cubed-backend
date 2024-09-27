@@ -30,8 +30,6 @@ const { authenticateToken } = require("../validators/loginValidators");
 /* Configurations */
 const secret = process.env.SECRET;
 borrowersController = express.Router();
-require("dotenv").config();
-const secret = process.env.SECRET;
 
 /* Routes */
 const borrowersRequestsController = require("./borrowersRequestsController");
