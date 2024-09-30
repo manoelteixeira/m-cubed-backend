@@ -5,6 +5,9 @@ const {
   validateTitle,
   validateDescription,
   validateCreatedAt,
+  validateLoanAmount,
+  validateInterestRate,
+  validateRepaymentTerm,
 } = require("../validators/lendersProposalsValidators");
 
 // Importing queries
@@ -59,6 +62,9 @@ requests.post(
   validateTitle,
   validateDescription,
   validateCreatedAt,
+  validateLoanAmount,
+  validateInterestRate,
+  validateRepaymentTerm,
   async (req, res) => {
     const { lender_id, id } = req.params;
     const proposal = req.body;

@@ -48,15 +48,37 @@ function validateCreatedAt(req, res, next) {
   }
 }
 
-function validateAccepted(req, res, next) {
-  // "accepted" is optional, so check only if it is provided
-  if (
-    req.body.accepted !== undefined &&
-    typeof req.body.accepted !== "boolean"
-  ) {
-    res
-      .status(400)
-      .json({ error: "The 'accepted' field must be true, false, or null." });
+function validateLoanAmount(req, res, next) {
+  if (!req.body.loan_amount) {
+    res.status(400).json({ error: "loan_amount is required" });
+  } else if (typeof req.body.loan_amount !== "number") {
+    res.status(400).json({ error: "loan_amount must be a number" });
+  } else if (req.body.loan_amount < 0) {
+    res.status(400).json({ error: "loan_amount must be a positive number" });
+  } else {
+    next();
+  }
+}
+
+function validateInterestRate(req, res, next) {
+  if (!req.body.interest_rate) {
+    res.status(400).json({ error: "interest_rate is required" });
+  } else if (typeof req.body.interest_rate !== "number") {
+    res.status(400).json({ error: "interest_rate must be a number" });
+  } else if (req.body.interest_rate < 0) {
+    res.status(400).json({ error: "interest_rate must be a positive number" });
+  } else {
+    next();
+  }
+}
+
+function validateRepaymentTerm(req, res, next) {
+  if (!req.body.repayment_term) {
+    res.status(400).json({ error: "repayment_term is required" });
+  } else if (typeof req.body.repayment_term !== "number") {
+    res.status(400).json({ error: "repayment_term must be a number" });
+  } else if (req.body.repayment_term < 0) {
+    res.status(400).json({ error: "repayment_term must be a positive number" });
   } else {
     next();
   }
@@ -66,5 +88,7 @@ module.exports = {
   validateTitle,
   validateDescription,
   validateCreatedAt,
-  validateAccepted,
+  validateLoanAmount,
+  validateInterestRate,
+  validateRepaymentTerm,
 };

@@ -41,8 +41,16 @@ CREATE TABLE "loan_proposals" (
   "id" SERIAL PRIMARY KEY,
   "title" VARCHAR(140) NOT NULL,
   "description" TEXT NOT NULL,
+  "loan_amount" NUMERIC(15, 2) NOT NULL,  -- Loan amount (e.g., $10,000.00)
+  "interest_rate" NUMERIC(5, 2) NOT NULL,  -- Interest rate as a percentage (e.g., 5.00%)
+  "repayment_term" INTEGER NOT NULL,  -- Repayment term in months (e.g., 24 for 2 years)
   "created_at" DATE NOT NULL,
   "accepted" BOOLEAN DEFAULT NULL,
   "lender_id" INTEGER REFERENCES "lenders" ("id") ON DELETE CASCADE,
   "loan_request_id" INTEGER REFERENCES "loan_requests" ("id") ON DELETE CASCADE
 );
+
+
+
+
+
