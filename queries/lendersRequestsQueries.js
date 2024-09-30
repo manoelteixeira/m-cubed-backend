@@ -47,6 +47,20 @@ const createProposal = async (proposal) => {
   }
 };
 
+const createProposal = async (proposal) => {
+  try {
+    const { title, description, value, borrower_id } = requestData;
+    const query = `
+      INSERT INTO loan_requests (title, description, value, created_at, borrower_id)
+      VALUES ($1, $2, $3, NOW(), $4)
+      RETURNING *`;
+    const newProposal = await db.one(query, proposal);
+    return newProposal;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   getAllLoanRequests,
   getLoanRequestByID,
