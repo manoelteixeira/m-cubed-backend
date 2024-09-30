@@ -66,28 +66,17 @@ const createProposalFromRequest = async (
 };
 
 // Update a loan proposal by ID
-const updateProposalByID = async (lender_id, proposal_id, proposalData) => {
+const updateProposalByID = async (proposal) => {
+  const queryStr =
+    "UPDATE loan_proposals " +
+    "SET title=$[title], description=$[description], loan_amount=$[loan_amount], " +
+    "interest_rate=$[interest_rate], repayment_term=$[repayment_term], created_at=$[created_at] " +
+    "WHERE lender_id=$[lender_id] AND id=$[id] RETURNING *";
   try {
-    const { title, description, accepted } = proposalData;
-    const query = `
-      UPDATE loan_proposals 
-      SET title = $1, description = $2, accepted = $3 
-      WHERE lender_id = $4 AND id = $5 
-      RETURNING *`;
-    const updatedProposal = await db.oneOrNone(query, [
-      title,
-      description,
-      accepted,
-      lender_id,
-      proposal_id,
-    ]);
+    const updatedProposal = await db.one(queryStr, proposal);
     return updatedProposal;
   } catch (error) {
-    console.error(
-      `Error updating loan proposal with ID ${proposal_id}:`,
-      error
-    );
-    throw error;
+    return error;
   }
 };
 

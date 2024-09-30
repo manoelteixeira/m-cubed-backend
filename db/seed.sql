@@ -27,9 +27,9 @@ INSERT INTO "loan_requests" (title, description, value, created_at, funded_at, a
 ('Clinic Expansion', 'Loan to expand clinic services and add new equipment.', 150000.00, '2023-05-18', NULL, NULL, 5);
 
 -- Insert data into the loan_proposals table with accepted values
-INSERT INTO "loan_proposals" (title, description, created_at, accepted, lender_id, loan_request_id) VALUES
-('Low-Interest Proposal', 'Offering a low-interest loan with flexible repayment options.', '2023-01-20', NULL, 1, 1),
-('Fast Approval', 'Fast approval process and moderate interest rates.', '2023-02-12', true, 2, 2),
-('Flexible Terms', 'Offering flexible repayment terms to suit your business needs.', '2023-03-10', NULL, 3, 3),
-('Quick Disbursement', 'Loan can be disbursed within 5 business days upon approval.', '2023-04-15', NULL, 4, 4),
-('No Prepayment Penalty', 'No penalties for early repayment of the loan.', '2023-05-20', NULL, 5, 5);
+INSERT INTO "loan_proposals" (title, description, loan_amount, interest_rate, repayment_term, created_at, accepted, lender_id, loan_request_id) VALUES
+('Low-Interest Proposal', 'Offering a low-interest loan with flexible repayment options.',  50000.00, 5.00, 36, '2023-01-20', NULL, 1, 1),
+('Fast Approval', 'Fast approval process and moderate interest rates.',  75000.00, 5.00, 36, '2023-02-12', NULL, 2, 2),
+('Flexible Terms', 'Offering flexible repayment terms to suit your business needs.', 100000.00, 5.00, 16,  '2023-03-10', NULL, 3, 3),
+('Quick Disbursement', 'Loan can be disbursed within 5 business days upon approval.', 200000.00, 5.00, 12,  '2023-04-15', NULL, 4, 4),
+('No Prepayment Penalty', 'No penalties for early repayment of the loan.', 150000.00, 5.00, 42,  '2023-05-20', NULL, 5, 5);

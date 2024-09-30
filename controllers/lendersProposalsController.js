@@ -7,7 +7,9 @@ const {
   validateTitle,
   validateDescription,
   validateCreatedAt,
-  validateAccepted,
+  validateLoanAmount,
+  validateInterestRate,
+  validateRepaymentTerm,
 } = require("../validators/lendersProposalsValidators");
 
 // Importing queries from loan proposals
@@ -65,30 +67,31 @@ proposals.get("/:proposal_id", async (req, res) => {
  * http://localhost:400/lenders/:lender_id/proposals/:id
  */
 proposals.put(
-  "/:proposal_id",
+  "/:id",
   validateTitle,
   validateDescription,
-  validateAccepted,
+  validateTitle,
+  validateDescription,
+  validateCreatedAt,
+  validateLoanAmount,
+  validateInterestRate,
+  validateRepaymentTerm,
   async (req, res) => {
-    const { lender_id, proposal_id } = req.params;
-    const { title, description, accepted } = req.body;
+    const { lender_id, id } = req.params;
+    const proposal = req.body;
+    proposal.id = Number(id);
+    proposal.lender_id = Number(lender_id);
+    console.log(proposal);
     try {
-      const updatedProposal = await updateProposalByID(lender_id, proposal_id, {
-        title,
-        description,
-        accepted,
-      });
-      if (updatedProposal) {
+      const updatedProposal = await updateProposalByID(proposal);
+      console.log(updatedProposal);
+      if (updatedProposal.id) {
         res.status(200).json(updatedProposal);
       } else {
-        res.status(404).json({ error: "Proposal not found" });
+        res.status(400).json({ error: "Someting went wrong! (°_o)" });
       }
     } catch (error) {
-      console.error(
-        `Error updating loan proposal with ID ${proposal_id} for lender ${lender_id}:`,
-        error
-      );
-      res.status(400).json({ error: "Invalid data provided" });
+      res.status(500).json({ error: error.message });
     }
   }
 );

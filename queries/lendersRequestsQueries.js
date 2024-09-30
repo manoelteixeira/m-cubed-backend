@@ -37,8 +37,8 @@ const getLoanRequestByID = async (loan_request_id) => {
 const createProposal = async (proposal) => {
   try {
     const query = `
-      INSERT INTO loan_proposals (lender_id, loan_request_id, title, description, created_at)
-      VALUES ($[lender_id], $[loan_request_id], $[title], $[description], $[created_at])
+      INSERT INTO loan_proposals (lender_id, loan_request_id, title, description, loan_amount, interest_rate, repayment_term, created_at)
+      VALUES ($[lender_id], $[loan_request_id], $[title], $[description], $[loan_amount], $[interest_rate], $[repayment_term], $[created_at])
       RETURNING *`;
     const newProposal = await db.one(query, proposal);
     return newProposal;
