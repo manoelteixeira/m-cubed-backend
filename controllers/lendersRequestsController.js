@@ -1,19 +1,20 @@
 const express = require("express");
 const requests = express.Router({ mergeParams: true });
-const {
-  getAllLoanRequests,
-  getAllLoanRequestsByLenderID,
-  getLoanRequestByID,
-  createLoanRequest,
-  createProposal,
-} = require("../queries/lendersRequestsQueries");
-
+// Importing validators
 const {
   validateTitle,
   validateDescription,
   validateCreatedAt,
 } = require("../validators/lendersProposalsValidators");
 
+// Importing queries
+const {
+  getAllLoanRequests,
+  getLoanRequestByID,
+  createProposal,
+} = require("../queries/lendersRequestsQueries");
+
+/* Routes */
 /**
  * Get all loan requests (no filter)
  * localhost:4001/lenders/:lender_id/requests/

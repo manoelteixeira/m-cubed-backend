@@ -8,8 +8,6 @@ const {
   validateDescription,
   validateCreatedAt,
   validateAccepted,
-  validateLenderId,
-  validateLoanRequestId,
 } = require("../validators/lendersProposalsValidators");
 
 // Importing queries from loan proposals

@@ -62,31 +62,9 @@ function validateAccepted(req, res, next) {
   }
 }
 
-function validateLenderId(req, res, next) {
-  if (!req.body.lender_id) {
-    res.status(400).json({ error: "Please provide a lender ID." });
-  } else if (typeof req.body.lender_id !== "number") {
-    res.status(400).json({ error: "The lender ID must be a number." });
-  } else {
-    next();
-  }
-}
-
-function validateLoanRequestId(req, res, next) {
-  if (!req.body.loan_request_id) {
-    res.status(400).json({ error: "Please provide a loan request ID." });
-  } else if (typeof req.body.loan_request_id !== "number") {
-    res.status(400).json({ error: "The loan request ID must be a number." });
-  } else {
-    next();
-  }
-}
-
 module.exports = {
   validateTitle,
   validateDescription,
   validateCreatedAt,
   validateAccepted,
-  validateLenderId,
-  validateLoanRequestId,
 };
