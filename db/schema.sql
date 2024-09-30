@@ -6,6 +6,7 @@ CREATE DATABASE m3_dev;
 
 CREATE TABLE "lenders" (
   "id" SERIAL PRIMARY KEY,
+  -- "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "email" VARCHAR(140) UNIQUE NOT NULL,
   "password" VARCHAR(140) NOT NULL,
   "business_name" TEXT NOT NULL
@@ -13,6 +14,7 @@ CREATE TABLE "lenders" (
 
 CREATE TABLE "borrowers" (
   "id" SERIAL PRIMARY KEY,
+  -- "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "email" VARCHAR(140) UNIQUE NOT NULL,
   "password" VARCHAR(140) NOT NULL,
   "city" VARCHAR(100) NOT NULL,
@@ -28,6 +30,7 @@ CREATE TABLE "borrowers" (
 
 CREATE TABLE "loan_requests" (
   "id" SERIAL PRIMARY KEY,
+  -- "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "title" VARCHAR(140) NOT NULL,
   "description" TEXT NOT NULL,
   "value" FLOAT NOT NULL,
@@ -35,10 +38,12 @@ CREATE TABLE "loan_requests" (
   "funded_at" DATE DEFAULT NULL,
   "accepted_proposal_id" INTEGER DEFAULT NULL,
   "borrower_id" INTEGER  REFERENCES "borrowers" ("id") ON DELETE CASCADE
+  -- "borrower_id" uuid  REFERENCES "borrowers" ("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "loan_proposals" (
   "id" SERIAL PRIMARY KEY,
+  -- "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "title" VARCHAR(140) NOT NULL,
   "description" TEXT NOT NULL,
   "loan_amount" NUMERIC(15, 2) NOT NULL,  -- Loan amount (e.g., $10,000.00)
@@ -48,6 +53,8 @@ CREATE TABLE "loan_proposals" (
   "accepted" BOOLEAN DEFAULT NULL,
   "lender_id" INTEGER REFERENCES "lenders" ("id") ON DELETE CASCADE,
   "loan_request_id" INTEGER REFERENCES "loan_requests" ("id") ON DELETE CASCADE
+  -- "lender_id" uuid REFERENCES "lenders" ("id") ON DELETE CASCADE,
+  -- "loan_request_id" uuid REFERENCES "loan_requests" ("id") ON DELETE CASCADE
 );
 
 
