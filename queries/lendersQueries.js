@@ -31,18 +31,14 @@ const createLender = async (lender) => {
   const salt = 10;
   const queryStr =
     "INSERT INTO lenders (email, password, business_name) " +
-    "VALUES ($[email], $[password_hash], $[business_name]) " +
+    "VALUES ($[email], $[password], $[business_name]) " +
     "RETURNING *";
 
   try {
-    const { email, password, business_name } = lender;
-    const password_hash = await bcrypt.hash(password, salt);
-    const newLender = await db.one(queryStr, {
-      email,
-      password_hash,
-      business_name,
-    });
-
+    // const { password } = lender;
+    // const hash = await bcrypt.hash(password, salt);
+    // lender.password = hash;
+    const newLender = await db.one(queryStr, lender);
     return newLender;
   } catch (error) {
     return error;

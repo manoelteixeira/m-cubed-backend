@@ -30,6 +30,12 @@ lenders.use(
   // authenticateToken,
   lendersProposalsController
 );
+const lendersRequestsController = require("./lendersRequestsController");
+lenders.use(
+  "/:lender_id/requests",
+  // authenticateToken,
+  lendersRequestsController
+);
 
 /**
  * DONT LEAVE ON THE FINAL CODE !!!!!
@@ -63,7 +69,8 @@ lenders.post(
           { userId: newLender.id, email: newLender.email },
           secret
         );
-        delete newLender.password;
+        // delete newLender.password;
+
         res.status(201).json({ lender: { ...newLender }, token });
       } else {
         res.status(400).json({ error: "Someting went wrong! (°_o)" });
