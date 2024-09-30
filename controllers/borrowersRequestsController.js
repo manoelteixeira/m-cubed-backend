@@ -56,7 +56,12 @@ requestsController.post(
         ...req.body,
         borrower_id: Number(borrower_id),
       });
-      res.status(200).json(request);
+      console.log(request);
+      if (request.id) {
+        res.status(200).json(request);
+      } else {
+        res.status(400).json(request);
+      }
     } catch (err) {
       res.status(400).json({ error: err });
     }
