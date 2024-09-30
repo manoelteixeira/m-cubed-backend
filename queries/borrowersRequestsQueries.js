@@ -62,13 +62,23 @@ async function deleteRequest(borrower_id, id) {
  * @returns {Object} - Loan Request Object
  */
 async function createRequest(request) {
-  const queryStr =
+  const totalRequestsQuery =
+    "SELECT SUM(value) FROM loan_requests " +
+    "WHERE borrower_id=$[borrower_id] AND funded_at is NULL AND accepted_proposal_id is NULL";
+
+  const requestQuery =
     "INSERT INTO loan_requests(title, description, value, created_at, borrower_id) " +
     "VALUES ($[title], $[description], $[value], $[created_at], $[borrower_id]) " +
     "RETURNING *";
   try {
-    const newRequest = await db.one(queryStr, request);
-    return newRequest;
+    const totalRequestsValue = await db.one(totalRequestsQuery, request);
+    const sum = totalRequestsValue.sum + request.value;
+    if (sum > 250000) {
+      return { error: "Maximum Request Value exceeded" };
+    } else {
+      const newRequest = await db.one(requestQuery, request);
+      return newRequest;
+    }
   } catch (err) {
     return err;
   }
