@@ -17,12 +17,14 @@ const {
   getAllLoanProposalsByLenderID,
   getProposalByID,
   getProposalsByRequestID,
-  createProposalFromRequest,
   updateProposalByID,
   deleteProposalByID,
 } = require("../queries/lendersProposalsQueries");
 
-// INDEX - Get all proposals made by a specific lender
+/**
+ * INDEX - Get all proposals made by a specific lender
+ * http://localhost:400/lenders/:lender_id/proposals
+ */
 proposals.get("/", async (req, res) => {
   const { lender_id } = req.params;
   try {
@@ -38,7 +40,10 @@ proposals.get("/", async (req, res) => {
   }
 });
 
-// SHOW - Get a single proposal by proposal ID
+/**
+ * SHOW - Get a single proposal by proposal ID
+ * http://localhost:400/lenders/:lender_id/proposals/:id
+ */
 proposals.get("/:proposal_id", async (req, res) => {
   const { lender_id, proposal_id } = req.params;
   try {
@@ -57,33 +62,10 @@ proposals.get("/:proposal_id", async (req, res) => {
   }
 });
 
-// CREATE - Create a new proposal from a loan request
-proposals.post(
-  "/",
-  validateLoanRequestId,
-  validateTitle,
-  validateDescription,
-  validateCreatedAt,
-  validateAccepted,
-  validateLenderId,
-  async (req, res) => {
-    const { lender_id } = req.params;
-    const { loan_request_id, title, description } = req.body;
-    try {
-      const newProposal = await createProposalFromRequest(
-        lender_id,
-        loan_request_id,
-        { title, description }
-      );
-      res.status(201).json(newProposal);
-    } catch (error) {
-      console.error("Error creating loan proposal:", error);
-      res.status(400).json({ error: "Invalid data provided" });
-    }
-  }
-);
-
-// UPDATE - Update a proposal by proposal ID
+/**
+ * UPDATE - Update a proposal by proposal ID
+ * http://localhost:400/lenders/:lender_id/proposals/:id
+ */
 proposals.put(
   "/:proposal_id",
   validateTitle,
@@ -113,7 +95,10 @@ proposals.put(
   }
 );
 
-// DELETE - Delete a proposal by ID
+/*
+ * DELETE - Delete a proposal by ID
+ * http://localhost:400/lenders/:lender_id/proposals/:id
+ */
 proposals.delete("/:proposal_id", async (req, res) => {
   const { lender_id, proposal_id } = req.params;
   try {

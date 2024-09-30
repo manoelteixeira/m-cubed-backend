@@ -1,12 +1,13 @@
 const db = require("../db/dbConfig");
 
-// Get all loan requests (no filter)
-//URL: GET /api/lenders/requests/all
-//localhost:4001/lenders/requests/all
+// Get all pending loan requests (no filter)
 const getAllLoanRequests = async () => {
   try {
-    const query = "SELECT * FROM loan_requests";
-    const loanRequests = await db.any(query);
+    const queryStr =
+      "SELECT * FROM loan_requests " +
+      "WHERE funded_at is NULL AND accepted_proposal_id is NULL";
+    const loanRequests = await db.any(queryStr);
+
     return loanRequests;
   } catch (error) {
     console.error("Error fetching all loan requests:", error);
@@ -72,9 +73,24 @@ const createLoanRequest = async (requestData) => {
   }
 };
 
+const createProposal = async (proposal) => {
+  try {
+    // const { title, description, accepted } = proposalData;
+    const query = `
+      INSERT INTO loan_proposals (lender_id, loan_request_id, title, description, created_at)
+      VALUES ($[lender_id], $[loan_request_id], $[title], $[description], $[created_at])
+      RETURNING *`;
+    const newProposal = await db.one(query, proposal);
+    return newProposal;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   getAllLoanRequests,
   getAllLoanRequestsByLenderID,
   getLoanRequestByID,
   createLoanRequest,
+  createProposal,
 };
