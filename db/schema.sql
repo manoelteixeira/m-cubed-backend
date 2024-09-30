@@ -53,4 +53,6 @@ CREATE TABLE "loan_proposals" (
   "accepted" BOOLEAN DEFAULT NULL,
   "lender_id" INTEGER REFERENCES "lenders" ("id") ON DELETE CASCADE,
   "loan_request_id" INTEGER REFERENCES "loan_requests" ("id") ON DELETE CASCADE
+  -- "lender_id" uuid REFERENCES "lenders" ("id") ON DELETE CASCADE,
+  -- "loan_request_id" uuid REFERENCES "loan_requests" ("id") ON DELETE CASCADE
 );
