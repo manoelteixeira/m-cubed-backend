@@ -15,35 +15,18 @@ const getAllLoanRequests = async () => {
   }
 };
 
-// Get all loan requests for a specific lender using only loan_proposals
-//URL: GET /api/lenders/requests/lender/:lender_id
-//localhost:4001/lenders/requests/lender/:lender_id
-const getAllLoanRequestsByLenderID = async (lender_id) => {
-  try {
-    const query = `
-      SELECT * 
-      FROM loan_requests 
-      WHERE id IN (
-        SELECT loan_request_id 
-        FROM loan_proposals 
-        WHERE lender_id = $1
-      )
-    `;
-    const loanRequests = await db.any(query, [lender_id]);
-    return loanRequests;
-  } catch (error) {
-    console.error("Error fetching loan requests for lender:", error);
-    throw error;
-  }
-};
-
 // Get a single loan request by loan_request_id
-//URL: GET /api/lenders/requests/:loan_request_id
-//localhost:4001/lenders/requests/:loan_request_id
 const getLoanRequestByID = async (loan_request_id) => {
+  const query = `SELECT * FROM loan_requests WHERE id = $1`;
+  const borrowerQuery =
+    "SELECT id, email, city, street, state, zip_code, phone, business_name, credit_score, start_date, industry " +
+    "FROM borrowers WHERE id=$1";
   try {
-    const query = `SELECT * FROM loan_requests WHERE id = $1`;
     const loanRequest = await db.oneOrNone(query, [loan_request_id]);
+    const borrower = await db.one(borrowerQuery, [loanRequest.borrower_id]);
+    console.error(borrower);
+    delete loanRequest.borrower_id;
+    loanRequest.borrower = borrower;
     return loanRequest;
   } catch (error) {
     console.error("Error fetching loan request by ID:", error);
@@ -51,31 +34,8 @@ const getLoanRequestByID = async (loan_request_id) => {
   }
 };
 
-// Create a new loan request
-//
-const createLoanRequest = async (requestData) => {
-  try {
-    const { title, description, value, borrower_id } = requestData;
-    const query = `
-      INSERT INTO loan_requests (title, description, value, created_at, borrower_id)
-      VALUES ($1, $2, $3, NOW(), $4)
-      RETURNING *`;
-    const newLoanRequest = await db.one(query, [
-      title,
-      description,
-      value,
-      borrower_id,
-    ]);
-    return newLoanRequest;
-  } catch (error) {
-    console.error("Error creating new loan request:", error);
-    throw error;
-  }
-};
-
 const createProposal = async (proposal) => {
   try {
-    // const { title, description, accepted } = proposalData;
     const query = `
       INSERT INTO loan_proposals (lender_id, loan_request_id, title, description, created_at)
       VALUES ($[lender_id], $[loan_request_id], $[title], $[description], $[created_at])
@@ -89,8 +49,6 @@ const createProposal = async (proposal) => {
 
 module.exports = {
   getAllLoanRequests,
-  getAllLoanRequestsByLenderID,
   getLoanRequestByID,
-  createLoanRequest,
   createProposal,
 };

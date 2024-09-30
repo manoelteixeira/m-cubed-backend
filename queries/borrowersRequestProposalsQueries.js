@@ -12,15 +12,23 @@ async function getProposals(id) {
 }
 
 async function getProposal(request_id, id) {
-  const queryStr =
+  const proposalQuery =
     "SELECT * FROM loan_proposals WHERE loan_request_id=$[request_id] AND id=$[id]";
+  const lenderQuery =
+    "SELECT id, email, business_name FROM lenders WHERE id=$[id]";
   try {
-    const proposal = await db.one(queryStr, {
-      request_id: request_id,
-      id: id,
+    const proposal = await db.one(proposalQuery, {
+      request_id,
+      id,
     });
+    const lender = await db.one(lenderQuery, { id: proposal.lender_id });
+    delete proposal.lender_id;
+    delete proposal.loan_request_id;
+    proposal.lender = lender;
     return proposal;
   } catch (err) {
+    console.log(err);
+
     return err;
   }
 }
