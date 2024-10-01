@@ -1,4 +1,5 @@
 // controllers/lendersController.js
+
 /* Dependencies */
 const express = require("express");
 const jwt = require("jsonwebtoken");
@@ -151,3 +152,33 @@ lenders.put(
 );
 
 module.exports = lenders;
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Lender:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *         - business_name
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The auto-generated id of the lender
+ *         email:
+ *           type: string
+ *           description: The Lender email
+ *         password:
+ *           type: string
+ *           description: The Lender password
+ *         business_name:
+ *           type: string
+ *           description: The Lender business name
+ *       example:
+ *         id: 1
+ *         email: lender1@example.com
+ *         password: password123
+ *         business_name: Lender Corp
+ */

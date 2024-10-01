@@ -1,74 +1,5 @@
 // controllers/borrowersController.js
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     Borrower:
- *       type: object
- *       required:
- *        - email
- *        - password
- *        - city
- *        - street
- *        - state
- *        - zip_code
- *        - phone
- *        - business_name
- *        - credit_score
- *        - start_date
- *        - industry
- *       properties:
- *         id:
- *           type: integer
- *           description: The auto-generated id of the Borrower
- *         email:
- *           type: string
- *           description: Borrower email
- *         password:
- *           type: string
- *           description: Borrower password
- *         city:
- *           type: string
- *           description: Borrower business city
- *         street:
- *           type: string
- *           description: Borrower business street
- *         state:
- *           type: string
- *           description: Borrower business state
- *         zip_code:
- *           type: string
- *           description: Borrower business ZIP code
- *         phone:
- *           type: string
- *           description: Borrower business phone number
- *         business_name:
- *           type: string
- *           description: Borrower business name
- *         credit_score:
- *           type: integer
- *           description: Borrower business credit score
- *         start_date:
- *           type: date
- *           description: Borrower business start date
- *         industry :
- *           type: string
- *           description: Borrower business industry
- *       example:
- *         id: 1,
- *         email: borrower1@example.com
- *         city: New York
- *         street: 123 Main St
- *         state: NY
- *         zip_code: 10001
- *         phone: 1234567890
- *         business_name: Small Biz LLC
- *         credit_score: 720,
- *         start_date: 2020-05-15T04:00:00.000Z
- *         industry: Retail
- */
-
 /* Dependencies */
 const express = require("express");
 const jwt = require("jsonwebtoken");
@@ -111,15 +42,17 @@ borrowersController.use(
 
 /**
  * @swagger
+ * tags:
+ *   name: Borrowers
+ *   description: Borrowers API
  * /borrowers:
  *   get:
- *     summary: Get All Borrowers.
- *     description: Get All Borrowers. This should not be on the final project
+ *     summary: Get all borrowers
+ *     description: THIS ROUTE SHOULD NOT GO INTO PRODUCTION
+ *     tags: [Borrowers]
  *     responses:
  *       '200':
  *         description: A successful response
- *       '404':
- *         description: Employee not found
  *       '500':
  *         description: Internal server error
  */
@@ -174,23 +107,20 @@ borrowersController.post(
 );
 
 /**
- * GET a single borrower
- * ROUTE: localhost:4001/borrowers/:id
- */
-/**
  * @swagger
+ * tags:
+ *   name: Borrowers
+ *   description: Borrowers API
  * /borrowers/{id}:
  *   get:
- *     summary: GET a single borrower
- *     description: GET a single borrower.
+ *     summary: Get borrower by ID
+ *     tags: [Borrowers]
  *     parameters:
  *       - in: path
  *         name: id
  *     responses:
  *       '200':
  *         description: A successful response
- *       '404':
- *         description: Employee not found
  *       '500':
  *         description: Internal server error
  */
@@ -268,3 +198,72 @@ borrowersController.put(
 );
 
 module.exports = borrowersController;
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Borrower:
+ *       type: object
+ *       required:
+ *        - email
+ *        - password
+ *        - city
+ *        - street
+ *        - state
+ *        - zip_code
+ *        - phone
+ *        - business_name
+ *        - credit_score
+ *        - start_date
+ *        - industry
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated id of the Borrower
+ *         email:
+ *           type: string
+ *           description: Borrower email
+ *         password:
+ *           type: string
+ *           description: Borrower password
+ *         city:
+ *           type: string
+ *           description: Borrower business city
+ *         street:
+ *           type: string
+ *           description: Borrower business street
+ *         state:
+ *           type: string
+ *           description: Borrower business state
+ *         zip_code:
+ *           type: string
+ *           description: Borrower business ZIP code
+ *         phone:
+ *           type: string
+ *           description: Borrower business phone number
+ *         business_name:
+ *           type: string
+ *           description: Borrower business name
+ *         credit_score:
+ *           type: integer
+ *           description: Borrower business credit score
+ *         start_date:
+ *           type: date
+ *           description: Borrower business start date
+ *         industry :
+ *           type: string
+ *           description: Borrower business industry
+ *       example:
+ *         id: 1
+ *         email: borrower1@example.com
+ *         city: New York
+ *         street: 123 Main St
+ *         state: NY
+ *         zip_code: 10001
+ *         phone: 1234567890
+ *         business_name: Small Biz LLC
+ *         credit_score: 720,
+ *         start_date: 2020-05-15T04:00:00.000Z
+ *         industry: Retail
+ */
