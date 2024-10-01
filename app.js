@@ -4,17 +4,43 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 const loginController = require("./controllers/loginController");
 const borrowersController = require("./controllers/borrowersController");
 const lendersController = require("./controllers/lendersController");
 
 /* Configuration */
-const app = express();
+const swaggerOptions = {
+  definition: {
+    openapi: "3.1.0",
+    info: {
+      title: "M-Cubed API",
+      description: "M-Cubed API Information",
+      contact: {
+        name: "Team 5",
+      },
+    },
+    servers: [
+      {
+        url: "http://localhost:4001",
+      },
+    ],
+  },
+  apis: ["./controllers/*.js"],
+};
 
+const swaggerSpecs = swaggerJsdoc(swaggerOptions);
+const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpecs, { explorer: true })
+);
 app.use("/login", loginController);
 app.use("/borrowers", borrowersController);
 app.use("/lenders", lendersController);
