@@ -33,7 +33,7 @@ CREATE TABLE "loan_requests" (
   -- "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "title" VARCHAR(140) NOT NULL,
   "description" TEXT NOT NULL,
-  "value" FLOAT NOT NULL,
+  "value" NUMERIC(15, 2) NOT NULL,
   "created_at" DATE NOT NULL,
   "funded_at" DATE DEFAULT NULL,
   "accepted_proposal_id" INTEGER DEFAULT NULL,
