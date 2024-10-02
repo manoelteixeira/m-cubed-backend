@@ -1,6 +1,6 @@
 # Money Money Money
 
-Back end for [M Cubed](https://github.com/manoelteixeira/m-cubed-frontend) app
+Back-end for [M-Cubed](https://github.com/manoelteixeira/m-cubed-frontend) app
 
 ## Instalation And Setup
 
@@ -11,6 +11,7 @@ Back end for [M Cubed](https://github.com/manoelteixeira/m-cubed-frontend) app
     - `PG_PORT=5432`
     - `PG_DATABASE=m3_dev`
     - `PG_USER=postgres`
+    - `PG_PASSWORD=<database password - if necessary>`
     - `SECRET=<password>`
 3. Install project dependencies with `npm install`
 
