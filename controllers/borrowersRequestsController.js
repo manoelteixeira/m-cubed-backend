@@ -133,3 +133,51 @@ requestsController.delete("/:id", async (req, res) => {
 });
 
 module.exports = requestsController;
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Loan Request:
+ *       type: object
+ *       required:
+ *         - title
+ *         - description
+ *         - value
+ *         - created_at
+ *         - funded_at
+ *         - accepted_proposal_id
+ *         - borrower_id
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The auto-generated id of the lender
+ *         title:
+ *           type: string
+ *           description: Loan Request Title
+ *         description:
+ *           type: string
+ *           description: Loan Request Description
+ *         value:
+ *           type: number
+ *           description: Loan Request Value
+ *         created_at:
+ *           type: string
+ *           format: date
+ *           description: Loan Request Creation Date
+ *         funded_at:
+ *           type: string
+ *           format: date
+ *           description: Loan Request Funded Date
+ *         accepted_proposal_id:
+ *           type: number
+ *           description: Loan Request Accepted Loan Proposal ID
+ *         borrower_id:
+ *           type: number
+ *           description: Loan Request Borrower ID
+ *       example:
+ *         id: 1
+ *         email: lender1@example.com
+ *         password: password123
+ *         business_name: Lender Corp
+ */

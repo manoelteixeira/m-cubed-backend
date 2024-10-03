@@ -137,7 +137,7 @@ lenders.post(
  *        - in: path
  *          name: id
  *          schema:
- *            type: string
+ *            type: number
  *          required: true
  *          description: Lender ID
  *      responses:
@@ -182,7 +182,7 @@ lenders.get(
  *         - in: path
  *           name: id
  *           schema:
- *             type: string
+ *             type: number
  *           required: true
  *           description: Lender ID
  *       responses:
@@ -227,7 +227,7 @@ lenders.delete(
  *      - in: path
  *        name: id
  *        schema:
- *          type: string
+ *          type: number
  *        required: true
  *        description: Lender ID
  *    requestBody:

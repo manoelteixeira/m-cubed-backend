@@ -22,8 +22,27 @@ const {
 } = require("../queries/lendersProposalsQueries");
 
 /**
- * INDEX - Get all proposals made by a specific lender
- * http://localhost:400/lenders/:lender_id/proposals
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{lender_id}/proposals:
+ *  get:
+ *    tags:
+ *      - [Lender Proposals]
+ *    summary: List All Proposals Made By the Lender
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Lender ID
+ *    responses:
+ *      '200':
+ *        description: Successful response
+ *        content:
+ *          application/json: {}
  */
 proposals.get("/", async (req, res) => {
   const { lender_id } = req.params;
@@ -41,8 +60,33 @@ proposals.get("/", async (req, res) => {
 });
 
 /**
- * SHOW - Get a single proposal by proposal ID
- * http://localhost:400/lenders/:lender_id/proposals/:id
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{lender_id}/proposals/{id}:
+ *     get:
+ *       tags:
+ *         - [Lender Proposals]
+ *       summary: Get One Proposal
+ *       parameters:
+ *         - in: path
+ *           name: lender_id
+ *           schema:
+ *             type: number
+ *           required: true
+ *           description: Lender ID
+ *         - in: path
+ *           name: id
+ *           schema:
+ *             type: number
+ *           required: true
+ *           description: Proposal ID
+ *       responses:
+ *         '200':
+ *           description: Successful response
+ *           content:
+ *             application/json: {}
  */
 proposals.get("/:proposal_id", async (req, res) => {
   const { lender_id, proposal_id } = req.params;
@@ -63,8 +107,43 @@ proposals.get("/:proposal_id", async (req, res) => {
 });
 
 /**
- * UPDATE - Update a proposal by proposal ID
- * http://localhost:400/lenders/:lender_id/proposals/:id
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{lender_id}/proposals/{id}:
+ *  put:
+ *        tags:
+ *          - [Lender Proposals]
+ *        summary: Update Proposal
+ *        description: FIX THIS !!!!
+ *        parameters:
+ *          - in: path
+ *            name: lender_id
+ *            schema:
+ *              type: number
+ *            required: true
+ *            description: Lender ID
+ *          - in: path
+ *            name: id
+ *            schema:
+ *              type: number
+ *            required: true
+ *            description: Proposal ID
+ *        requestBody:
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                example:
+ *                  title: Low-Interest Proposal 1
+ *                  description: Offering a low-interest loan with flexible repayment options.
+ *                  created_at: '2023-01-20T05:00:00.000Z'
+ *        responses:
+ *          '200':
+ *            description: Successful response
+ *            content:
+ *              application/json: {}
  */
 proposals.put(
   "/:id",
@@ -96,9 +175,34 @@ proposals.put(
   }
 );
 
-/*
- * DELETE - Delete a proposal by ID
- * http://localhost:400/lenders/:lender_id/proposals/:id
+/**
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{lender_id}/proposals/{id}:
+ *   delete:
+ *        tags:
+ *          - [Lender Proposals]
+ *        summary: Update Proposal
+ *        parameters:
+ *          - in: path
+ *            name: lender_id
+ *            schema:
+ *              type: number
+ *            required: true
+ *            description: Lender ID
+ *          - in: path
+ *            name: id
+ *            schema:
+ *              type: number
+ *            required: true
+ *            description: Proposal ID
+ *        responses:
+ *          '200':
+ *            description: Successful response
+ *            content:
+ *              application/json: {}
  */
 proposals.delete("/:proposal_id", async (req, res) => {
   const { lender_id, proposal_id } = req.params;
@@ -119,22 +223,28 @@ proposals.delete("/:proposal_id", async (req, res) => {
 });
 
 // SHOW - Get all proposals by loan request ID
-proposals.get("/requests/:request_id", async (req, res) => {
-  const { request_id } = req.params;
-  try {
-    const proposalsByRequest = await getProposalsByRequestID(request_id);
-    if (proposalsByRequest.length > 0) {
-      res.status(200).json(proposalsByRequest);
-    } else {
-      res
-        .status(404)
-        .json({ error: "No proposals found for this loan request" });
-    }
-  } catch (error) {
-    console.error("Error fetching proposals by loan request:", error);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// /**
+//  * @swagger
+//  * tags:
+//  *   name: Lenders
+//  *   description: Lenders API
+//  */
+// proposals.get("/requests/:request_id", async (req, res) => {
+//   const { request_id } = req.params;
+//   try {
+//     const proposalsByRequest = await getProposalsByRequestID(request_id);
+//     if (proposalsByRequest.length > 0) {
+//       res.status(200).json(proposalsByRequest);
+//     } else {
+//       res
+//         .status(404)
+//         .json({ error: "No proposals found for this loan request" });
+//     }
+//   } catch (error) {
+//     console.error("Error fetching proposals by loan request:", error);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// });
 
 module.exports = proposals;
 

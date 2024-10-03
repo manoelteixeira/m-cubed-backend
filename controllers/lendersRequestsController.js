@@ -18,9 +18,29 @@ const {
 } = require("../queries/lendersRequestsQueries");
 
 /* Routes */
-/**
- * Get all loan requests (no filter)
- * localhost:4001/lenders/:lender_id/requests/
+
+/** GET - Get All Available Loan Requests
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{id}/requests:
+ *  get:
+ *    tags:
+ *      - [Lenders Requests]
+ *    summary: List All Available Loan Requests
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Lender ID
+ *    responses:
+ *      '200':
+ *        description: Successful response
+ *        content:
+ *          application/json: {}
  */
 requests.get("/", async (req, res) => {
   try {
@@ -33,9 +53,34 @@ requests.get("/", async (req, res) => {
   }
 });
 
-/**
- * Get a single loan request by loan_request_id
- * localhost:4001/lenders/:lender_id/requests/:id
+/** GET - Get Loan Request By ID
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{lender_id}/requests/{id}:
+ *  get:
+ *    tags:
+ *      - [Lenders Requests]
+ *    summary: Get an Loan Request by ID
+ *    parameters:
+ *      - in: path
+ *        name: lender_id
+ *        schema:
+ *          type: number
+ *        required: true
+ *        description: Lender ID
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: number
+ *        required: true
+ *        description: Request ID
+ *    responses:
+ *      '200':
+ *        description: Successful response
+ *        content:
+ *          application/json: {}
  */
 requests.get("/:id", async (req, res) => {
   const { id } = req.params;
@@ -53,9 +98,46 @@ requests.get("/:id", async (req, res) => {
   }
 });
 
-/**
- * Create a loan request proposal
- * localhost:4001/lenders/:lender_id/requests/:id
+/** POST - Create Loan Proposal
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{lender_id}/requests/{id}:
+ *  post:
+ *    tags:
+ *      - [Lenders Requests]
+ *    summary: Create an Loan Proposal
+ *    parameters:
+ *      - in: path
+ *        name: lender_id
+ *        schema:
+ *          type: number
+ *        required: true
+ *        description: Lender ID
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: number
+ *        required: true
+ *        description: Request ID
+ *    requestBody:
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  example:
+ *                    title: Low-Interest Proposal TEST
+ *                    description: Offering a low-interest loan with flexible repayment options.
+ *                    created_at: '2023-01-20T05:00:00.000Z'
+ *                    loan_amount: 50000
+ *                    interest_rate: 5
+ *                    repayment_term: 36
+ *    responses:
+ *      '200':
+ *        description: Successful response
+ *        content:
+ *          application/json: {}
  */
 requests.post(
   "/:id",
