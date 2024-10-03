@@ -137,3 +137,66 @@ proposals.get("/requests/:request_id", async (req, res) => {
 });
 
 module.exports = proposals;
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Loan Proposal:
+ *       type: object
+ *       required:
+ *         - id
+ *         - title
+ *         - description
+ *         - loan_amount
+ *         - interest_rate
+ *         - repayment_term
+ *         - created_at
+ *         - accepted
+ *         - lender_id
+ *         - loan_request_id
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The auto-generated id of the loan proposal
+ *         title:
+ *           type: string
+ *           description: Loan Proposal Title
+ *         description:
+ *           type: string
+ *           description: Loan Proposal Description
+ *         loan_amount:
+ *           type: number
+ *           description: Loan Proposal Amount
+ *         interest_rate:
+ *           type: number
+ *           description: Loan Proposal Interest Rate
+ *         repayment_term:
+ *           type: number
+ *           description: Loan Proposal Repayment Term (In months)
+ *         created_at:
+ *           type: string
+ *           format: date
+ *           description: Loan Proposal Creation Date
+ *         accepted:
+ *           type: boolen
+ *           description: Loan Proposal Accepted Status
+ *         lender_id:
+ *           type: number
+ *           description: Loan Proposal Lender ID
+ *         loan_request_id:
+ *           type: number
+ *           description: Loan Proposal Request ID
+ *       example:
+ *          id: 1,
+ *          title: Low-Interest Proposal,
+ *          description: Offering a low-interest loan with flexible repayment options.,
+ *          loan_amount: 50000.00,
+ *          interest_rate: 5.00,
+ *          repayment_term: 36,
+ *          created_at: 2023-01-20T05:00:00.000Z,
+ *          accepted: false,
+ *          lender_id: 1,
+ *          loan_request_id: 1
+
+ */

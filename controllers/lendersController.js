@@ -43,6 +43,22 @@ lenders.use(
  * GET all lenders
  * ROUTE: localhost:4001/lenders
  */
+/**
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/:
+ *     get:
+ *       tags:
+ *         - [Lenders]
+ *       summary: List all Lenders
+ *       responses:
+ *         '200':
+ *           description: Successful response
+ *           content:
+ *             application/json: {}
+ */
 lenders.get("/", async (req, res) => {
   try {
     const lendersList = await getAllLenders();
@@ -55,6 +71,31 @@ lenders.get("/", async (req, res) => {
 /**
  * CREATE a new lender
  * ROUTE: localhost:4001/lenders
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/:
+ *   post:
+ *        tags:
+ *          - [Lenders]
+ *        summary: Create new Lender
+ *        requestBody:
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                example:
+ *                  email: testLender@example.com
+ *                  password: password123
+ *                  business_name: Lender Corp
+ *        responses:
+ *          '200':
+ *            description: Successful response
+ *            content:
+ *              application/json: {}
  */
 lenders.post(
   "/",
@@ -83,8 +124,27 @@ lenders.post(
 );
 
 /**
- * GET a single lender
- * ROUTE: localhost:4001/lenders/:id
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{id}:
+ *    get:
+ *      tags:
+ *        - [Lenders]
+ *      summary: Get Lender By ID
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: Lender ID
+ *      responses:
+ *        '200':
+ *          description: Successful response
+ *          content:
+ *            application/json: {}
  */
 lenders.get(
   "/:id",
@@ -108,6 +168,29 @@ lenders.get(
  * DELETE a single lender
  * ROUTE: localhost:4001/lenders/:id
  */
+/**
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{id}:
+ *     delete:
+ *       tags:
+ *         - [Lenders]
+ *       summary: Delete Lender By ID
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           schema:
+ *             type: string
+ *           required: true
+ *           description: Lender ID
+ *       responses:
+ *         '200':
+ *           description: Successful response
+ *           content:
+ *             application/json: {}
+ */
 lenders.delete(
   "/:id",
   // authenticateToken,
@@ -129,6 +212,38 @@ lenders.delete(
 /**
  * POST update a lender
  * ROUTE: localhost:4001/lenders/:id
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Lenders API
+ * /lenders/{id}:
+ *  put:
+ *    tags:
+ *      - [Lenders]
+ *    summary: Update Lender
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Lender ID
+ *    requestBody:
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            example:
+ *              email: lender1@example.com
+ *              password: password1233
+ *              business_name: Lender Corp
+ *    responses:
+ *      '200':
+ *        description: Successful response
+ *        content:
+ *          application/json: {}
  */
 lenders.put(
   "/:id",
