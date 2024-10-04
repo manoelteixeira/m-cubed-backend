@@ -16,7 +16,7 @@ const swaggerOptions = {
     openapi: "3.1.0",
     info: {
       title: "M-Cubed API",
-      description: "M-Cubed API Information",
+      description: "M-Cubed API Documentation",
       contact: {
         name: "Team 5",
       },

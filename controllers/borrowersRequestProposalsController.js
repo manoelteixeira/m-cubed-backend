@@ -15,9 +15,32 @@ const {
 const requestProposalsController = express.Router({ mergeParams: true });
 
 /* Routes */
-/**
- * GET all proposals for a given loan request
- * ROUTE: localhost:4001/:borrower_id/requests/:request_id/proposals
+
+/** List All Proposals
+ * @swagger
+ * /borrowers/{borrower_id}/requests/{request_id}/proposals:
+ *   get:
+ *     tags:
+ *       - [Borrower Request Proposals]
+ *     summary: List All Proposals
+ *     parameters:
+ *       - name: borrower_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *       - name: request_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 requestProposalsController.get("/", async (req, res) => {
   const { request_id } = req.params;
@@ -29,21 +52,37 @@ requestProposalsController.get("/", async (req, res) => {
   }
 });
 
-/**
- * Accept a specific proposal
- * ROUTE: localhost:4001/:borrower_id/requests/:request_id/proposals/
- */
-requestProposalsController.put("/", validateProposalID, async (req, res) => {
-  const { borrower_id, request_id } = req.params;
-  const { proposal_id } = req.body;
-
-  const data = await acceptProposal(+borrower_id, +request_id, proposal_id);
-  res.status(200).json(data);
-});
-
-/**
- * GET a especific proposal for a given loan request
- * ROUTE: localhost:4001/:borrower_id/requests/:request_id/proposals/:id
+/** Get One Loan Proposal
+ * @swagger
+ * /borrowers/{borrower_id}/requests/{request_id}/proposals/{id}:
+ *   get:
+ *     tags:
+ *       - [Borrower Request Proposals]
+ *     summary: Get One Loan Proposal
+ *     parameters:
+ *       - name: borrower_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *       - name: request_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *       - name: id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 requestProposalsController.get("/:id", async (req, res) => {
   const { request_id, id } = req.params;
@@ -57,6 +96,48 @@ requestProposalsController.get("/:id", async (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err });
   }
+});
+
+/** Accept proposal
+ * @swagger
+ * /borrowers/{borrower_id}/requests/{request_id}/proposals/:
+ *   put:
+ *     tags:
+ *       - [Borrower Request Proposals]
+ *     summary: Accept proposal
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             example:
+ *               proposal_id: 2
+ *     parameters:
+ *       - name: borrower_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *       - name: request_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
+ */
+
+requestProposalsController.put("/", validateProposalID, async (req, res) => {
+  const { borrower_id, request_id } = req.params;
+  const { proposal_id } = req.body;
+
+  const data = await acceptProposal(+borrower_id, +request_id, proposal_id);
+  res.status(200).json(data);
 });
 
 module.exports = requestProposalsController;

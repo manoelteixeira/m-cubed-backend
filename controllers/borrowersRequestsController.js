@@ -24,9 +24,25 @@ requestsController.use("/:request_id/proposals", requestProposalsController);
 
 /* Routes */
 
-/**
- * GET all request for a given borrower
- * ROUTE: localhost:4001/:borrower_id/requests
+/** List All Borrower Requests
+ * @swagger
+ * /borrowers/{borrower_id}/requests:
+ *   get:
+ *     tags:
+ *       - [Borrower Requests]
+ *     summary: List All Loan Requests
+ *     parameters:
+ *       - name: borrower_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 requestsController.get("/", async (req, res) => {
   console.log(req.user);
@@ -39,9 +55,35 @@ requestsController.get("/", async (req, res) => {
   }
 });
 
-/**
- * CREATE a new loan request
- * ROUTE: localhost:4001/:borrower_id/requests
+/** Create New Loan Request
+ * @swagger
+ * /borrowers/{borrower_id}/requests:
+ *   post:
+ *     tags:
+ *       - [Borrower Requests]
+ *     summary: Create New Loan Request
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             example:
+ *               title: Test Loan
+ *               description: Test
+ *               value: 50000
+ *               created_at: '2023-01-15T05:00:00.000Z'
+ *     parameters:
+ *       - name: borrower_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 requestsController.post(
   "/",
@@ -68,9 +110,31 @@ requestsController.post(
   }
 );
 
-/**
- * GET a sinlge request from a given borrower
- * ROUTE: localhost:4001/:borrower_id/requests/:id
+/** Get One Loan Request
+ * @swagger
+ * /borrowers/{borrower_id}/requests/{id}:
+ *   get:
+ *     tags:
+ *       - [Borrower Requests]
+ *     summary: Get One Loan Request
+ *     parameters:
+ *       - name: borrower_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '1'
+ *       - name: id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '8'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 requestsController.get("/:id", async (req, res) => {
   const { borrower_id, id } = req.params;
@@ -86,9 +150,40 @@ requestsController.get("/:id", async (req, res) => {
   }
 });
 
-/**
- * UPDATE a single loan request
- * ROUTE: localhost:4001/:borrower_id/requests/:id
+/** Update Loan Request
+ * @swagger
+ * /borrowers/{borrower_id}/requests/{id}:
+ *   put:
+ *     tags:
+ *       - [Borrower Requests]
+ *     summary: Update Loan Request
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             example:
+ *               title: Update Test Loan Update
+ *               description: Test
+ *               value: 50000
+ *     parameters:
+ *       - name: borrower_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *       - name: id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '12'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 requestsController.put(
   "/:id",
@@ -114,9 +209,31 @@ requestsController.put(
   }
 );
 
-/**
- * DELETE a loan request
- * ROUTE: localhost:4001/:borrower_id/requests/:id
+/** Delete Loan Request
+ * @swagger
+ * /borrowers/{borrower_id}/requests/{id}:
+ *   delete:
+ *     tags:
+ *       - [Borrower Requests]
+ *     summary: Delete Loan Request
+ *     parameters:
+ *       - name: borrower_id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '2'
+ *       - name: id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '15'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 requestsController.delete("/:id", async (req, res) => {
   const { borrower_id, id } = req.params;
