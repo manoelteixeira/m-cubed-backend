@@ -100,14 +100,13 @@ proposals.get("/:proposal_id", async (req, res) => {
   }
 });
 
-/** Update Proposal - FIX THIS
+/** Update Proposal
  * @swagger
  * /lenders/{lender_id}/proposals/{id}:
  *  put:
  *        tags:
  *          - [Lender Proposals]
  *        summary: Update Proposal
- *        description: FIX THIS !!!!
  *        parameters:
  *          - in: path
  *            name: lender_id
@@ -126,10 +125,13 @@ proposals.get("/:proposal_id", async (req, res) => {
  *            application/json:
  *              schema:
  *                type: object
- *                example:
- *                  title: Low-Interest Proposal 1
- *                  description: Offering a low-interest loan with flexible repayment options.
- *                  created_at: '2023-01-20T05:00:00.000Z'
+ *              example:
+ *               title: Low-Interest P222roposal
+ *               description: Offering a low-interest loan with flexible repayment options.
+ *               loan_amount: 50000
+ *               interest_rate: 5
+ *               repayment_term: 36
+ *               created_at: '2023-01-20T05:00:00.000Z'
  *        responses:
  *          '200':
  *            description: Successful response
