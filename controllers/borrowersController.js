@@ -40,21 +40,18 @@ borrowersController.use(
   borrowersRequestsController
 );
 
-/**
+/** List All Borrowers - REMOVE THIS
  * @swagger
- * tags:
- *   name: Borrowers
- *   description: Borrowers API
- * /borrowers:
- *   get:
- *     summary: Get all borrowers
- *     description: THIS ROUTE SHOULD NOT GO INTO PRODUCTION
- *     tags: [Borrowers]
- *     responses:
- *       '200':
- *         description: A successful response
- *       '500':
- *         description: Internal server error
+ * /borrowers/:
+ *    get:
+ *      tags:
+ *        - [Borrowers]
+ *      summary: List All Borrowers
+ *      responses:
+ *        '200':
+ *          description: Successful response
+ *          content:
+ *            application/json: {}
  */
 // borrowersController.get("/", async (req, res) => {
 //   try {
@@ -65,9 +62,35 @@ borrowersController.use(
 //   }
 // });
 
-/**
- * CREATE a new borrower
- * ROUTE: localhost:4001/borrowers
+/** Create New Borrower
+ * @swagger
+ * /borrowers:
+ *   post:
+ *     tags:
+ *       - [Borrowers]
+ *     summary: Create New Borrower
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             example:
+ *               email: testBorrower@example.com
+ *               password: password123
+ *               city: Miami
+ *               street: 987 Maple St
+ *               state: FL
+ *               zip_code: '33101'
+ *               phone: '4567890123'
+ *               business_name: Healthcare Hub
+ *               credit_score: 740
+ *               start_date: '2022-10-05T04:00:00.000Z'
+ *               industry: Healthcare
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 borrowersController.post(
   "/",
@@ -106,23 +129,25 @@ borrowersController.post(
   }
 );
 
-/**
+/** Get Borrower By ID
  * @swagger
- * tags:
- *   name: Borrowers
- *   description: Borrowers API
  * /borrowers/{id}:
  *   get:
- *     summary: Get borrower by ID
- *     tags: [Borrowers]
+ *     tags:
+ *       - [Borrowers]
+ *     summary: Get Borrower By ID
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '1'
  *     responses:
  *       '200':
- *         description: A successful response
- *       '500':
- *         description: Internal server error
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 borrowersController.get(
   "/:id",
@@ -143,8 +168,24 @@ borrowersController.get(
 );
 
 /**
- * DELETE a single borrower
- * ROUTE: localhost:4001/borrowers/:id
+ * @swagger
+ * /borrowers/{id}:
+ *   delete:
+ *     tags:
+ *       - [Borrowers]
+ *     summary: Delete
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '6'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 borrowersController.delete(
   "/:id",
@@ -164,9 +205,41 @@ borrowersController.delete(
   }
 );
 
-/**
- * POST update a borrower
- * ROUTE: localhost:4001/borrowers/:id
+/** Update Borrower
+ * @swagger
+ * /borrowers/{id}:
+ *   put:
+ *     tags:
+ *       - [Borrowers]
+ *     summary: Update Borrower
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             example:
+ *               email: testBorrowerTest@example.com
+ *               city: Miami
+ *               street: 987 Maple St
+ *               state: FL
+ *               zip_code: '33101'
+ *               phone: '4567890123'
+ *               business_name: Healthcare Hub
+ *               credit_score: 740
+ *               start_date: '2022-10-05T04:00:00.000Z'
+ *               industry: Healthcare
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         example: '8'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json: {}
  */
 borrowersController.put(
   "/:id",

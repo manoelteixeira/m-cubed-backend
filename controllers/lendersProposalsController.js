@@ -21,11 +21,8 @@ const {
   deleteProposalByID,
 } = require("../queries/lendersProposalsQueries");
 
-/**
+/** List All Proposals Made By the Lender
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{lender_id}/proposals:
  *  get:
  *    tags:
@@ -59,11 +56,8 @@ proposals.get("/", async (req, res) => {
   }
 });
 
-/**
+/** Get One Proposal
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{lender_id}/proposals/{id}:
  *     get:
  *       tags:
@@ -106,11 +100,8 @@ proposals.get("/:proposal_id", async (req, res) => {
   }
 });
 
-/**
+/** Update Proposal - FIX THIS
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{lender_id}/proposals/{id}:
  *  put:
  *        tags:
@@ -175,16 +166,13 @@ proposals.put(
   }
 );
 
-/**
+/** Delete Proposal
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{lender_id}/proposals/{id}:
  *   delete:
  *        tags:
  *          - [Lender Proposals]
- *        summary: Update Proposal
+ *        summary: Delete Proposal
  *        parameters:
  *          - in: path
  *            name: lender_id
@@ -221,30 +209,6 @@ proposals.delete("/:proposal_id", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
-// SHOW - Get all proposals by loan request ID
-// /**
-//  * @swagger
-//  * tags:
-//  *   name: Lenders
-//  *   description: Lenders API
-//  */
-// proposals.get("/requests/:request_id", async (req, res) => {
-//   const { request_id } = req.params;
-//   try {
-//     const proposalsByRequest = await getProposalsByRequestID(request_id);
-//     if (proposalsByRequest.length > 0) {
-//       res.status(200).json(proposalsByRequest);
-//     } else {
-//       res
-//         .status(404)
-//         .json({ error: "No proposals found for this loan request" });
-//     }
-//   } catch (error) {
-//     console.error("Error fetching proposals by loan request:", error);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// });
 
 module.exports = proposals;
 

@@ -21,9 +21,6 @@ const {
 
 /** GET - Get All Available Loan Requests
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{id}/requests:
  *  get:
  *    tags:
@@ -55,9 +52,6 @@ requests.get("/", async (req, res) => {
 
 /** GET - Get Loan Request By ID
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{lender_id}/requests/{id}:
  *  get:
  *    tags:
@@ -100,9 +94,6 @@ requests.get("/:id", async (req, res) => {
 
 /** POST - Create Loan Proposal
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{lender_id}/requests/{id}:
  *  post:
  *    tags:

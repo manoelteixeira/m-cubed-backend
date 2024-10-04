@@ -38,16 +38,8 @@ lenders.use(
   lendersRequestsController
 );
 
-/**
- * DONT LEAVE ON THE FINAL CODE !!!!!
- * GET all lenders
- * ROUTE: localhost:4001/lenders
- */
-/**
+/** List all Lenders - REMOVE THIS ROUTE
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/:
  *     get:
  *       tags:
@@ -68,15 +60,8 @@ lenders.get("/", async (req, res) => {
   }
 });
 
-/**
- * CREATE a new lender
- * ROUTE: localhost:4001/lenders
- */
-/**
+/** Create new Lender
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/:
  *   post:
  *        tags:
@@ -123,11 +108,8 @@ lenders.post(
   }
 );
 
-/**
+/** Get Lender By ID
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{id}:
  *    get:
  *      tags:
@@ -164,15 +146,8 @@ lenders.get(
   }
 );
 
-/**
- * DELETE a single lender
- * ROUTE: localhost:4001/lenders/:id
- */
-/**
+/** Delete Lender By ID
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{id}:
  *     delete:
  *       tags:
@@ -209,15 +184,8 @@ lenders.delete(
   }
 );
 
-/**
- * POST update a lender
- * ROUTE: localhost:4001/lenders/:id
- */
-/**
+/** Update Lender
  * @swagger
- * tags:
- *   name: Lenders
- *   description: Lenders API
  * /lenders/{id}:
  *  put:
  *    tags:
