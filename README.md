@@ -53,4 +53,4 @@ Back-end for [M-Cubed](https://github.com/manoelteixeira/m-cubed-frontend) app
 | 23  | ✅         | `/lenders/:l_id/requests/:id/`                 | GET         | Get a single loan request                       |
 | 24  | ✅         | `/lenders/:l_id/requests/:id/`                 | POST        | Create a new Proposition                        |
 
-> You check the endpoints [here](https://m-cubed-backend.onrender.com)
+> You check the endpoints [here](https://m-cubed-backend.onrender.com/docs)
