@@ -88,6 +88,31 @@ async function addLoanRequests(requests) {
   }
 }
 
+async function addLoanProposals(proposals) {
+  const proposalsStr = proposals
+    .map((proposal) => {
+      const {
+        title,
+        description,
+        loan_amount,
+        interest_rate,
+        repayment_term,
+        lender_id,
+        created_at,
+        loan_request_id,
+      } = proposal;
+      return `('${title}', '${description}', '${loan_amount}', ${interest_rate}, ${repayment_term}, '${lender_id}', '${created_at}', '${loan_request_id}')`;
+    })
+    .join(", ");
+  const queryStr = `INSERT INTO loan_proposals(title, description, loan_amount, interest_rate, repayment_term, lender_id, created_at, loan_request_id) VALUES ${proposalsStr} RETURNING *`;
+  try {
+    const result = await db.many(queryStr);
+    return result;
+  } catch (err) {
+    console.log("ERROR: ", err);
+  }
+}
+
 async function seed(nLenders, nBorrowers, nRequests, nProposals) {
   // Create And Add Users
   let users = [];
@@ -140,6 +165,8 @@ async function seed(nLenders, nBorrowers, nRequests, nProposals) {
       loanProposals.push(createLoanProposal(request, id));
     }
   });
+  const proposals = await addLoanProposals(loanProposals);
+  console.log("** ALL DONE **");
 }
 
 seed(5, 10, 5);

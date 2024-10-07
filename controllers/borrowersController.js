@@ -53,14 +53,14 @@ borrowersController.use(
  *          content:
  *            application/json: {}
  */
-// borrowersController.get("/", async (req, res) => {
-//   try {
-//     const borrowers = await getBorrowers();
-//     res.status(200).json(borrowers);
-//   } catch (err) {
-//     res.status(400).json({ error: err });
-//   }
-// });
+borrowersController.get("/", async (req, res) => {
+  try {
+    const borrowers = await getBorrowers();
+    res.status(200).json(borrowers);
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
+});
 
 /** Create New Borrower
  * @swagger
@@ -155,7 +155,8 @@ borrowersController.get(
   async (req, res) => {
     try {
       const { id } = req.params;
-      const borrower = await getBorrower(Number(id));
+      const borrower = await getBorrower(id);
+
       if (borrower.id) {
         res.status(200).json(borrower);
       } else {

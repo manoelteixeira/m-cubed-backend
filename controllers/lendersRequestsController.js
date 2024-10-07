@@ -141,8 +141,8 @@ requests.post(
   async (req, res) => {
     const { lender_id, id } = req.params;
     const proposal = req.body;
-    proposal.loan_request_id = Number(id);
-    proposal.lender_id = Number(lender_id);
+    proposal.loan_request_id = id;
+    proposal.lender_id = lender_id;
     try {
       const newProposal = await createProposal(proposal);
       if (newProposal.id) {

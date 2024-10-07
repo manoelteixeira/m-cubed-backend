@@ -29,13 +29,11 @@ const requestProposalsController = express.Router({ mergeParams: true });
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *       - name: request_id
  *         in: path
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -45,7 +43,7 @@ const requestProposalsController = express.Router({ mergeParams: true });
 requestProposalsController.get("/", async (req, res) => {
   const { request_id } = req.params;
   try {
-    const proposals = await getProposals(Number(request_id));
+    const proposals = await getProposals(request_id);
     res.status(200).json(proposals);
   } catch (err) {
     res.status(400).json({ error: err });
@@ -65,19 +63,16 @@ requestProposalsController.get("/", async (req, res) => {
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *       - name: request_id
  *         in: path
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *       - name: id
  *         in: path
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -87,7 +82,7 @@ requestProposalsController.get("/", async (req, res) => {
 requestProposalsController.get("/:id", async (req, res) => {
   const { request_id, id } = req.params;
   try {
-    const proposal = await getProposal(Number(request_id), Number(id));
+    const proposal = await getProposal(request_id, id);
     if (proposal.id) {
       res.status(200).json(proposal);
     } else {
@@ -118,13 +113,11 @@ requestProposalsController.get("/:id", async (req, res) => {
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *       - name: request_id
  *         in: path
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *     responses:
  *       '200':
  *         description: Successful response

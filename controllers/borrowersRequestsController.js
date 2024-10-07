@@ -37,7 +37,6 @@ requestsController.use("/:request_id/proposals", requestProposalsController);
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -48,7 +47,7 @@ requestsController.get("/", async (req, res) => {
   console.log(req.user);
   const { borrower_id } = req.params;
   try {
-    const requests = await getRequests(Number(borrower_id));
+    const requests = await getRequests(borrower_id);
     res.status(200).json(requests);
   } catch (err) {
     res.status(400).json({ error: err });
@@ -78,7 +77,6 @@ requestsController.get("/", async (req, res) => {
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -96,7 +94,7 @@ requestsController.post(
     try {
       const request = await createRequest({
         ...req.body,
-        borrower_id: Number(borrower_id),
+        borrower_id: borrower_id,
       });
       console.log(request);
       if (request.id) {
@@ -123,7 +121,6 @@ requestsController.post(
  *         schema:
  *           type: integer
  *         required: true
- *         example: '1'
  *       - name: id
  *         in: path
  *         schema:
@@ -139,7 +136,7 @@ requestsController.post(
 requestsController.get("/:id", async (req, res) => {
   const { borrower_id, id } = req.params;
   try {
-    const request = await getRequest(Number(borrower_id), Number(id));
+    const request = await getRequest(borrower_id, id);
     if (request.id) {
       res.status(200).json(request);
     } else {
@@ -172,13 +169,11 @@ requestsController.get("/:id", async (req, res) => {
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *       - name: id
  *         in: path
  *         schema:
  *           type: integer
  *         required: true
- *         example: '12'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -195,8 +190,8 @@ requestsController.put(
     try {
       const request = await updateRequest({
         ...req.body,
-        borrower_id: Number(borrower_id),
-        id: Number(id),
+        borrower_id: borrower_id,
+        id: id,
       });
       if (request.id) {
         res.status(200).json(request);
@@ -222,7 +217,6 @@ requestsController.put(
  *         schema:
  *           type: integer
  *         required: true
- *         example: '2'
  *       - name: id
  *         in: path
  *         schema:
@@ -238,7 +232,7 @@ requestsController.put(
 requestsController.delete("/:id", async (req, res) => {
   const { borrower_id, id } = req.params;
   try {
-    const request = await deleteRequest(Number(borrower_id), Number(id));
+    const request = await deleteRequest(borrower_id, id);
     if (request.id) {
       res.status(200).json(request);
     } else {

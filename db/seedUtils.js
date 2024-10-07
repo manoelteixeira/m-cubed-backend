@@ -70,7 +70,7 @@ function createLoanProposal(request, lender_id) {
     interest_rate: 0.05,
     repayment_term: 32,
     lender_id: lender_id,
-    created_at: date,
+    created_at: date.toISOString(),
     loan_request_id: request.id,
   };
 }

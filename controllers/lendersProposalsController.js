@@ -151,8 +151,8 @@ proposals.put(
   async (req, res) => {
     const { lender_id, id } = req.params;
     const proposal = req.body;
-    proposal.id = Number(id);
-    proposal.lender_id = Number(lender_id);
+    proposal.id = id;
+    proposal.lender_id = lender_id;
     console.log(proposal);
     try {
       const updatedProposal = await updateProposalByID(proposal);

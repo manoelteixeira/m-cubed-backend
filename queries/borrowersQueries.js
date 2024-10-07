@@ -23,9 +23,7 @@ async function getBorrowers() {
  * @returns {Object} - Borrower Object
  */
 async function getBorrower(id) {
-  const queryStr =
-    "SELECT id, email, city, street, state, zip_code, phone, business_name, credit_score, start_date, industry " +
-    "FROM borrowers WHERE id=$[id]";
+  const queryStr = "SELECT * FROM borrowers WHERE id=$[id]";
   try {
     const borrower = await db.one(queryStr, { id: id });
     return borrower;
