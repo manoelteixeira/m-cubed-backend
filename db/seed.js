@@ -27,7 +27,7 @@ async function addLenders(lenders) {
   const lendersStr = lenders
     .map((lender) => {
       const { name, user_id } = lender;
-      return `('${name}', '${user_id}')`;
+      return `('${name.replaceAll("'", "\\'")}', '${user_id}')`;
     })
     .join(", ");
   const queryStr = `INSERT INTO lenders(business_name, user_id) VALUES ${lendersStr} RETURNING *`;
@@ -54,7 +54,10 @@ async function addBorrowers(borrowers) {
         industry,
         user_id,
       } = borrower;
-      return `('${city}', '${street}', '${state}', '${zip_code}', '${phone}', '${name}', ${credit_score}, '${start_date}', '${industry}', '${user_id}')`;
+      return `('${city}', '${street}', '${state}', '${zip_code}', '${phone}', '${name.replaceAll(
+        "'",
+        "\\'"
+      )}', ${credit_score}, '${start_date}', '${industry}', '${user_id}')`;
     })
     .join(", ");
   const queryStr = `INSERT INTO borrowers( city, street, state, zip_code, phone, business_name, credit_score, start_date, industry, user_id) VALUES ${borrowersStr} RETURNING *`;
@@ -70,7 +73,10 @@ async function addLoanRequests(requests) {
   const requestsStr = requests
     .map((request) => {
       const { title, description, value, created_at, borrower_id } = request;
-      return `('${title}','${description}',${value},'${created_at}','${borrower_id}')`;
+      return `('${title.replaceAll(
+        "'",
+        "\\'"
+      )}','${description}',${value},'${created_at}','${borrower_id}')`;
     })
     .join(", ");
   const queryStr = `INSERT INTO loan_requests(title, description, value, created_at, borrower_id) VALUES ${requestsStr} RETURNING *`;
@@ -124,20 +130,16 @@ async function seed(nLenders, nBorrowers, nRequests, nProposals) {
   });
 
   const requests = await addLoanRequests(loanRequests.flat());
+
   console.log("** Adding Loan Proposals **");
+
   const lendersId = lenders.map((lender) => lender.id);
-  const loanProposals = requests.map((request) => {
-    const proposals = [];
+  const loanProposals = [];
+  requests.forEach((request) => {
     for (const id of lendersId) {
-      for (let i = 0; i < nProposals; i++) {
-        const proposal = createLoanProposal(request, id);
-        console.log(proposal);
-        proposals.push(proposal);
-      }
+      loanProposals.push(createLoanProposal(request, id));
     }
-    return proposals;
   });
-  console.log(loanProposals);
 }
 
 seed(5, 10, 5);

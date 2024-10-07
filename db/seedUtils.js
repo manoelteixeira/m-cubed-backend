@@ -1,6 +1,5 @@
 const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
-const { func } = require("./dbConfig");
 const salt = 10;
 
 function capitalize(word) {
@@ -62,6 +61,8 @@ function createLoanRequest(user_id) {
 }
 
 function createLoanProposal(request, lender_id) {
+  const date = new Date(request.created_at);
+  date.setHours(date.getHours() + 1);
   return {
     title: request.title,
     description: "Proposal Description",
@@ -69,6 +70,7 @@ function createLoanProposal(request, lender_id) {
     interest_rate: 0.05,
     repayment_term: 32,
     lender_id: lender_id,
+    created_at: date,
     loan_request_id: request.id,
   };
 }
