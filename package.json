@@ -8,7 +8,7 @@
     "watch": "nodemon server.js",
     "db:init": "psql -U postgres -f db/schema.sql",
     "db:seed": "psql -U postgres -f db/seed.sql",
-    "db:dev": "npm run db:init && npm run db:seed"
+    "db:dev": "npm run db:init && node ./db/seed.js"
   },
   "keywords": [],
   "author": "m3",
@@ -23,6 +23,9 @@
     "morgan": "^1.10.0",
     "pg-promise": "^11.9.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^4.1.2"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.0.3"
   }
 }
