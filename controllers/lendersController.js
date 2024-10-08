@@ -96,14 +96,12 @@ lenders.post(
           { userId: newLender.id, email: newLender.email },
           secret
         );
-        // delete newLender.password;
-
         res.status(201).json({ lender: { ...newLender }, token });
       } else {
-        res.status(400).json({ error: "Someting went wrong! (°_o)" });
+        res.status(400).json(newLender);
       }
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json(error);
     }
   }
 );
@@ -119,7 +117,7 @@ lenders.post(
  *        - in: path
  *          name: id
  *          schema:
- *            type: number
+ *            type: string
  *          required: true
  *          description: Lender ID
  *      responses:
@@ -157,7 +155,7 @@ lenders.get(
  *         - in: path
  *           name: id
  *           schema:
- *             type: number
+ *             type: string
  *           required: true
  *           description: Lender ID
  *       responses:
@@ -191,11 +189,12 @@ lenders.delete(
  *    tags:
  *      - [Lenders]
  *    summary: Update Lender
+ *    description: UPDATE THIS ROUTE TO ACCEPT NEW SCHEMA !
  *    parameters:
  *      - in: path
  *        name: id
  *        schema:
- *          type: number
+ *          type: string
  *        required: true
  *        description: Lender ID
  *    requestBody:
@@ -250,6 +249,9 @@ module.exports = lenders;
  *         id:
  *           type: string
  *           description: The auto-generated id of the lender
+ *         user_id:
+ *           type: string
+ *           description: The auto-generated id of the lender
  *         email:
  *           type: string
  *           description: The Lender email
@@ -260,7 +262,7 @@ module.exports = lenders;
  *           type: string
  *           description: The Lender business name
  *       example:
- *         id: 1
+ *         id:ff5934c5-62b4-4c52-b933-a2ac86a2a86c
  *         email: lender1@example.com
  *         password: password123
  *         business_name: Lender Corp

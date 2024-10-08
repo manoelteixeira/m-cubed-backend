@@ -293,7 +293,7 @@ module.exports = borrowersController;
  *        - industry
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *           description: The auto-generated id of the Borrower
  *         email:
  *           type: string
@@ -329,7 +329,7 @@ module.exports = borrowersController;
  *           type: string
  *           description: Borrower business industry
  *       example:
- *         id: 1
+ *         id: "uuidStrin012312341"
  *         email: borrower1@example.com
  *         city: New York
  *         street: 123 Main St

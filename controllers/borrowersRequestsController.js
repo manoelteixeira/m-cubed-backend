@@ -35,7 +35,7 @@ requestsController.use("/:request_id/proposals", requestProposalsController);
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *     responses:
  *       '200':
@@ -75,7 +75,7 @@ requestsController.get("/", async (req, res) => {
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *     responses:
  *       '200':
@@ -119,12 +119,12 @@ requestsController.post(
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *       - name: id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *         example: '8'
  *     responses:
@@ -167,12 +167,12 @@ requestsController.get("/:id", async (req, res) => {
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *       - name: id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *     responses:
  *       '200':
@@ -215,14 +215,13 @@ requestsController.put(
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *       - name: id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
- *         example: '15'
  *     responses:
  *       '200':
  *         description: Successful response

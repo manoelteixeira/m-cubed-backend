@@ -1,11 +1,10 @@
+const db = require("./dbConfig.js");
 const {
   createLender,
   createBorrower,
   createLoanRequest,
   createLoanProposal,
 } = require("./seedUtils.js");
-const salt = 10;
-const db = require("./dbConfig.js");
 
 async function addUsers(users) {
   let usersString = users

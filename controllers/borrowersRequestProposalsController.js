@@ -27,12 +27,12 @@ const requestProposalsController = express.Router({ mergeParams: true });
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *       - name: request_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: trung
  *         required: true
  *     responses:
  *       '200':
@@ -61,17 +61,17 @@ requestProposalsController.get("/", async (req, res) => {
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *       - name: request_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *       - name: id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *     responses:
  *       '200':
@@ -111,12 +111,12 @@ requestProposalsController.get("/:id", async (req, res) => {
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *       - name: request_id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *     responses:
  *       '200':

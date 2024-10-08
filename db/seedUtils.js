@@ -1,6 +1,7 @@
 const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
-const salt = 10;
+require("dotenv").config();
+const SALT = parseInt(process.env.SALT);
 
 function capitalize(word) {
   return word[0].toUpperCase() + word.slice(1).toLowerCase();
@@ -27,7 +28,7 @@ async function createLender() {
   return {
     email: generateEmail(name, "lender"),
     name: name,
-    password: await bcrypt.hash("password123", salt),
+    password: await bcrypt.hash("password123", SALT),
     role: "lender",
   };
 }
@@ -37,7 +38,7 @@ async function createBorrower() {
   return {
     name: name.replaceAll("'", "\n"),
     email: generateEmail(name, "borrower"),
-    password: await bcrypt.hash("password123", salt),
+    password: await bcrypt.hash("password123", SALT),
     role: "borrower",
     city: faker.location.city(),
     street: faker.location.street(),

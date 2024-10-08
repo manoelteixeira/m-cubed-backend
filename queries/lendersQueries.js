@@ -1,12 +1,16 @@
-const db = require("../db/dbConfig.js");
 const bcrypt = require("bcrypt");
+const db = require("../db/dbConfig.js");
+require("dotenv").config();
+const SALT = Number(process.env.SALT);
 
 /**
  * Get all lenders
  * @returns {Array} - List of All lenders
  */
 const getAllLenders = async () => {
-  const queryStr = "SELECT * FROM lenders";
+  const queryStr =
+    "SELECT lenders.id, users.id as user_id, users.email, lenders.business_name " +
+    "FROM users JOIN lenders ON users.id = lenders.user_id";
   try {
     const allLenders = await db.any(queryStr);
     return allLenders;
@@ -17,44 +21,97 @@ const getAllLenders = async () => {
 
 // Get a specific lender by ID
 const getLender = async (id) => {
-  const queryStr = "SELECT * FROM lenders WHERE id=$[id]";
+  const queryStr =
+    "SELECT users.id, users.email, lenders.business_name, lenders.id as lender_id " +
+    "FROM users JOIN lenders ON users.id = lenders.user_id " +
+    "WHERE lenders.id=$[id]";
   try {
     const oneLender = await db.one(queryStr, { id });
     return oneLender;
   } catch (error) {
-    return error;
+    if (err.message == "No data returned from the query.") {
+      return { error: "Lender not found." };
+    } else {
+      return error;
+    }
   }
 };
 
-// Create a new lender
-const createLender = async (lender) => {
-  const salt = 10;
-  const queryStr =
-    "INSERT INTO lenders (email, password, business_name) " +
-    "VALUES ($[email], $[password], $[business_name]) " +
+/**
+ * Create New Lender
+ * @param {Object} lender
+ * @returns {Object} - New Lender
+ */
+async function createLender(lender) {
+  const { email, password, business_name } = lender;
+  const password_hash = await bcrypt.hash(password, SALT);
+  const userQuery =
+    "INSERT INTO users(email, password, role) VALUES" +
+    "($[email], $[password], 'lender') " +
     "RETURNING *";
-
+  const lenderQuery =
+    "INSERT INTO lenders(business_name, user_id) VALUES" +
+    "($[business_name], $[user_id]) " +
+    "RETURNING *";
   try {
-    // const { password } = lender;
-    // const hash = await bcrypt.hash(password, salt);
-    // lender.password = hash;
-    const newLender = await db.one(queryStr, lender);
-    return newLender;
-  } catch (error) {
-    return error;
+    const data = await db.tx(async (t) => {
+      const newUser = await t.one(userQuery, {
+        email,
+        password: password_hash,
+      });
+      const newLender = await t.one(lenderQuery, {
+        business_name,
+        user_id: newUser.id,
+      });
+      return { newUser, newLender };
+    });
+    return {
+      user_id: data.newUser.id,
+      id: data.newLender.id,
+      email: data.newUser.email,
+      business_name: data.newLender.business_name,
+      password_hash: data.newUser.password,
+    };
+  } catch (err) {
+    if (err.detail.includes("email") && err.detail.includes("already exists"))
+      return { error: "Email already exists." };
+    else {
+      return err;
+    }
   }
-};
+}
 
-// Delete a lender by ID
-const deleteLender = async (id) => {
-  const queryStr = "DELETE FROM lenders WHERE id = $[id] RETURNING *";
+/**
+ * Delete Lender
+ * @param {String} id - Lender ID
+ * @returns
+ */
+async function deleteLender(id) {
+  const lenderQuery = "SELECT * FROM lenders WHERE id=$1";
+  const deleteLenderQuery = "DELETE from users WHERE id=$1 RETURNING *";
   try {
-    const deletedLender = await db.one(queryStr, { id });
-    return deletedLender;
-  } catch (error) {
-    return error;
+    const data = await db.tx(async (t) => {
+      const lender = await t.one(lenderQuery, [id]);
+      console.log(lender);
+      const user = await t.one(deleteLenderQuery, lender.user_id);
+      return { lender, user };
+    });
+    return {
+      id: data.lender.id,
+      user_id: data.user.id,
+      email: data.user.email,
+      business_name: data.lender.business_name,
+      password_hash: data.user.password,
+    };
+  } catch (err) {
+    console.log(err);
+    if (err.message == "No data returned from the query.") {
+      return { error: "Lender not found." };
+    } else {
+      return err;
+    }
   }
-};
+}
 
 // Update a lender by ID
 const updateLender = async (id, lender) => {

@@ -1,6 +1,8 @@
 // queries/borrowersQueries.js
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig.js");
+// require("dotenv").config();
+// const SALT = process.env.SALT;
 
 /**
  * Get all borrowes
@@ -53,9 +55,8 @@ async function deleteBorrower(id) {
  * @returns {Object} - New borrower
  */
 async function createBorrower(borrower) {
-  const salt = 10;
   // const { password } = borrower;
-  // const hash = await bcrypt.hash(password, salt);
+  // const hash = await bcrypt.hash(password, SALT);
   // borrower.password = hash;
   const queryStr =
     "INSERT INTO borrowers (email, password, city, street, state, zip_code, phone, business_name, credit_score, start_date, industry) " +
