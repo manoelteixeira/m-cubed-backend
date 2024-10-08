@@ -24,9 +24,9 @@ const getLender = async (id) => {
   const queryStr =
     "SELECT users.id, users.email, lenders.business_name, lenders.id as lender_id " +
     "FROM users JOIN lenders ON users.id = lenders.user_id " +
-    "WHERE lenders.id=$[id]";
+    "WHERE lenders.id=$1";
   try {
-    const oneLender = await db.one(queryStr, { id });
+    const oneLender = await db.one(queryStr, [id]);
     return oneLender;
   } catch (error) {
     if (err.message == "No data returned from the query.") {
@@ -92,19 +92,19 @@ async function deleteLender(id) {
   try {
     const data = await db.tx(async (t) => {
       const lender = await t.one(lenderQuery, [id]);
-      console.log(lender);
-      const user = await t.one(deleteLenderQuery, lender.user_id);
+      const user = await t.one(deleteLenderQuery, [lender.user_id]);
       return { lender, user };
     });
+    const { lender, user } = data;
+    const user_id = user.id;
+    delete user.id;
+    delete user.role;
     return {
-      id: data.lender.id,
-      user_id: data.user.id,
-      email: data.user.email,
-      business_name: data.lender.business_name,
-      password_hash: data.user.password,
+      user_id,
+      ...user,
+      ...lender,
     };
   } catch (err) {
-    console.log(err);
     if (err.message == "No data returned from the query.") {
       return { error: "Lender not found." };
     } else {

@@ -108,6 +108,7 @@ borrowersController.post(
   async (req, res) => {
     try {
       const newBorrower = await createBorrower(req.body);
+      console.log(newBorrower);
       const token = jwt.sign(
         { userId: newBorrower.id, email: newBorrower.email },
         secret
@@ -124,6 +125,7 @@ borrowersController.post(
         res.status(400).json({ error: "Someting went wrong! (°_o)" });
       }
     } catch (err) {
+      console.log(err);
       res.status(400).json({ error: err });
     }
   }
@@ -140,9 +142,8 @@ borrowersController.post(
  *       - name: id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
- *         example: '1'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -153,22 +154,21 @@ borrowersController.get(
   "/:id",
   // authenticateToken,
   async (req, res) => {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
       const borrower = await getBorrower(id);
-
       if (borrower.id) {
         res.status(200).json(borrower);
       } else {
-        res.status(404).json({ error: "Borrower not found." });
+        res.status(404).json(borrower);
       }
-    } catch (err) {
-      res.status(400).json({ error: err });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   }
 );
 
-/**
+/** Delete Borrower By ID
  * @swagger
  * /borrowers/{id}:
  *   delete:
@@ -179,9 +179,8 @@ borrowersController.get(
  *       - name: id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
- *         example: '6'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -192,27 +191,28 @@ borrowersController.delete(
   "/:id",
   // authenticateToken,
   async (req, res) => {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const borrower = await deleteBorrower(Number(id));
-      if (borrower.id) {
-        res.status(200).json(borrower);
+      const deletedBorrower = await deleteBorrower(id);
+      if (deletedBorrower.id) {
+        res.status(200).json(deletedBorrower);
       } else {
-        res.status(404).json({ error: "Borrower not found." });
+        res.status(404).json(bo);
       }
-    } catch (err) {
-      res.status(400).json({ error: err });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   }
 );
 
-/** Update Borrower
+/** Update Borrower - FIX THIS
  * @swagger
  * /borrowers/{id}:
  *   put:
  *     tags:
  *       - [Borrowers]
  *     summary: Update Borrower
+ *     description: FIX THIS
  *     requestBody:
  *       content:
  *         application/json:
@@ -233,9 +233,8 @@ borrowersController.delete(
  *       - name: id
  *         in: path
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
- *         example: '8'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -258,7 +257,7 @@ borrowersController.put(
   async (req, res) => {
     try {
       const { id } = req.params;
-      const borrower = await updateBorrower(Number(id), req.body);
+      const borrower = await updateBorrower(id, req.body);
 
       if (borrower.id) {
         res.status(200).json(borrower);

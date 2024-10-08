@@ -262,7 +262,8 @@ module.exports = lenders;
  *           type: string
  *           description: The Lender business name
  *       example:
- *         id:ff5934c5-62b4-4c52-b933-a2ac86a2a86c
+ *         id: ff5934c5-62b4-4c52-b933-a2ac86a2a86c
+ *         user_id: ff5934c5-62b4-4c52-b933-a2ac86a2a862
  *         email: lender1@example.com
  *         password: password123
  *         business_name: Lender Corp

@@ -126,7 +126,6 @@ requestsController.post(
  *         schema:
  *           type: string
  *         required: true
- *         example: '8'
  *     responses:
  *       '200':
  *         description: Successful response
@@ -280,13 +279,13 @@ module.exports = requestsController;
  *           format: date
  *           description: Loan Request Funded Date
  *         accepted_proposal_id:
- *           type: number
+ *           type: string
  *           description: Loan Request Accepted Loan Proposal ID
  *         borrower_id:
- *           type: number
+ *           type: string
  *           description: Loan Request Borrower ID
  *       example:
- *         id: 1
+ *         id: c4c4a92b-d39b-4f14-9795-be7b7d95bfa5
  *         email: lender1@example.com
  *         password: password123
  *         business_name: Lender Corp

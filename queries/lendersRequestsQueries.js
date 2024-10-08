@@ -19,18 +19,22 @@ const getAllLoanRequests = async () => {
 const getLoanRequestByID = async (loan_request_id) => {
   const query = `SELECT * FROM loan_requests WHERE id = $1`;
   const borrowerQuery =
-    "SELECT id, email, city, street, state, zip_code, phone, business_name, credit_score, start_date, industry " +
-    "FROM borrowers WHERE id=$1";
+    "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, " +
+    "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.credit_score, borrowers.start_date, borrowers.industry " +
+    "FROM users JOIN borrowers ON users.id = borrowers.user_id " +
+    "WHERE borrowers.id=$1";
   try {
-    const loanRequest = await db.oneOrNone(query, [loan_request_id]);
+    const loanRequest = await db.one(query, [loan_request_id]);
     const borrower = await db.one(borrowerQuery, [loanRequest.borrower_id]);
-    console.error(borrower);
     delete loanRequest.borrower_id;
+    delete borrower.user_id;
     loanRequest.borrower = borrower;
     return loanRequest;
   } catch (error) {
-    console.error("Error fetching loan request by ID:", error);
-    throw error;
+    if (error.received == 0) {
+      return { error: "Loan request Not found." };
+    }
+    return error;
   }
 };
 

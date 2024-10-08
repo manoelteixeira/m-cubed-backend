@@ -18,8 +18,8 @@ async function getRequests(id) {
 
 /**
  * Get an specific loan request for a given borrower
- * @param {Number} borrower_id
- * @param {Number} id
+ * @param {String} borrower_id
+ * @param {Strin} id
  * @returns {Object} - Loan Request Object
  */
 async function getRequest(borrower_id, id) {
@@ -38,8 +38,8 @@ async function getRequest(borrower_id, id) {
 
 /**
  * Delete an specific loan request for a given borrower
- * @param {Number} borrower_id
- * @param {Number} id
+ * @param {Strin} borrower_id
+ * @param {String} id
  * @returns {Object} - Loan Request Object
  */
 async function deleteRequest(borrower_id, id) {

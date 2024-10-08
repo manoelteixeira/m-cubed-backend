@@ -61,13 +61,13 @@ requests.get("/", async (req, res) => {
  *      - in: path
  *        name: lender_id
  *        schema:
- *          type: number
+ *          type: string
  *        required: true
  *        description: Lender ID
  *      - in: path
  *        name: id
  *        schema:
- *          type: number
+ *          type: string
  *        required: true
  *        description: Request ID
  *    responses:

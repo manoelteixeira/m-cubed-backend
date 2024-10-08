@@ -111,12 +111,12 @@ requestProposalsController.get("/:id", async (req, res) => {
  *       - name: borrower_id
  *         in: path
  *         schema:
- *           type: string
+ *           type:
  *         required: true
  *       - name: request_id
  *         in: path
  *         schema:
- *           type: string
+ *           type:
  *         required: true
  *     responses:
  *       '200':
@@ -129,7 +129,7 @@ requestProposalsController.put("/", validateProposalID, async (req, res) => {
   const { borrower_id, request_id } = req.params;
   const { proposal_id } = req.body;
 
-  const data = await acceptProposal(+borrower_id, +request_id, proposal_id);
+  const data = await acceptProposal(borrower_id, request_id, proposal_id);
   res.status(200).json(data);
 });
 

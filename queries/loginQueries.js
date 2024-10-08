@@ -1,46 +1,55 @@
 // queries/loginQueries.js
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig");
+const { da } = require("@faker-js/faker");
 
-// FIX THIS
-async function logInUser(credentials) {
-  let queryStr =
-    "SELECT * FROM (" +
-    "SELECT id, email, password,  'borrowers' role FROM borrowers " +
-    "UNION SELECT id, email, password, 'lenders' role FROM lenders) " +
-    "WHERE email=$[email]";
-  let user = null;
+async function getUsers() {
+  const queryStr = "SELECT * FROM users";
   try {
-    user = await db.oneOrNone(queryStr, credentials);
-
-    if (!user) {
-      return { error: "User Not Found." };
-    }
-    if (credentials.password != user.password) {
-      return { error: "Incorrect Password" };
-    }
-
-    // const passwordMatch = await bcrypt.compare(
-    //   credentials.password,
-    //   user.password
-    // );
-
-    // if (!passwordMatch) {
-    //   return { error: "Incorrect Password" };
-    // }
-
-    if (user.role == "borrowers") {
-      queryStr = "SELECT * FROM borrowers WHERE email=$[email]";
-    } else {
-      queryStr = "SELECT * FROM lenders WHERE email=$[email]";
-    }
-
-    data = await db.one(queryStr, user);
-    delete data.password;
-    return { [user.role.slice(0, -1)]: data };
+    const users = await db.many(queryStr);
+    return users;
   } catch (err) {
     return err;
   }
 }
 
-module.exports = { logInUser };
+async function logInUser(credentials) {
+  const queryStr = "SELECT * FROM users WHERE email=$[email]";
+  const borrowerQuery = "SELECT * FROM borrowers WHERE user_id=$[id]";
+  const lenderQuery = "SELECT * FROM lenders WHERE user_id=$[id]";
+  try {
+    let data;
+    const user = await db.oneOrNone(queryStr, credentials);
+    // Validate User
+    if (!user) {
+      return { error: "User Not Found" };
+    }
+    // Validate Password
+    const passwordMatch = await bcrypt.compare(
+      credentials.password,
+      user.password
+    );
+    if (!passwordMatch) {
+      return { error: "Incorrect Password" };
+    }
+    // Create Return Respons
+    const role = user.role;
+    if (role == "lender") {
+      data = await db.oneOrNone(lenderQuery, user);
+    } else {
+      data = await db.oneOrNone(borrowerQuery, user);
+    }
+
+    delete data.user_id;
+    delete user.id;
+    delete user.role;
+
+    return role == "lender"
+      ? { lender: { ...data, ...user } }
+      : { borrower: { ...data, ...user } };
+  } catch (err) {
+    return err;
+  }
+}
+
+module.exports = { logInUser, getUsers };

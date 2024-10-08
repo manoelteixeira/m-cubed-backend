@@ -67,13 +67,13 @@ proposals.get("/", async (req, res) => {
  *         - in: path
  *           name: lender_id
  *           schema:
- *             type: number
+ *             type: string
  *           required: true
  *           description: Lender ID
  *         - in: path
  *           name: id
  *           schema:
- *             type: number
+ *             type: string
  *           required: true
  *           description: Proposal ID
  *       responses:
@@ -111,13 +111,13 @@ proposals.get("/:proposal_id", async (req, res) => {
  *          - in: path
  *            name: lender_id
  *            schema:
- *              type: number
+ *              type: string
  *            required: true
  *            description: Lender ID
  *          - in: path
  *            name: id
  *            schema:
- *              type: number
+ *              type: string
  *            required: true
  *            description: Proposal ID
  *        requestBody:
@@ -179,13 +179,13 @@ proposals.put(
  *          - in: path
  *            name: lender_id
  *            schema:
- *              type: number
+ *              type: string
  *            required: true
  *            description: Lender ID
  *          - in: path
  *            name: id
  *            schema:
- *              type: number
+ *              type: string
  *            required: true
  *            description: Proposal ID
  *        responses:
@@ -258,13 +258,13 @@ module.exports = proposals;
  *           type: boolen
  *           description: Loan Proposal Accepted Status
  *         lender_id:
- *           type: number
+ *           type: string
  *           description: Loan Proposal Lender ID
  *         loan_request_id:
- *           type: number
+ *           type: string
  *           description: Loan Proposal Request ID
  *       example:
- *          id: 1,
+ *          id: 082d54ef-635d-4ba3-b945-8b6780851d61,
  *          title: Low-Interest Proposal,
  *          description: Offering a low-interest loan with flexible repayment options.,
  *          loan_amount: 50000.00,
@@ -272,7 +272,7 @@ module.exports = proposals;
  *          repayment_term: 36,
  *          created_at: 2023-01-20T05:00:00.000Z,
  *          accepted: false,
- *          lender_id: 1,
- *          loan_request_id: 1
+ *          lender_id: 082d54ef-635d-4ba3-b945-8b6780851d62,
+ *          loan_request_id: 082d54ef-635d-4ba3-b945-8b6780851d6g
 
  */
