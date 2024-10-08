@@ -40,6 +40,7 @@ CREATE TABLE "loan_requests" (
   -- "accepted_proposal_id" INTEGER DEFAULT NULL,
   "accepted_proposal_id" uuid DEFAULT NULL,
   "borrower_id" uuid  REFERENCES "borrowers" ("id") ON DELETE CASCADE
+  
 );
 
 CREATE TABLE "loan_proposals" (
@@ -54,3 +55,8 @@ CREATE TABLE "loan_proposals" (
   "lender_id" uuid REFERENCES "lenders" ("id") ON DELETE CASCADE,
   "loan_request_id" uuid REFERENCES "loan_requests" ("id") ON DELETE CASCADE
 );
+
+ALTER TABLE loan_requests
+ADD CONSTRAINT fk_customer
+      FOREIGN KEY (accepted_proposal_id)
+      REFERENCES loan_proposals (id);

@@ -291,8 +291,12 @@ module.exports = requestsController;
  *           type: string
  *           description: Loan Request Borrower ID
  *       example:
- *         id: c4c4a92b-d39b-4f14-9795-be7b7d95bfa5
- *         email: lender1@example.com
- *         password: password123
- *         business_name: Lender Corp
+ *         id: 4280107b-0715-40fa-9bdb-0388bff996ec
+ *         title: Refined Steel Sausages
+ *         description: The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design
+ *         value: 68990.35
+ *         created_at: 2024-09-08T04:00:00.000Z
+ *         funded_at: 2024-10-08T04:00:00.000Z
+ *         accepted_proposal_id: b8f6dbb7-3b76-4b30-9b29-c4738d8ab703
+ *         borrower_id: d7b3854f-7f3e-42a2-8c86-bc7a9fecea3
  */
