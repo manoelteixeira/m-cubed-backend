@@ -1,4 +1,11 @@
 // controllers/loginController.js
+/**
+ * @swagger
+ * tags:
+ *   name: Login
+ *   description: Operations related to login.
+ */
+
 /* Dependencies */
 const express = require("express");
 const jwt = require("jsonwebtoken");
@@ -19,7 +26,7 @@ const loginController = express.Router();
  * /login/:
  *     get:
  *       tags:
- *         - [Login]
+ *         - Login
  *       summary: List all Users
  *       responses:
  *         '200':
@@ -41,7 +48,7 @@ loginController.get("/", async (req, res) => {
  * /login/:
  *   post:
  *        tags:
- *          - [Login]
+ *          - Login
  *        summary: Log in user
  *        requestBody:
  *          content:

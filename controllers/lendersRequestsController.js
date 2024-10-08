@@ -1,3 +1,11 @@
+// controllers/lendersRequestsController.js
+/**
+ * @swagger
+ * tags:
+ *   name: Lenders Requests
+ *   description: Operations related to loan requests available for a given lender.
+ */
+
 const express = require("express");
 const requests = express.Router({ mergeParams: true });
 // Importing validators
@@ -24,7 +32,7 @@ const {
  * /lenders/{id}/requests:
  *  get:
  *    tags:
- *      - [Lenders Requests]
+ *      - Lenders Requests
  *    summary: List All Available Loan Requests
  *    parameters:
  *      - in: path
@@ -55,7 +63,7 @@ requests.get("/", async (req, res) => {
  * /lenders/{lender_id}/requests/{id}:
  *  get:
  *    tags:
- *      - [Lenders Requests]
+ *      - Lenders Requests
  *    summary: Get an Loan Request by ID
  *    parameters:
  *      - in: path
@@ -97,7 +105,7 @@ requests.get("/:id", async (req, res) => {
  * /lenders/{lender_id}/requests/{id}:
  *  post:
  *    tags:
- *      - [Lenders Requests]
+ *      - Lenders Requests
  *    summary: Create an Loan Proposal
  *    parameters:
  *      - in: path

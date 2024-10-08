@@ -1,4 +1,11 @@
 // controllers/requestProposalsController.js
+/**
+ * @swagger
+ * tags:
+ *   name: Borrower Request Proposals
+ *   description: Operations related to loan requests made by a given borrower.
+ */
+
 /* Dependencies */
 const express = require("express");
 const {
@@ -21,7 +28,7 @@ const requestProposalsController = express.Router({ mergeParams: true });
  * /borrowers/{borrower_id}/requests/{request_id}/proposals:
  *   get:
  *     tags:
- *       - [Borrower Request Proposals]
+ *       - Borrower Request Proposals
  *     summary: List All Proposals
  *     parameters:
  *       - name: borrower_id
@@ -55,7 +62,7 @@ requestProposalsController.get("/", async (req, res) => {
  * /borrowers/{borrower_id}/requests/{request_id}/proposals/{id}:
  *   get:
  *     tags:
- *       - [Borrower Request Proposals]
+ *       - Borrower Request Proposals
  *     summary: Get One Loan Proposal
  *     parameters:
  *       - name: borrower_id
@@ -98,7 +105,7 @@ requestProposalsController.get("/:id", async (req, res) => {
  * /borrowers/{borrower_id}/requests/{request_id}/proposals/:
  *   put:
  *     tags:
- *       - [Borrower Request Proposals]
+ *       - Borrower Request Proposals
  *     summary: Accept proposal
  *     requestBody:
  *       content:

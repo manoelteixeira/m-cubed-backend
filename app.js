@@ -23,11 +23,25 @@ const swaggerOptions = {
     },
     servers: [
       {
+        description: "localhost",
         url: "http://localhost:4001",
+      },
+      {
+        description: "m-cubed",
+        url: "https://m-cubed-backend.onrender.com",
       },
     ],
   },
-  apis: ["./controllers/*.js"],
+  // apis: ["./controllers/*.js"],
+  apis: [
+    "./controllers/loginController.js",
+    "./controllers/borrowersController.js",
+    "./controllers/borrowersRequestsController.js",
+    "./controllers/borrowersRequestProposalsController.js",
+    "./controllers/lendersController.js",
+    "./controllers/lendersProposalsController.js",
+    "./controllers/lendersRequestsController.js",
+  ],
 };
 
 const swaggerSpecs = swaggerJsdoc(swaggerOptions);

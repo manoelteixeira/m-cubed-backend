@@ -1,4 +1,10 @@
 // controllers/lendersController.js
+/**
+ * @swagger
+ * tags:
+ *   name: Lenders
+ *   description: Operations related to lenders.
+ */
 
 /* Dependencies */
 const express = require("express");
@@ -43,7 +49,7 @@ lenders.use(
  * /lenders/:
  *     get:
  *       tags:
- *         - [Lenders]
+ *         - Lenders
  *       summary: List all Lenders
  *       responses:
  *         '200':
@@ -65,7 +71,7 @@ lenders.get("/", async (req, res) => {
  * /lenders/:
  *   post:
  *        tags:
- *          - [Lenders]
+ *          - Lenders
  *        summary: Create new Lender
  *        requestBody:
  *          content:
@@ -111,7 +117,7 @@ lenders.post(
  * /lenders/{id}:
  *    get:
  *      tags:
- *        - [Lenders]
+ *        - Lenders
  *      summary: Get Lender By ID
  *      parameters:
  *        - in: path
@@ -149,7 +155,7 @@ lenders.get(
  * /lenders/{id}:
  *     delete:
  *       tags:
- *         - [Lenders]
+ *         - Lenders
  *       summary: Delete Lender By ID
  *       parameters:
  *         - in: path
@@ -187,7 +193,7 @@ lenders.delete(
  * /lenders/{id}:
  *  put:
  *    tags:
- *      - [Lenders]
+ *      - Lenders
  *    summary: Update Lender
  *    description: UPDATE THIS ROUTE TO ACCEPT NEW SCHEMA !
  *    parameters:

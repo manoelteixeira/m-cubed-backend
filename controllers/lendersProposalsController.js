@@ -1,3 +1,11 @@
+// controllers/lendersProposalsController.js
+/**
+ * @swagger
+ * tags:
+ *   name: Lender Proposals
+ *   description: Operations related to loan proposals made by a given lender.
+ */
+
 const express = require("express");
 const proposals = express.Router({ mergeParams: true });
 const { getLender } = require("../queries/lendersQueries");
@@ -26,7 +34,7 @@ const {
  * /lenders/{lender_id}/proposals:
  *  get:
  *    tags:
- *      - [Lender Proposals]
+ *      - Lender Proposals
  *    summary: List All Proposals Made By the Lender
  *    parameters:
  *      - in: path
@@ -61,7 +69,7 @@ proposals.get("/", async (req, res) => {
  * /lenders/{lender_id}/proposals/{id}:
  *     get:
  *       tags:
- *         - [Lender Proposals]
+ *         - Lender Proposals
  *       summary: Get One Proposal
  *       parameters:
  *         - in: path
@@ -105,7 +113,7 @@ proposals.get("/:proposal_id", async (req, res) => {
  * /lenders/{lender_id}/proposals/{id}:
  *  put:
  *        tags:
- *          - [Lender Proposals]
+ *          - Lender Proposals
  *        summary: Update Proposal
  *        parameters:
  *          - in: path
@@ -173,7 +181,7 @@ proposals.put(
  * /lenders/{lender_id}/proposals/{id}:
  *   delete:
  *        tags:
- *          - [Lender Proposals]
+ *          - Lender Proposals
  *        summary: Delete Proposal
  *        parameters:
  *          - in: path

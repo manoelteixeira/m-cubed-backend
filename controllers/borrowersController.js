@@ -1,4 +1,10 @@
 // controllers/borrowersController.js
+/**
+ * @swagger
+ * tags:
+ *   name: Borrowers
+ *   description: Operations related to borrowers.
+ */
 
 /* Dependencies */
 const express = require("express");
@@ -45,7 +51,7 @@ borrowersController.use(
  * /borrowers/:
  *    get:
  *      tags:
- *        - [Borrowers]
+ *        - Borrowers
  *      summary: List All Borrowers
  *      responses:
  *        '200':
@@ -67,7 +73,7 @@ borrowersController.get("/", async (req, res) => {
  * /borrowers:
  *   post:
  *     tags:
- *       - [Borrowers]
+ *       - Borrowers
  *     summary: Create New Borrower
  *     requestBody:
  *       content:
@@ -136,7 +142,7 @@ borrowersController.post(
  * /borrowers/{id}:
  *   get:
  *     tags:
- *       - [Borrowers]
+ *       - Borrowers
  *     summary: Get Borrower By ID
  *     parameters:
  *       - name: id
@@ -173,7 +179,7 @@ borrowersController.get(
  * /borrowers/{id}:
  *   delete:
  *     tags:
- *       - [Borrowers]
+ *       - Borrowers
  *     summary: Delete
  *     parameters:
  *       - name: id
@@ -210,7 +216,7 @@ borrowersController.delete(
  * /borrowers/{id}:
  *   put:
  *     tags:
- *       - [Borrowers]
+ *       - Borrowers
  *     summary: Update Borrower
  *     description: FIX THIS
  *     requestBody:

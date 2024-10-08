@@ -1,4 +1,10 @@
 // controllers/borrowersRequestsController.js
+/**
+ * @swagger
+ * tags:
+ *   name: Borrower Requests
+ *   description: Operations related to the loan requests for a given borrower.
+ */
 /* Dependencies */
 const express = require("express");
 const {
@@ -29,7 +35,7 @@ requestsController.use("/:request_id/proposals", requestProposalsController);
  * /borrowers/{borrower_id}/requests:
  *   get:
  *     tags:
- *       - [Borrower Requests]
+ *       - Borrower Requests
  *     summary: List All Loan Requests
  *     parameters:
  *       - name: borrower_id
@@ -59,7 +65,7 @@ requestsController.get("/", async (req, res) => {
  * /borrowers/{borrower_id}/requests:
  *   post:
  *     tags:
- *       - [Borrower Requests]
+ *       - Borrower Requests
  *     summary: Create New Loan Request
  *     requestBody:
  *       content:
@@ -113,7 +119,7 @@ requestsController.post(
  * /borrowers/{borrower_id}/requests/{id}:
  *   get:
  *     tags:
- *       - [Borrower Requests]
+ *       - Borrower Requests
  *     summary: Get One Loan Request
  *     parameters:
  *       - name: borrower_id
@@ -151,7 +157,7 @@ requestsController.get("/:id", async (req, res) => {
  * /borrowers/{borrower_id}/requests/{id}:
  *   put:
  *     tags:
- *       - [Borrower Requests]
+ *       - Borrower Requests
  *     summary: Update Loan Request
  *     requestBody:
  *       content:
@@ -208,7 +214,7 @@ requestsController.put(
  * /borrowers/{borrower_id}/requests/{id}:
  *   delete:
  *     tags:
- *       - [Borrower Requests]
+ *       - Borrower Requests
  *     summary: Delete Loan Request
  *     parameters:
  *       - name: borrower_id
