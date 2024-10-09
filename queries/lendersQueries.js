@@ -114,20 +114,26 @@ async function deleteLender(id) {
 }
 
 // Update a lender by ID
-const updateLender = async (id, lender) => {
-  const queryStr =
-    "UPDATE lenders " +
-    "SET email = $[email], business_name = $[business_name] " +
-    "WHERE id = $[id] RETURNING * ";
+// const updateLender = async (id, lender) => {
+//   const queryStr =
+//     "UPDATE lenders " +
+//     "SET email = $[email], business_name = $[business_name] " +
+//     "WHERE id = $[id] RETURNING * ";
 
-  try {
-    const updatedLender = await db.one(queryStr, { ...lender, id });
+//   try {
+//     const updatedLender = await db.one(queryStr, { ...lender, id });
 
-    return updatedLender;
-  } catch (error) {
-    return error;
-  }
-};
+//     return updatedLender;
+//   } catch (error) {
+//     return error;
+//   }
+// };
+async function updateLender(id, lender) {
+  const updateLenderQuery =
+    "UPDATE lenders SET business_name=$[business_name] WHERE id=$[id] RETURNING *";
+  const updateUserQuery =
+    "UPDATE borrowers SET email=$[email], password=$[password] WHERE id=$[id] RETURNING *";
+}
 
 module.exports = {
   getAllLenders,
