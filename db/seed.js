@@ -159,10 +159,10 @@ async function seed(nLenders, nBorrowers, nRequests, nProposals) {
 
   const lendersId = lenders.map((lender) => lender.id);
   const loanProposals = [];
+  // console.log(requests)
   requests.forEach((request) => {
-    for (const id of lendersId) {
-      loanProposals.push(createLoanProposal(request, id));
-    }
+    let id = lendersId[Math.floor(Math.random()*lendersId.length)]
+    loanProposals.push(createLoanProposal(request, id));
   });
   const proposals = await addLoanProposals(loanProposals);
   console.log("** ALL DONE **");
