@@ -200,6 +200,8 @@ requestsController.put(
       });
       if (request.id) {
         res.status(200).json(request);
+      } else if (request.error == "Loan request can no longer be updated.") {
+        res.status(403).json({ error: request.error });
       } else {
         res.status(404).json({ error: "Request not found." });
       }

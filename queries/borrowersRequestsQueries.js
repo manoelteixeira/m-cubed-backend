@@ -90,14 +90,20 @@ async function createRequest(request) {
  * @returns {Object} - Loan Request Object
  */
 async function updateRequest(request) {
-  const queryStr =
+  const requestQuery = "SELECT * FROM loan_requests WHERE id=$[id]";
+  const updatedRequestQuery =
     "UPDATE loan_requests " +
     "SET title=$[title], description=$[description], value=$[value] " +
     "WHERE borrower_id=$[borrower_id] AND id=$[id] " +
     "RETURNING *";
   try {
-    const updatedRequest = await db.one(queryStr, request);
-    return updatedRequest;
+    const requestData = await db.one(requestQuery, { id: request.id });
+    if (!requestData.funded_at && !request.accepted_proposal_id) {
+      const updatedRequest = await db.one(queryStr, request);
+      return updatedRequest;
+    } else {
+      return { error: "Loan request can no longer be updated." };
+    }
   } catch (err) {
     return err;
   }

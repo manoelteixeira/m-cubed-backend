@@ -22,7 +22,7 @@ const getAllLenders = async () => {
 // Get a specific lender by ID
 const getLender = async (id) => {
   const queryStr =
-    "SELECT users.id, users.email, lenders.business_name, lenders.id as lender_id " +
+    "SELECT users.id as user_id, users.email, lenders.business_name, lenders.id " +
     "FROM users JOIN lenders ON users.id = lenders.user_id " +
     "WHERE lenders.id=$1";
   try {
