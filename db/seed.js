@@ -161,8 +161,7 @@ async function seed(nLenders, nBorrowers, nRequests, nProposals) {
   const loanProposals = [];
   // console.log(requests)
   requests.forEach((request) => {
-    for (let i = 0; i < Math.floor(Math.random()*lendersId.length); i++){
-      let id = lendersId[Math.floor(Math.random()*lendersId.length)]
+    for (const id of lendersId) {
       loanProposals.push(createLoanProposal(request, id));
     }
   });
