@@ -18,9 +18,9 @@ function generateName() {
 }
 
 function generateEmail(name, role) {
-  let email = name.replace(" ", "-");
-  email = email.toLowerCase();
-  return `${email}@${role}Email.com`;
+  const filter = /[^a-z1-9]/g;
+  name = name.toLowerCase().trim().replaceAll(filter, " ").replaceAll(" ", ".");
+  return `${name}\@${role}.com`;
 }
 
 async function createLender() {
@@ -45,19 +45,19 @@ async function createBorrower() {
     state: faker.location.state(),
     zip_code: faker.location.zipCode(),
     phone: faker.phone.number({ style: "international" }).slice(2),
-    credit_score: randomInt(200, 1000),
+    credit_score: randomInt(350, 850),
     start_date: faker.date.past({ years: 10 }).toISOString(),
     industry: faker.commerce.department(),
   };
 }
 
-function createLoanRequest(user_id) {
+function createLoanRequest(borrower_id) {
   return {
     title: faker.commerce.productName().replaceAll("'", "\n"),
     description: faker.commerce.productDescription().replaceAll("'", "\n"),
     value: Number(faker.commerce.price({ min: 2000, max: 100000 })),
     created_at: faker.date.past({ days: 10 }).toISOString(),
-    borrower_id: user_id,
+    borrower_id: borrower_id,
   };
 }
 
@@ -68,12 +68,39 @@ function createLoanProposal(request, lender_id) {
     title: request.title,
     description: "Proposal Description",
     loan_amount: request.value,
-    interest_rate: 0.05,
-    repayment_term: 32,
+    interest_rate: randomInt(2, 60) / 100,
+    repayment_term: randomInt(12, 64),
     lender_id: lender_id,
     created_at: date.toISOString(),
     loan_request_id: request.id,
   };
+}
+
+async function userFactory(num, role) {
+  const data = [];
+  while (data.length < num) {
+    const user = await role();
+    if (!data.find((value) => value.email == user.email)) {
+      data.push(user);
+    }
+  }
+  return data;
+}
+
+function loanRequestFactory(num, borrower_id) {
+  const data = [];
+  while (data.length < num) {
+    data.push(createLoanRequest(borrower_id));
+  }
+  return data;
+}
+
+function loanProposalFactory(num, request, lender_id) {
+  const data = [];
+  while (data.length < num) {
+    data.push(request, lender_id);
+  }
+  return data;
 }
 
 module.exports = {
@@ -81,4 +108,7 @@ module.exports = {
   createBorrower,
   createLoanRequest,
   createLoanProposal,
+  userFactory,
+  loanRequestFactory,
+  loanProposalFactory,
 };

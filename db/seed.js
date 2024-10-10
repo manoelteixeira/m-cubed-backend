@@ -4,6 +4,9 @@ const {
   createBorrower,
   createLoanRequest,
   createLoanProposal,
+  userFactory,
+  loanRequestFactory,
+  loanProposalFactory,
 } = require("./seedUtils.js");
 
 async function addUsers(users) {
@@ -114,14 +117,11 @@ async function addLoanProposals(proposals) {
 
 async function seed(nLenders, nBorrowers, nRequests, nProposals) {
   // Create And Add Users
-  let users = [];
-  for (let i = 0; i <= nLenders + nBorrowers; i++) {
-    if (i < nLenders) {
-      users.push(await createLender());
-    } else {
-      users.push(await createBorrower());
-    }
-  }
+  let users = [
+    ...(await userFactory(nLenders, createLender)),
+    ...(await userFactory(nBorrowers, createBorrower)),
+  ];
+
   console.log("** Creating USERS **");
   const newUsers = await addUsers(users);
   //   Add Users to their roles
