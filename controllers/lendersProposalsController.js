@@ -158,20 +158,23 @@ proposals.put(
   validateRepaymentTerm,
   async (req, res) => {
     const { lender_id, id } = req.params;
-    const proposal = req.body;
-    proposal.id = id;
-    proposal.lender_id = lender_id;
-    console.log(proposal);
+
     try {
-      const updatedProposal = await updateProposalByID(proposal);
-      console.log(updatedProposal);
-      if (updatedProposal.id) {
-        res.status(200).json(updatedProposal);
+      const proposal = await updateProposalByID({
+        ...req.body,
+        lender_id,
+        id,
+      });
+      console.error(proposal);
+      if (proposal.id) {
+        res.status(200).json(proposal);
+      } else if (proposal.error == "Loan proposal can no longer be updated.") {
+        res.status(403).json({ error: proposal.error });
       } else {
-        res.status(400).json({ error: "Someting went wrong! (°_o)" });
+        res.status(404).json({ error: "Request not found." });
       }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    } catch (err) {
+      res.status(400).send(err);
     }
   }
 );
