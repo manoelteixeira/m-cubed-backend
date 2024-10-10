@@ -168,7 +168,7 @@ async function updateBorrower(id, borrower) {
     } else if (
       err.message.includes("duplicate key value violates unique constraint")
     ) {
-      return { error: "Email already in use," };
+      return { error: "Email already in use." };
     } else {
       return err;
     }

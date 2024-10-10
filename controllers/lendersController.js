@@ -142,7 +142,7 @@ lenders.get(
       if (lender.id) {
         res.status(200).json(lender);
       } else {
-        res.status(404).json({ error: "Lender not found." });
+        res.status(404).json({ error: lender.error });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -195,7 +195,6 @@ lenders.delete(
  *    tags:
  *      - Lenders
  *    summary: Update Lender
- *    description: UPDATE THIS ROUTE TO ACCEPT NEW SCHEMA !
  *    parameters:
  *      - in: path
  *        name: id
@@ -232,9 +231,10 @@ lenders.put(
       if (updatedLender.id) {
         res.status(200).json(updatedLender);
       } else {
-        res.status(404).json({ error: "Lender not found." });
+        res.status(404).json({ error: updatedLender.error });
       }
     } catch (error) {
+      console.error("errrirr");
       res.status(500).json({ error: error.message });
     }
   }

@@ -29,7 +29,6 @@ const getLender = async (id) => {
     const oneLender = await db.one(queryStr, [id]);
     return oneLender;
   } catch (err) {
-    console.log(err.message);
     if (err.message == "No data returned from the query.") {
       return { error: "Lender not found." };
     } else {
@@ -130,10 +129,39 @@ async function deleteLender(id) {
 //   }
 // };
 async function updateLender(id, lender) {
+  const password_hash = await bcrypt.hash(lender.password, SALT);
   const updateLenderQuery =
     "UPDATE lenders SET business_name=$[business_name] WHERE id=$[id] RETURNING *";
   const updateUserQuery =
-    "UPDATE borrowers SET email=$[email], password=$[password] WHERE id=$[id] RETURNING *";
+    "UPDATE users SET email=$[email], password=$[password] WHERE id=$[id] RETURNING *";
+  try {
+    const data = await db.tx(async (t) => {
+      const updatedLender = await t.one(updateLenderQuery, {
+        business_name: lender.business_name,
+        id,
+      });
+      const updatedUser = await t.one(updateUserQuery, {
+        email: lender.email,
+        password: password_hash,
+        id: updatedLender.user_id,
+      });
+      delete updatedUser.id;
+      delete updatedUser.role;
+      return { ...updatedLender, ...updatedUser };
+    });
+    console.error(data);
+    return data;
+  } catch (err) {
+    if (err.message.includes("No data returned from the query.")) {
+      return { error: "Lender not Found" };
+    } else if (
+      err.message.includes("duplicate key value violates unique constraint")
+    ) {
+      return { error: "Email already in use." };
+    } else {
+      return err;
+    }
+  }
 }
 
 module.exports = {

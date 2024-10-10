@@ -211,14 +211,13 @@ borrowersController.delete(
   }
 );
 
-/** Update Borrower - FIX THIS
+/** Update Borrower
  * @swagger
  * /borrowers/{id}:
  *   put:
  *     tags:
  *       - Borrowers
  *     summary: Update Borrower
- *     description: FIX THIS
  *     requestBody:
  *       content:
  *         application/json:
