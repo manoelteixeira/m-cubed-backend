@@ -107,6 +107,7 @@ requestProposalsController.get("/:id", async (req, res) => {
  *     tags:
  *       - Borrower Request Proposals
  *     summary: Accept proposal
+ *     description: Accept one proposal and deny the others. Loans request and Loan proposals cannot be eddited after this.
  *     requestBody:
  *       content:
  *         application/json:
