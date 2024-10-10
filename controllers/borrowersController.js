@@ -166,7 +166,7 @@ borrowersController.get(
       if (borrower.id) {
         res.status(200).json(borrower);
       } else {
-        res.status(404).json({ error: "Lender not found." });
+        res.status(404).json({ error: "Borrower not found." });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -203,7 +203,7 @@ borrowersController.delete(
       if (deletedBorrower.id) {
         res.status(200).json(deletedBorrower);
       } else {
-        res.status(404).json(bo);
+        res.status(404).json({ error: deletedBorrower.error });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -226,6 +226,7 @@ borrowersController.delete(
  *             type: object
  *             example:
  *               email: testBorrowerTest@example.com
+ *               password: password123
  *               city: Miami
  *               street: 987 Maple St
  *               state: FL
@@ -250,6 +251,7 @@ borrowersController.delete(
 borrowersController.put(
   "/:id",
   validateEmail,
+  validatePassword,
   validateCity,
   validateStreet,
   validateState,
@@ -268,7 +270,7 @@ borrowersController.put(
       if (borrower.id) {
         res.status(200).json(borrower);
       } else {
-        res.status(404).json({ error: "Borrower not found." });
+        res.status(404).json({ error: borrower.err });
       }
     } catch (err) {
       res.status(400).json({ error: err });

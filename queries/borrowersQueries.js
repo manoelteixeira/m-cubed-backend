@@ -38,7 +38,6 @@ async function getBorrower(id) {
     const borrower = await db.one(queryStr, [id]);
     return borrower;
   } catch (err) {
-    console.log(err);
     if (err.message == "No data returned from the query.") {
       return { error: "Borrower not found." };
     } else {
@@ -62,6 +61,7 @@ async function deleteBorrower(id) {
       const user = await t.one(deleteUserQuery, borrower.user_id);
       return { borrower, user };
     });
+
     const { borrower, user } = data;
     const user_id = user.id;
     delete user.id;
@@ -123,16 +123,55 @@ async function createBorrower(borrower) {
   }
 }
 
+// async function updateBorrower(id, borrower) {
+//   const queryStr =
+//     "UPDATE borrowers " +
+//     "SET email=$[email], city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], phone=$[phone], business_name=$[business_name], credit_score=$[credit_score], start_date=$[start_date], industry=$[industry] " +
+//     "WHERE id=$[id] RETURNING *";
+//   try {
+//     const updatedBorrower = await db.one(queryStr, { ...borrower, id: id });
+//     return updatedBorrower;
+//   } catch (err) {
+//     return err;
+//   }
+// }
 async function updateBorrower(id, borrower) {
-  const queryStr =
-    "UPDATE borrowers " +
-    "SET email=$[email], city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], phone=$[phone], business_name=$[business_name], credit_score=$[credit_score], start_date=$[start_date], industry=$[industry] " +
+  const password_hash = await bcrypt.hash(borrower.password, SALT);
+  const updateUserQuery =
+    "UPDATE USERS SET email=$[email], password=$[password] " +
+    "WHERE id=$[id] RETURNING *";
+  const updateBorrowerQuery =
+    "UPDATE borrowers SET city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], " +
+    "phone=$[phone], business_name=$[business_name], credit_score=$[credit_score], start_date=$[start_date], industry=$[industry] " +
     "WHERE id=$[id] RETURNING *";
   try {
-    const updatedBorrower = await db.one(queryStr, { ...borrower, id: id });
-    return updatedBorrower;
+    const data = await db.tx(async (t) => {
+      const updatedBorrower = await t.one(updateBorrowerQuery, {
+        ...borrower,
+        password: password_hash,
+        id,
+      });
+      const updatedUser = await t.one(updateUserQuery, {
+        email: borrower.email,
+        password: borrower.password,
+        id: updatedBorrower.user_id,
+      });
+      delete updatedUser.id;
+      delete updatedUser.role;
+
+      return { ...updatedBorrower, ...updatedUser };
+    });
+    return data;
   } catch (err) {
-    return err;
+    if (err.message.includes("No data returned from the query.")) {
+      return { error: "Borrower not Found" };
+    } else if (
+      err.message.includes("duplicate key value violates unique constraint")
+    ) {
+      return { error: "Email already in use," };
+    } else {
+      return err;
+    }
   }
 }
 

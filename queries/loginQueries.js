@@ -43,6 +43,7 @@ async function logInUser(credentials) {
     delete data.user_id;
     delete user.id;
     delete user.role;
+    delete user.password;
 
     return role == "lender"
       ? { lender: { ...data, ...user } }
