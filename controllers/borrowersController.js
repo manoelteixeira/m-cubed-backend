@@ -166,7 +166,7 @@ borrowersController.get(
       if (borrower.id) {
         res.status(200).json(borrower);
       } else {
-        res.status(404).json(borrower);
+        res.status(404).json({ error: "Lender not found." });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });

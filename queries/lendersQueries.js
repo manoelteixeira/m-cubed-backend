@@ -28,11 +28,12 @@ const getLender = async (id) => {
   try {
     const oneLender = await db.one(queryStr, [id]);
     return oneLender;
-  } catch (error) {
+  } catch (err) {
+    console.log(err.message);
     if (err.message == "No data returned from the query.") {
       return { error: "Lender not found." };
     } else {
-      return error;
+      return err;
     }
   }
 };

@@ -38,6 +38,7 @@ async function getBorrower(id) {
     const borrower = await db.one(queryStr, [id]);
     return borrower;
   } catch (err) {
+    console.log(err);
     if (err.message == "No data returned from the query.") {
       return { error: "Borrower not found." };
     } else {
