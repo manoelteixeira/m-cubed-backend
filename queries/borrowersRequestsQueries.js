@@ -12,7 +12,7 @@ async function getRequests(id) {
     "loan_requests.value, loan_requests.created_at, loan_requests.funded_at, " +
     "loan_requests.accepted_proposal_id, loan_requests.borrower_id, " +
     "COUNT(loan_proposals.loan_request_id) as proposals " +
-    "FROM loan_requests JOIN loan_proposals " +
+    "FROM loan_requests LEFT JOIN loan_proposals " +
     "ON loan_requests.id = loan_proposals.loan_request_id " +
     "WHERE borrower_id=$[id] " +
     "GROUP BY loan_requests.id " +
