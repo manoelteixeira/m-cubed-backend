@@ -114,7 +114,6 @@ borrowersController.post(
   async (req, res) => {
     try {
       const newBorrower = await createBorrower(req.body);
-      console.log(newBorrower);
       const token = jwt.sign(
         { userId: newBorrower.id, email: newBorrower.email },
         secret
@@ -131,7 +130,6 @@ borrowersController.post(
         res.status(400).json({ error: "Someting went wrong! (°_o)" });
       }
     } catch (err) {
-      console.log(err);
       res.status(400).json({ error: err });
     }
   }

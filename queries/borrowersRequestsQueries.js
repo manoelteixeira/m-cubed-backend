@@ -19,10 +19,8 @@ async function getRequests(id) {
     "ORDER BY created_at DESC";
   try {
     const requests = await db.any(queryStr, { id: id });
-    console.log(requests);
     return requests;
   } catch (err) {
-    console.log("err:", err);
     return err;
   }
 }

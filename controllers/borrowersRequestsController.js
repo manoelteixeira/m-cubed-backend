@@ -50,7 +50,6 @@ requestsController.use("/:request_id/proposals", requestProposalsController);
  *           application/json: {}
  */
 requestsController.get("/", async (req, res) => {
-  console.log(req.user);
   const { borrower_id } = req.params;
   try {
     const requests = await getRequests(borrower_id);
@@ -102,7 +101,7 @@ requestsController.post(
         ...req.body,
         borrower_id: borrower_id,
       });
-      console.log(request);
+
       if (request.id) {
         res.status(200).json(request);
       } else {

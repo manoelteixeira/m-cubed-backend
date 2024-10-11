@@ -94,10 +94,8 @@ requestProposalsController.get("/", async (req, res) => {
  */
 requestProposalsController.get("/:id", async (req, res) => {
   const { request_id, id } = req.params;
-  console.log(request_id, id);
   try {
     const proposal = await getProposal(request_id, id);
-    console.log(proposal);
     if (proposal.id) {
       res.status(200).json(proposal);
     } else {
@@ -145,9 +143,12 @@ requestProposalsController.put("/", validateProposalID, async (req, res) => {
   const { borrower_id, request_id } = req.params;
   const { proposal_id } = req.body;
 
-  const data = await acceptProposal(borrower_id, request_id, proposal_id);
-  console.log(data);
-  res.status(200).json(data);
+  try {
+    const data = await acceptProposal(borrower_id, request_id, proposal_id);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(400).send("something went wrong.");
+  }
 });
 
 module.exports = requestProposalsController;

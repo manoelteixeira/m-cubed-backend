@@ -50,7 +50,6 @@ const {
 requests.get("/", async (req, res) => {
   try {
     const loanRequests = await getAllLoanRequests();
-    console.log(loanRequests);
     res.status(200).json(loanRequests);
   } catch (error) {
     console.error("Error fetching all loan requests:", error);
