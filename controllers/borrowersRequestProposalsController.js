@@ -39,7 +39,7 @@ const requestProposalsController = express.Router({ mergeParams: true });
  *       - name: request_id
  *         in: path
  *         schema:
- *           type: trung
+ *           type: string
  *         required: true
  *     responses:
  *       '200':
@@ -51,7 +51,13 @@ requestProposalsController.get("/", async (req, res) => {
   const { request_id } = req.params;
   try {
     const proposals = await getProposals(request_id);
-    res.status(200).json(proposals);
+    if (Array.isArray(proposals)) {
+      res.status(200).json(proposals);
+    } else {
+      res
+        .status(404)
+        .json({ error: "Proposal not found", message: proposals.error });
+    }
   } catch (err) {
     res.status(400).json({ error: err });
   }
@@ -88,8 +94,10 @@ requestProposalsController.get("/", async (req, res) => {
  */
 requestProposalsController.get("/:id", async (req, res) => {
   const { request_id, id } = req.params;
+  console.log(request_id, id);
   try {
     const proposal = await getProposal(request_id, id);
+    console.log(proposal);
     if (proposal.id) {
       res.status(200).json(proposal);
     } else {
