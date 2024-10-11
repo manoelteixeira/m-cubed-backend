@@ -8,11 +8,21 @@ const db = require("../db/dbConfig.js");
  */
 async function getRequests(id) {
   const queryStr =
-    "SELECT * FROM loan_requests WHERE borrower_id=$[id] ORDER BY created_at DESC";
+    "SELECT loan_requests.id, loan_requests.title, loan_requests.description, " +
+    "loan_requests.value, loan_requests.created_at, loan_requests.funded_at, " +
+    "loan_requests.accepted_proposal_id, loan_requests.borrower_id, " +
+    "COUNT(loan_proposals.loan_request_id) as proposals " +
+    "FROM loan_requests JOIN loan_proposals " +
+    "ON loan_requests.id = loan_proposals.loan_request_id " +
+    "WHERE borrower_id=$[id] " +
+    "GROUP BY loan_requests.id " +
+    "ORDER BY created_at DESC";
   try {
     const requests = await db.any(queryStr, { id: id });
+    console.log(requests);
     return requests;
   } catch (err) {
+    console.log("err:", err);
     return err;
   }
 }

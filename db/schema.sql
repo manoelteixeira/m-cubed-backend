@@ -37,7 +37,6 @@ CREATE TABLE "loan_requests" (
   "value" NUMERIC(15, 2) NOT NULL,
   "created_at" DATE NOT NULL,
   "funded_at" DATE DEFAULT NULL,
-  -- "accepted_proposal_id" INTEGER DEFAULT NULL,
   "accepted_proposal_id" uuid DEFAULT NULL,
   "borrower_id" uuid  REFERENCES "borrowers" ("id") ON DELETE CASCADE
   
@@ -60,3 +59,8 @@ ALTER TABLE loan_requests
 ADD CONSTRAINT fk_customer
       FOREIGN KEY (accepted_proposal_id)
       REFERENCES loan_proposals (id);
+
+
+
+
+     
