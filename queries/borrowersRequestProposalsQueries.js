@@ -16,7 +16,6 @@ async function getProposals(id) {
 }
 
 async function getProposal(request_id, id) {
-  console.log("ok");
   const proposalQuery =
     "SELECT * FROM loan_proposals WHERE loan_request_id=$[request_id] AND id=$[id]";
   const lenderQuery =
@@ -28,7 +27,6 @@ async function getProposal(request_id, id) {
       request_id,
       id,
     });
-    console.log(typeof proposal);
     const lender = await db.one(lenderQuery, { id: proposal.lender_id });
     delete proposal.lender_id;
     delete proposal.loan_request_id;
@@ -67,8 +65,6 @@ async function acceptProposal(borrower_id, request_id, proposal_id) {
     });
     return data;
   } catch (err) {
-    console.log(err);
-
     return err;
   }
 }
