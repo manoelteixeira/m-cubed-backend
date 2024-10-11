@@ -49,7 +49,20 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(morgan("tiny"));
+// app.use(morgan("tiny"));
+app.use(
+  morgan(function (tokens, req, res) {
+    return [
+      tokens.method(req, res).green,
+      tokens.url(req, res).yellow,
+      tokens.status(req, res).green,
+      tokens.res(req, res, "content-length").yellow,
+      "-",
+      tokens["response-time"](req, res).red,
+      "ms".red,
+    ].join(" ");
+  })
+);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.use("/login", loginController);
 app.use("/borrowers", borrowersController);
