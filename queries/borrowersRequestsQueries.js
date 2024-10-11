@@ -7,7 +7,8 @@ const db = require("../db/dbConfig.js");
  * @returns {Array} - All request from the fiven borrower
  */
 async function getRequests(id) {
-  const queryStr = "SELECT * FROM loan_requests WHERE borrower_id=$[id]";
+  const queryStr =
+    "SELECT * FROM loan_requests WHERE borrower_id=$[id] ORDER BY created_at DESC";
   try {
     const requests = await db.any(queryStr, { id: id });
     return requests;
