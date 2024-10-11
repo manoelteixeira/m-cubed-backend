@@ -5,7 +5,8 @@ const getAllLoanRequests = async () => {
   try {
     const queryStr =
       "SELECT * FROM loan_requests " +
-      "WHERE funded_at is NULL AND accepted_proposal_id is NULL";
+      "WHERE funded_at is NULL AND accepted_proposal_id is NULL " +
+      "ORDER BY created_at DESC";
     const loanRequests = await db.any(queryStr);
 
     return loanRequests;
