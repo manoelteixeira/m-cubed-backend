@@ -55,7 +55,7 @@ function createLoanRequest(borrower_id) {
   return {
     title: faker.commerce.productName().replaceAll("'", "\n"),
     description: faker.commerce.productDescription().replaceAll("'", "\n"),
-    value: Number(faker.commerce.price({ min: 2000, max: 100000 })),
+    value: Number(faker.commerce.price({ min: 2000, max: 10000 })),
     created_at: faker.date.past({ days: 10 }).toISOString(),
     borrower_id: borrower_id,
   };
