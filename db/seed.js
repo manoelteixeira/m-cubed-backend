@@ -157,12 +157,12 @@ async function seed(nLenders, nBorrowers, nRequests, nProposals) {
 
   console.log("** Adding Loan Proposals **");
 
-  const lendersId = lenders.map((lender) => lender.id);
+  // const lendersId = lenders.map((lender) => lender.id);
   const loanProposals = [];
   // console.log(requests)
   requests.forEach((request) => {
-    for (const id of lendersId) {
-      loanProposals.push(createLoanProposal(request, id));
+    for (const lender of lenders) {
+      loanProposals.push(createLoanProposal(request, lender));
     }
   });
   const proposals = await addLoanProposals(loanProposals);
