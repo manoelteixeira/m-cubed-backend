@@ -61,16 +61,16 @@ function createLoanRequest(borrower_id) {
   };
 }
 
-function createLoanProposal(request, lender_id) {
+function createLoanProposal(request, lender) {
   const date = new Date(request.created_at);
   date.setHours(date.getHours() + 1);
   return {
-    title: request.title,
+    title: `${lender.business_name} - ${request.title}`,
     description: "Proposal Description",
     loan_amount: request.value,
     interest_rate: randomInt(2, 60) / 100,
-    repayment_term: randomInt(12, 64),
-    lender_id: lender_id,
+    repayment_term: randomInt(12, 124),
+    lender_id: lender.id,
     created_at: date.toISOString(),
     loan_request_id: request.id,
   };
