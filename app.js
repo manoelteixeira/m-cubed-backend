@@ -56,7 +56,7 @@ app.use(
       tokens.method(req, res).green,
       tokens.url(req, res).yellow,
       tokens.status(req, res).green,
-      tokens.res(req, res, "content-length").yellow,
+      tokens.res(req, res, "content-length"),
       "-",
       tokens["response-time"](req, res).red,
       "ms".red,
