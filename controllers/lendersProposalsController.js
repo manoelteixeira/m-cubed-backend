@@ -165,7 +165,6 @@ proposals.put(
         lender_id,
         id,
       });
-      console.error(proposal);
       if (proposal.id) {
         res.status(200).json(proposal);
       } else if (proposal.error == "Loan proposal can no longer be updated.") {

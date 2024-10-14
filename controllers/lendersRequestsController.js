@@ -16,11 +16,16 @@ const {
   validateLoanAmount,
   validateInterestRate,
   validateRepaymentTerm,
+  validateQuerySort,
+  validateQueryOrder,
+  validateQueryLimit,
+  validateQueryOffset,
 } = require("../validators/lendersProposalsValidators");
 
 // Importing queries
 const {
   getAllLoanRequests,
+  getLoanRequestsFiltered,
   getLoanRequestByID,
   createProposal,
 } = require("../queries/lendersRequestsQueries");
@@ -35,28 +40,51 @@ const {
  *      - Lenders Requests
  *    summary: List All Available Loan Requests
  *    parameters:
- *      - in: path
- *        name: id
- *        schema:
- *          type: string
- *        required: true
- *        description: Lender ID
+ *           - name: sort
+ *             in: query
+ *             schema:
+ *               type: string
+ *           - name: order
+ *             in: query
+ *             schema:
+ *               type: string
+ *           - name: limit
+ *             in: query
+ *             schema:
+ *               type: integer
+ *           - name: offset
+ *             in: query
+ *             schema:
+ *               type: integer
+ *           - name: lender_id
+ *             in: path
+ *             schema:
+ *               type: string
+ *             required: true
  *    responses:
  *      '200':
  *        description: Successful response
  *        content:
  *          application/json: {}
  */
-requests.get("/", async (req, res) => {
-  console.log(req.query.sort);
-  try {
-    const loanRequests = await getAllLoanRequests();
-    res.status(200).json(loanRequests);
-  } catch (error) {
-    console.error("Error fetching all loan requests:", error);
-    res.status(500).json({ error: "Failed to fetch loan requests" });
+requests.get(
+  "/",
+  validateQuerySort,
+  validateQueryOrder,
+  validateQueryLimit,
+  validateQueryOffset,
+  async (req, res) => {
+    const { sort, order, limit, offset } = req.query;
+
+    try {
+      const loanRequests = await getAllLoanRequests(sort, order, limit, offset);
+      res.status(200).json(loanRequests);
+    } catch (error) {
+      console.error("Error fetching all loan requests:", error);
+      res.status(500).json({ error: "Failed to fetch loan requests" });
+    }
   }
-});
+);
 
 /** GET - Get Loan Request By ID
  * @swagger
