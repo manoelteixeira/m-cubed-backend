@@ -84,7 +84,7 @@ function validateRepaymentTerm(req, res, next) {
   }
 }
 
-function validateQuerySortParam(req, res, next) {
+function validateQuerySort(req, res, next) {
   const validSorts = [
     "title",
     "value",
@@ -95,15 +95,38 @@ function validateQuerySortParam(req, res, next) {
   ];
   if (req.query.sort && !validSorts.includes(req.query.sort)) {
     res.status(400).json({
-      error:
-        "sort can only be: title, value, created_at, industry, state or credit_score",
+      error: { message: "Invalid sort value", valid_values: validSorts },
     });
   } else {
     next();
   }
 }
 
-function validateQueryOrderParam(req, res, next) {}
+function validateQueryOrder(req, res, next) {
+  const validOrder = ["asc", "desc"];
+  if (req.query.order && !validOrder.includes(req.query.order)) {
+    res.status(400).json({
+      error: { message: "Invalid order value", valid_values: validOrder },
+    });
+  } else {
+    next();
+  }
+}
+
+function validateQueryLimit(req, res, next) {
+  if (req.query.limit && isNaN(req.query.limit)) {
+    res.status(400).json({ error: "limit must me a number." });
+  } else {
+    next();
+  }
+}
+function validateQueryOffset(req, res, next) {
+  if (req.query.offset && isNaN(req.query.offset)) {
+    res.status(400).json({ error: "offset must me a number." });
+  } else {
+    next();
+  }
+}
 
 module.exports = {
   validateTitle,
@@ -112,6 +135,8 @@ module.exports = {
   validateLoanAmount,
   validateInterestRate,
   validateRepaymentTerm,
-  validateQuerySortParam,
-  validateQueryOrderParam,
+  validateQuerySort,
+  validateQueryOrder,
+  validateQueryLimit,
+  validateQueryOffset,
 };

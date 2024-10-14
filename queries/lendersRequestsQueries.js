@@ -1,30 +1,20 @@
 const db = require("../db/dbConfig");
 
-// Get all pending loan requests (no filter)
-async function getAllLoanRequests() {
-  try {
-    const queryStr =
-      "SELECT * FROM loan_requests " +
-      "WHERE funded_at is NULL AND accepted_proposal_id is NULL " +
-      "ORDER BY created_at DESC";
-    const loanRequests = await db.any(queryStr);
-
-    return loanRequests;
-  } catch (error) {
-    console.error("Error fetching all loan requests:", error);
-    throw error;
-  }
-}
-
-async function getLoanRequestsFiltered(
-  sortBy = null,
-  order = desc,
+// Get all pending loan requests
+async function getAllLoanRequests(
+  sortBy = "created_at",
+  order = "desc",
   limit = null,
   ofsset = null
 ) {
-  const totalRequestQuery =
-    "SELECT COUNT(*) FROM loan_requests " +
-    "WHERE funded_at is NULL AND accepted_proposal_id is NULL";
+  const sort = {
+    title: "loan_requests.title",
+    value: "loan_requests.value",
+    created_at: "loan_requests.created_at",
+    industry: "borrowers.industry",
+    state: "borrowers.state",
+    credit_score: "borrowers.credit_score",
+  };
   const baseQuery =
     "SELECT loan_requests.id, loan_requests.title, loan_requests.description, " +
     "loan_requests.value, loan_requests.created_at, loan_requests.borrower_id, borrowers.state, " +
@@ -32,6 +22,24 @@ async function getLoanRequestsFiltered(
     "FROM loan_requests JOIN borrowers " +
     "ON loan_requests.borrower_id = borrowers.id " +
     "WHERE funded_at is NULL AND accepted_proposal_id is NULL ";
+  let query = baseQuery;
+  if (sortBy) {
+    query += `ORDER BY ${sort[sortBy]} ${order.toUpperCase()} `;
+  }
+  if (limit) {
+    query += `LIMIT ${limit} `;
+  }
+  if (ofsset) {
+    query += `OFFSET ${ofsset} `;
+  }
+
+  try {
+    const requests = await db.manyOrNone(query);
+    return requests;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
 }
 
 // Get a single loan request by loan_request_id
