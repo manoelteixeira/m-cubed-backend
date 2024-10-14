@@ -66,7 +66,7 @@ function createLoanProposal(request, lender) {
   date.setHours(date.getHours() + 1);
   return {
     title: `${lender.business_name} - ${request.title}`,
-    description: faker.hacker.phrase(),
+    description: faker.hacker.phrase().replaceAll("'", ""),
     loan_amount: request.value,
     interest_rate: randomInt(0, 12) / 100,
     repayment_term: randomInt(12, 60),
