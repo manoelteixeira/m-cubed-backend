@@ -25,7 +25,6 @@ const {
 // Importing queries
 const {
   getAllLoanRequests,
-  getLoanRequestsFiltered,
   getLoanRequestByID,
   createProposal,
 } = require("../queries/lendersRequestsQueries");
