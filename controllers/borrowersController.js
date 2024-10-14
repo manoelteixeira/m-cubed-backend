@@ -127,7 +127,7 @@ borrowersController.post(
         delete newBorrower.password;
         res.status(200).json({ borrower: { ...newBorrower }, token });
       } else {
-        res.status(400).json({ error: "Someting went wrong! (°_o)" });
+        res.status(400).json({ error: newBorrower.error });
       }
     } catch (err) {
       res.status(400).json({ error: err });
