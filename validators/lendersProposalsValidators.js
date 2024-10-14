@@ -84,6 +84,27 @@ function validateRepaymentTerm(req, res, next) {
   }
 }
 
+function validateQuerySortParam(req, res, next) {
+  const validSorts = [
+    "title",
+    "value",
+    "created_at",
+    "industry",
+    "state",
+    "credit_score",
+  ];
+  if (req.query.sort && !validSorts.includes(req.query.sort)) {
+    res.status(400).json({
+      error:
+        "sort can only be: title, value, created_at, industry, state or credit_score",
+    });
+  } else {
+    next();
+  }
+}
+
+function validateQueryOrderParam(req, res, next) {}
+
 module.exports = {
   validateTitle,
   validateDescription,
@@ -91,4 +112,6 @@ module.exports = {
   validateLoanAmount,
   validateInterestRate,
   validateRepaymentTerm,
+  validateQuerySortParam,
+  validateQueryOrderParam,
 };

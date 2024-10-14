@@ -48,6 +48,7 @@ const {
  *          application/json: {}
  */
 requests.get("/", async (req, res) => {
+  console.log(req.query.sort);
   try {
     const loanRequests = await getAllLoanRequests();
     res.status(200).json(loanRequests);
