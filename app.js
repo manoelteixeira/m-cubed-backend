@@ -1,6 +1,7 @@
 // app.js
 
 /* Dependencies */
+const colors = require("colors");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -53,13 +54,13 @@ app.use(express.json());
 app.use(
   morgan(function (tokens, req, res) {
     return [
-      tokens.method(req, res).green,
-      tokens.url(req, res).yellow,
-      tokens.status(req, res).green,
-      tokens.res(req, res, "content-length"),
+      colors.red(tokens.method(req, res)),
+      colors.blue(tokens.url(req, res)),
+      colors.yellow(tokens.status(req, res)),
+      colors.magenta(tokens.res(req, res, "content-length")),
       "-",
-      tokens["response-time"](req, res).red,
-      "ms".red,
+      colors.green(tokens["response-time"](req, res)),
+      colors.green("ms"),
     ].join(" ");
   })
 );

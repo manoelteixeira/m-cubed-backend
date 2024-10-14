@@ -1,3 +1,4 @@
+const colors = require("colors");
 const pgp = require("pg-promise")();
 require("dotenv").config();
 
@@ -14,8 +15,15 @@ const db = pgp(cn);
 db.connect()
   .then((cn) => {
     const { user, host, port, database } = cn.client;
+
     console.log(
-      `Postgres connection established with user:\x1b[33m${user}\x1b[0m, host:\x1b[33m${host}\x1b[0m,  port:\x1b[33m${port}\x1b[0m, database:\x1b[33m${database}\x1b[0m`
+      colors.blue("\n-=-=-=-\n"),
+      colors.blue("Postgres connection established with:\n"),
+      colors.blue(`User: ${colors.yellow(user)}\n`),
+      colors.blue(`Host: ${colors.yellow(host)}\n`),
+      colors.blue(`Port: ${colors.yellow(port)}\n`),
+      colors.blue(`Database: ${colors.yellow(database)}\n`),
+      colors.blue("-=-=-=-\n")
     );
     cn.done();
   })

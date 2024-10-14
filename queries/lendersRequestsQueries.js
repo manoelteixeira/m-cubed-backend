@@ -1,7 +1,7 @@
 const db = require("../db/dbConfig");
 
 // Get all pending loan requests (no filter)
-const getAllLoanRequests = async () => {
+async function getAllLoanRequests() {
   try {
     const queryStr =
       "SELECT * FROM loan_requests " +
@@ -14,10 +14,28 @@ const getAllLoanRequests = async () => {
     console.error("Error fetching all loan requests:", error);
     throw error;
   }
-};
+}
+
+async function getLoanRequestsFiltered(
+  sortBy = null,
+  order = desc,
+  limit = null,
+  ofsset = null
+) {
+  const totalRequestQuery =
+    "SELECT COUNT(*) FROM loan_requests " +
+    "WHERE funded_at is NULL AND accepted_proposal_id is NULL";
+  const baseQuery =
+    "SELECT loan_requests.id, loan_requests.title, loan_requests.description, " +
+    "loan_requests.value, loan_requests.created_at, loan_requests.borrower_id, borrowers.state, " +
+    "borrowers.credit_score, borrowers.industry " +
+    "FROM loan_requests JOIN borrowers " +
+    "ON loan_requests.borrower_id = borrowers.id " +
+    "WHERE funded_at is NULL AND accepted_proposal_id is NULL ";
+}
 
 // Get a single loan request by loan_request_id
-const getLoanRequestByID = async (loan_request_id) => {
+async function getLoanRequestByID(loan_request_id) {
   const query = `SELECT * FROM loan_requests WHERE id = $1`;
   const borrowerQuery =
     "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, " +
@@ -37,9 +55,9 @@ const getLoanRequestByID = async (loan_request_id) => {
     }
     return error;
   }
-};
+}
 
-const createProposal = async (proposal) => {
+async function createProposal(proposal) {
   try {
     const query = `
       INSERT INTO loan_proposals (lender_id, loan_request_id, title, description, loan_amount, interest_rate, repayment_term, created_at)
@@ -50,7 +68,7 @@ const createProposal = async (proposal) => {
   } catch (error) {
     return error;
   }
-};
+}
 
 module.exports = {
   getAllLoanRequests,
