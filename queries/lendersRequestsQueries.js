@@ -17,8 +17,7 @@ async function getAllLoanRequests(
   };
   const baseQuery =
     "SELECT loan_requests.id, loan_requests.title, loan_requests.description, " +
-    "loan_requests.value, loan_requests.created_at, loan_requests.borrower_id, borrowers.state, " +
-    "borrowers.credit_score, borrowers.industry " +
+    "loan_requests.value, loan_requests.created_at " +
     "FROM loan_requests JOIN borrowers " +
     "ON loan_requests.borrower_id = borrowers.id " +
     "WHERE funded_at is NULL AND accepted_proposal_id is NULL ";
