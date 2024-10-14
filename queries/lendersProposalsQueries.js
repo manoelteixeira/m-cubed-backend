@@ -77,7 +77,7 @@ const updateProposalByID = async (proposal) => {
   try {
     const proposalData = await db.one(proposalQuery, { id: proposal.id });
     if (!proposalData.accepted) {
-      const updatedProposal = await db.one(queryStr, proposal);
+      const updatedProposal = await db.one(updateProposalQuery, proposal);
       return updatedProposal;
     } else {
       return { error: "Loan proposal can no longer be updated." };
