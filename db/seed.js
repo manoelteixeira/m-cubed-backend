@@ -169,4 +169,4 @@ async function seed(nLenders, nBorrowers, nRequests, nProposals) {
   console.log("** ALL DONE **");
 }
 
-seed(5, 10, 5);
+seed(5, 20, 15);

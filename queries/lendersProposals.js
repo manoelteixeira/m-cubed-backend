@@ -3,8 +3,8 @@ const db = require("../db/dbConfig");
 // Get all loan proposals made by a specific lender
 const getAllLoanProposalsByLenderID = async (lender_id) => {
   try {
-    const query = `SELECT * FROM loan_proposals WHERE lender_id = $1`;
-    const allProposals = await db.any(query, [lender_id]);
+    const query = `SELECT * FROM loan_proposals WHERE lender_id = $[id]`;
+    const allProposals = await db.any(query, { id: lender_id });
     return allProposals;
   } catch (error) {
     console.error("Error fetching all loan proposals for lender:", error);

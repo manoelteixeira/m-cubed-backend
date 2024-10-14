@@ -20,7 +20,7 @@ function generateName() {
 function generateEmail(name, role) {
   const filter = /[^a-z1-9]/g;
   name = name.toLowerCase().trim().replaceAll(filter, " ").replaceAll(" ", ".");
-  return `${name}\@${role}.com`;
+  return `${name}${randomInt(0, 1000)}\@${role}.com`;
 }
 
 async function createLender() {
@@ -66,7 +66,7 @@ function createLoanProposal(request, lender) {
   date.setHours(date.getHours() + 1);
   return {
     title: `${lender.business_name} - ${request.title}`,
-    description: "Proposal Description",
+    description: faker.hacker.phrase(),
     loan_amount: request.value,
     interest_rate: randomInt(0, 12) / 100,
     repayment_term: randomInt(12, 60),
