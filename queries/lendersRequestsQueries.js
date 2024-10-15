@@ -5,7 +5,8 @@ async function getAllLoanRequests(
   sortBy = "created_at",
   order = "desc",
   limit = null,
-  ofsset = null
+  ofsset = null,
+  search = null
 ) {
   const sort = {
     title: "loan_requests.title",
@@ -27,9 +28,14 @@ async function getAllLoanRequests(
     "ON loan_requests.borrower_id = borrowers.id " +
     "WHERE funded_at is NULL AND accepted_proposal_id is NULL ";
   let query = baseQuery;
+
+  if (search) {
+    query += `AND loan_requests.title ilike $[search]`;
+  }
   if (sortBy) {
     query += `ORDER BY ${sort[sortBy]} ${order.toUpperCase()} `;
   }
+
   if (limit) {
     query += `LIMIT ${limit} `;
   }
@@ -39,7 +45,7 @@ async function getAllLoanRequests(
 
   try {
     const total = await db.one(totalRequestsQuery);
-    const requests = await db.manyOrNone(query);
+    const requests = await db.manyOrNone(query, { search: `%${search}%` });
     console.log(typeof total.count);
     return {
       total: Number(total.count),

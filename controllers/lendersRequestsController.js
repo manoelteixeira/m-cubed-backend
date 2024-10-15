@@ -39,6 +39,10 @@ const {
  *      - Lenders Requests
  *    summary: List All Available Loan Requests
  *    parameters:
+ *           - name: search
+ *             in: query
+ *             schema:
+ *               type: string
  *           - name: sort
  *             in: query
  *             schema:
@@ -73,10 +77,16 @@ requests.get(
   validateQueryLimit,
   validateQueryOffset,
   async (req, res) => {
-    const { sort, order, limit, offset } = req.query;
+    const { sort, order, limit, offset, search } = req.query;
 
     try {
-      const loanRequests = await getAllLoanRequests(sort, order, limit, offset);
+      const loanRequests = await getAllLoanRequests(
+        sort,
+        order,
+        limit,
+        offset,
+        search
+      );
       res.status(200).json(loanRequests);
     } catch (error) {
       console.error("Error fetching all loan requests:", error);
