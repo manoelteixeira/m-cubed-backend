@@ -8,6 +8,7 @@ async function getAllLoanRequests(
   ofsset = null,
   search = null
 ) {
+  console.log(search);
   const sort = {
     title: "loan_requests.title",
     value: "loan_requests.value",
@@ -46,7 +47,6 @@ async function getAllLoanRequests(
   try {
     const total = await db.one(totalRequestsQuery);
     const requests = await db.manyOrNone(query, { search: `%${search}%` });
-    console.log(typeof total.count);
     return {
       total: Number(total.count),
       loan_requests: requests,
