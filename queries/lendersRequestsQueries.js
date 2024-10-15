@@ -40,8 +40,9 @@ async function getAllLoanRequests(
   try {
     const total = await db.one(totalRequestsQuery);
     const requests = await db.manyOrNone(query);
+    console.log(typeof total.count);
     return {
-      total,
+      total: Number(total.count),
       loan_requests: requests,
     };
   } catch (err) {
