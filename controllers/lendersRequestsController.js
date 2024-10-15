@@ -20,6 +20,7 @@ const {
   validateQueryOrder,
   validateQueryLimit,
   validateQueryOffset,
+  validateSearch,
 } = require("../validators/lendersProposalsValidators");
 
 // Importing queries
