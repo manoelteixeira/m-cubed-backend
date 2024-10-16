@@ -13,12 +13,13 @@ async function getAllLoanRequests(
     title: "loan_requests.title",
     value: "loan_requests.value",
     created_at: "loan_requests.created_at",
+    description: "loan_requests.description",
     industry: "borrowers.industry",
     state: "borrowers.state",
     credit_score: "borrowers.credit_score",
   };
   const totalRequestsQuery =
-    "SELECT COUNT(*) FROM loan_requests " +
+    "SELECT COUNT(*) as total, SUM( loan_requests.value) as value FROM loan_requests  " +
     "WHERE funded_at is NULL AND accepted_proposal_id is null";
 
   const baseQuery =
@@ -47,8 +48,14 @@ async function getAllLoanRequests(
   try {
     const total = await db.one(totalRequestsQuery);
     const requests = await db.manyOrNone(query, { search: `%${search}%` });
+    // return {
+    //   total: Number(total.count),
+    //   value: Number(total.value),
+    //   loan_requests: requests,
+    // };
     return {
-      total: Number(total.count),
+      total: parseInt(total.count),
+      value: parseFloat(total.value),
       loan_requests: requests,
     };
   } catch (err) {
