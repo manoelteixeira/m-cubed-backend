@@ -92,6 +92,7 @@ function validateQuerySort(req, res, next) {
     "industry",
     "state",
     "credit_score",
+    "description",
   ];
   if (req.query.sort && !validSorts.includes(req.query.sort)) {
     res.status(400).json({
