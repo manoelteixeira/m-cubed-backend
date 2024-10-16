@@ -3,7 +3,15 @@ const db = require("../db/dbConfig");
 // Get all loan proposals made by a specific lender
 const getAllLoanProposalsByLenderID = async (lender_id) => {
   try {
-    const query = `SELECT * FROM loan_proposals WHERE lender_id = $1`;
+    // const query = `SELECT * FROM loan_proposals WHERE lender_id = $1`;
+    const query =
+      "SELECT loan_proposals.id, loan_proposals.title, loan_proposals.description, " +
+      "loan_proposals.loan_amount, loan_proposals.interest_rate, loan_proposals.repayment_term, " +
+      "loan_proposals.created_at, loan_proposals.accepted, loan_proposals.lender_id, " +
+      "loan_proposals.loan_request_id, loan_requests.borrower_id as borrower_id " +
+      "FROM loan_proposals JOIN loan_requests " +
+      "ON loan_request_id = loan_requests.id " +
+      "WHERE lender_id = $1";
     const allProposals = await db.any(query, [lender_id]);
     return allProposals;
   } catch (error) {
