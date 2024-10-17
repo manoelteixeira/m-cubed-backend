@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "watch": "nodemon server.js",
-    "db:init": "psql -U postgres -f src/db/schema.sql",
-    "db:seed": "psql -U postgres -f src/db/seed.sql",
+    "db:init": "psql -U postgres -f ./src/db/schema.sql",
+    "db:seed": "node ./src/db/seed.js",
     "db:dev": "npm run db:init && node ./src/db/seed.js"
   },
   "keywords": [],
