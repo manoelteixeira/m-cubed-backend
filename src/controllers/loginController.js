@@ -1,4 +1,4 @@
-// controllers/loginController.js
+// src/controllers/loginController.js
 /**
  * @swagger
  * tags:
