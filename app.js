@@ -7,9 +7,9 @@ const cors = require("cors");
 const morgan = require("morgan");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const loginController = require("./controllers/loginController");
-const borrowersController = require("./controllers/borrowersController");
-const lendersController = require("./controllers/lendersController");
+const loginController = require("./src/controllers/loginController");
+const borrowersController = require("./src/controllers/borrowersController");
+const lendersController = require("./src/controllers/lendersController");
 
 /* Configuration */
 const swaggerOptions = {
@@ -33,15 +33,15 @@ const swaggerOptions = {
       },
     ],
   },
-  // apis: ["./controllers/*.js"],
+  // apis: ["./src/controllers/*.js"],
   apis: [
-    "./controllers/loginController.js",
-    "./controllers/borrowersController.js",
-    "./controllers/borrowersRequestsController.js",
-    "./controllers/borrowersRequestProposalsController.js",
-    "./controllers/lendersController.js",
-    "./controllers/lendersProposalsController.js",
-    "./controllers/lendersRequestsController.js",
+    "./src/controllers/loginController.js",
+    "./src/controllers/borrowersController.js",
+    "./src/controllers/borrowersRequestsController.js",
+    "./src/controllers/borrowersRequestProposalsController.js",
+    "./src/controllers/lendersController.js",
+    "./src/controllers/lendersProposalsController.js",
+    "./src/controllers/lendersRequestsController.js",
   ],
 };
 

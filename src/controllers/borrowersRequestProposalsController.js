@@ -1,4 +1,4 @@
-// controllers/requestProposalsController.js
+// src/controllers/borrowersRequestProposalsController.js
 /**
  * @swagger
  * tags:
