@@ -1,172 +1,118 @@
+// repos/m-cubed-backend/src/db/seed.js
 const db = require("./dbConfig.js");
 const {
-  createLender,
-  createBorrower,
-  createLoanRequest,
-  createLoanProposal,
-  userFactory,
+  lenderFactory,
+  borrowerFactory,
+  createUser,
   loanRequestFactory,
-  loanProposalFactory,
-} = require("./seedUtils.js");
+  createLoanProposal,
+  createCreditReport,
+} = require("../utils/dataFactories.js");
+const {
+  addUsersQuery,
+  addLendersQuery,
+  addBorrowersQuery,
+  addCreditReportsQuery,
+  addLoanRequestsQuery,
+  addLoanProposalsQuery,
+  addToMailListQuery,
+} = require("../utils/queryFactoies.js");
 
-async function addUsers(users) {
-  let usersString = users
-    .map((user) => {
-      const { email, password, role } = user;
-      return `('${email}', '${password}', '${role}')`;
-    })
-    .join(", ");
-  const queryStr = `INSERT INTO users(email, password, role) VALUES ${usersString} RETURNING *`;
-  try {
-    const result = await db.many(queryStr);
-    return result;
-  } catch (err) {
-    console.log("ERROR: ", err);
+async function seed(nLenders, nBorrowers, nLoanRequest) {
+  let users = [];
+
+  let lenders = lenderFactory(nLenders);
+  for (let idx = 0; idx < lenders.length; idx++) {
+    const user = await createUser(lenders[idx], "lender");
+    users.push(user);
+    lenders[idx] = { ...lenders[idx], ...user };
   }
-}
 
-async function addLenders(lenders) {
-  const lendersStr = lenders
-    .map((lender) => {
-      const { name, user_id } = lender;
-      return `('${name.replaceAll("'", "\\'")}', '${user_id}')`;
-    })
-    .join(", ");
-  const queryStr = `INSERT INTO lenders(business_name, user_id) VALUES ${lendersStr} RETURNING *`;
-  try {
-    const result = await db.many(queryStr);
-    return result;
-  } catch (err) {
-    console.log("ERROR: ", err);
+  let borrowers = borrowerFactory(nBorrowers);
+  for (let idx = 0; idx < borrowers.length; idx++) {
+    const user = await createUser(borrowers[idx], "borrower");
+    users.push(user);
+    borrowers[idx] = { ...borrowers[idx], ...user };
   }
-}
 
-async function addBorrowers(borrowers) {
-  const borrowersStr = borrowers
-    .map((borrower) => {
-      const {
-        city,
-        street,
-        state,
-        zip_code,
-        phone,
-        name,
-        credit_score,
-        start_date,
-        industry,
-        user_id,
-      } = borrower;
-      return `('${city}', '${street}', '${state}', '${zip_code}', '${phone}', '${name.replaceAll(
-        "'",
-        "\\'"
-      )}', ${credit_score}, '${start_date}', '${industry}', '${user_id}')`;
-    })
-    .join(", ");
-  const queryStr = `INSERT INTO borrowers( city, street, state, zip_code, phone, business_name, credit_score, start_date, industry, user_id) VALUES ${borrowersStr} RETURNING *`;
-  try {
-    const result = await db.many(queryStr);
-    return result;
-  } catch (err) {
-    console.log("ERROR: ", err);
-  }
-}
+  console.log("-=-=-    ADDING USERS    -=-=-");
+  users = await db.many(addUsersQuery(users));
+  console.log(users);
 
-async function addLoanRequests(requests) {
-  const requestsStr = requests
-    .map((request) => {
-      const { title, description, value, created_at, borrower_id } = request;
-      return `('${title.replaceAll(
-        "'",
-        "\\'"
-      )}','${description}',${value},'${created_at}','${borrower_id}')`;
-    })
-    .join(", ");
-  const queryStr = `INSERT INTO loan_requests(title, description, value, created_at, borrower_id) VALUES ${requestsStr} RETURNING *`;
-  try {
-    const result = await db.many(queryStr);
-    return result;
-  } catch (err) {
-    console.log("ERROR: ", err);
-  }
-}
-
-async function addLoanProposals(proposals) {
-  const proposalsStr = proposals
-    .map((proposal) => {
-      const {
-        title,
-        description,
-        loan_amount,
-        interest_rate,
-        repayment_term,
-        lender_id,
-        created_at,
-        loan_request_id,
-      } = proposal;
-      return `('${title}', '${description}', '${loan_amount}', ${interest_rate}, ${repayment_term}, '${lender_id}', '${created_at}', '${loan_request_id}')`;
-    })
-    .join(", ");
-  const queryStr = `INSERT INTO loan_proposals(title, description, loan_amount, interest_rate, repayment_term, lender_id, created_at, loan_request_id) VALUES ${proposalsStr} RETURNING *`;
-  try {
-    const result = await db.many(queryStr);
-    return result;
-  } catch (err) {
-    console.log("ERROR: ", err);
-  }
-}
-
-async function seed(nLenders, nBorrowers, nRequests, nProposals) {
-  // Create And Add Users
-  let users = [
-    ...(await userFactory(nLenders, createLender)),
-    ...(await userFactory(nBorrowers, createBorrower)),
-  ];
-
-  console.log("** Creating USERS **");
-  const newUsers = await addUsers(users);
-  //   Add Users to their roles
-  let lenders = newUsers.filter((user) => user.role === "lender");
-  let borrowers = newUsers.filter((user) => user.role === "borrower");
-
+  console.log("-=-=-    ADDING LENDERS    -=-=-");
   lenders = lenders.map((lender) => {
-    user = users.find((user) => user.email == lender.email);
-    return { ...user, user_id: lender.id };
+    const user = users.find((user) => user.email == lender.email);
+    return { ...lender, user_id: user.id };
   });
 
+  let data = await db.many(addLendersQuery(lenders));
+  lenders = lenders.map((lender) => {
+    const info = data.find((item) => item.user_id == lender.user_id);
+    delete info.user_id;
+    delete lender.role;
+    return {
+      ...info,
+      ...lender,
+    };
+  });
+  console.log(lenders);
+
+  console.log("-=-=-    ADDING BORROWERS    -=-=-");
   borrowers = borrowers.map((borrower) => {
-    user = users.find((user) => user.email == borrower.email);
-    return { ...user, user_id: borrower.id };
+    const user = users.find((user) => user.email == borrower.email);
+    return { ...borrower, user_id: user.id };
   });
 
-  console.log("** Adding USERS to their ROLES **");
-  lenders = await addLenders(lenders);
-  borrowers = await addBorrowers(borrowers);
+  data = await db.many(addBorrowersQuery(borrowers));
+  borrowers = borrowers.map((borrower) => {
+    const info = data.find((item) => item.user_id == borrower.user_id);
+    delete info.user_id;
+    delete borrower.role;
+    return {
+      ...info,
+      ...borrower,
+    };
+  });
+  console.log(borrowers);
 
-  console.log("** Adding Loan Requests **");
-
-  let loanRequests = borrowers.map((borrower) => {
+  console.log("-=-=-    ADDING CREDIT REPORTS    -=-=-");
+  let reports = borrowers.map((borrower) => {
     const { id } = borrower;
-    const requests = [];
-    for (let i = 0; i <= nRequests; i++) {
-      requests.push(createLoanRequest(id));
-    }
-    return requests;
+    return createCreditReport(id);
   });
+  reports = await db.many(addCreditReportsQuery(reports));
+  console.log(reports);
 
-  const requests = await addLoanRequests(loanRequests.flat());
+  console.log("-=-=-    ADDING LOAN REQUEST    -=-=-");
+  let loanRequests = borrowers
+    .map((borrower) => {
+      const { id } = borrower;
+      return loanRequestFactory(nLoanRequest, id);
+    })
+    .flat();
 
-  console.log("** Adding Loan Proposals **");
+  loanRequests = await db.many(addLoanRequestsQuery(loanRequests));
+  console.log(loanRequests);
 
-  // const lendersId = lenders.map((lender) => lender.id);
-  const loanProposals = [];
-  // console.log(requests)
-  requests.forEach((request) => {
-    for (const lender of lenders) {
-      loanProposals.push(createLoanProposal(request, lender));
-    }
-  });
-  const proposals = await addLoanProposals(loanProposals);
-  console.log("** ALL DONE **");
+  console.log("-=-=-    ADDING LOAN PROPOSALS    -=-=-");
+  let loanProposals = loanRequests
+    .map((request) => {
+      const proposal = lenders.map((lender) =>
+        createLoanProposal(request, lender)
+      );
+      return proposal;
+    })
+    .flat();
+
+  loanProposals = await db.many(addLoanProposalsQuery(loanProposals));
+  console.log(loanProposals);
+
+  console.log("-=-=-    ADDING DATA TO MAIL LIST    -=-=-");
+  const mailList = await db.many(addToMailListQuery(users));
+  console.log(mailList);
+
+  console.log("-=-=-    ALL DONE    -=-=-");
 }
 
-seed(5, 20, 15);
+// console.log(seed(2, 2, 2));
+seed(2, 2, 2);
