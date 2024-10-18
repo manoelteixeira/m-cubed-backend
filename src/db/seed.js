@@ -115,4 +115,4 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
 }
 
 // console.log(seed(2, 2, 2));
-seed(2, 2, 2);
+seed(10, 100, 10);

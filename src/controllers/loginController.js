@@ -61,8 +61,10 @@ loginController.get("/", async (req, res) => {
  *        responses:
  *          '200':
  *            description: Successful response
- *            content:
- *              application/json: {}
+ *          '400':
+ *            description: Bad Request - Invalid
+ *          '401':
+ *            description: Unauthorized - Incorrect email or passwor
  */
 loginController.post("/", validateEmail, validatePassword, async (req, res) => {
   try {
@@ -107,12 +109,17 @@ module.exports = loginController;
  *         password:
  *           type: string
  *           description: The User password
+ *         last_logged:
+ *           type: string
+ *           format: date
+ *           description: Last time the user logged in
  *         role:
  *           type: string
- *           description: The User business name
+ *           description: lender or borrower
  *       example:
  *         id: ff5934c5-62b4-4c52-b933-a2ac86a2a86c
  *         email: testUser@example.com
  *         password: password123
+ *         last_logged: 2024-10-18T04:00:00.000Z
  *         role: 'lender'
  */

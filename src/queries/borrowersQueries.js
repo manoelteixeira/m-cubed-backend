@@ -11,7 +11,7 @@ const SALT = Number(process.env.SALT);
 async function getBorrowers() {
   const queryStr =
     "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, " +
-    "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.credit_score, borrowers.start_date, borrowers.industry " +
+    "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry " +
     "FROM users JOIN borrowers ON users.id = borrowers.user_id";
   try {
     const borrowers = await db.any(queryStr);
