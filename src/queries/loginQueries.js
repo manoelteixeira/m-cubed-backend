@@ -1,7 +1,6 @@
 // queries/loginQueries.js
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig");
-const { da } = require("@faker-js/faker");
 
 async function getUsers() {
   const queryStr = "SELECT * FROM users";
@@ -17,9 +16,11 @@ async function logInUser(credentials) {
   const queryStr = "SELECT * FROM users WHERE email=$[email]";
   const borrowerQuery = "SELECT * FROM borrowers WHERE user_id=$[id]";
   const lenderQuery = "SELECT * FROM lenders WHERE user_id=$[id]";
+  const updateUserQuery =
+    "UPDATE users SET last_logged=$[date] WHERE id=$[id] RETURNING *";
   try {
     let data;
-    const user = await db.oneOrNone(queryStr, credentials);
+    let user = await db.oneOrNone(queryStr, credentials);
     // Validate User
     if (!user) {
       return { error: "User Not Found" };
@@ -32,7 +33,18 @@ async function logInUser(credentials) {
     if (!passwordMatch) {
       return { error: "Incorrect Password" };
     }
-    // Create Return Respons
+    // Update Last Logged
+    const date = new Date();
+    user = await db.oneOrNone(updateUserQuery, {
+      date: date.toISOString(),
+      id: user.id,
+    });
+
+    if (!user) {
+      return { error: "Something went wrong." };
+    }
+
+    // Create Return Response
     const role = user.role;
     if (role == "lender") {
       data = await db.oneOrNone(lenderQuery, user);

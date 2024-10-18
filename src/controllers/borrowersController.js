@@ -28,7 +28,7 @@ const {
   validateZipCode,
   validatePhone,
   validateBusinessName,
-  validateCreditScore,
+  validateEIN,
   validateStartDate,
   validateIndustry,
 } = require("../validators/borrowersValidators");
@@ -108,17 +108,17 @@ borrowersController.post(
   validateZipCode,
   validatePhone,
   validateBusinessName,
-  validateCreditScore,
+  validateEIN,
   validateStartDate,
   validateIndustry,
   async (req, res) => {
     try {
       const newBorrower = await createBorrower(req.body);
-      const token = jwt.sign(
-        { userId: newBorrower.id, email: newBorrower.email },
-        secret
-      );
-      delete newBorrower.password;
+      // const token = jwt.sign(
+      //   { userId: newBorrower.id, email: newBorrower.email },
+      //   secret
+      // );
+      // delete newBorrower.password;
       if (newBorrower.id) {
         const token = jwt.sign(
           { userId: newBorrower.id, email: newBorrower.email },
@@ -255,7 +255,7 @@ borrowersController.put(
   validateZipCode,
   validatePhone,
   validateBusinessName,
-  validateCreditScore,
+  validateEIN,
   validateStartDate,
   validateIndustry,
   // authenticateToken,
@@ -323,9 +323,9 @@ module.exports = borrowersController;
  *         business_name:
  *           type: string
  *           description: Borrower business name
- *         credit_score:
- *           type: integer
- *           description: Borrower business credit score
+ *         ein:
+ *           type: string
+ *           description: Borrower Employer Identification Number.
  *         start_date:
  *           type: date
  *           description: Borrower business start date
@@ -341,7 +341,7 @@ module.exports = borrowersController;
  *         zip_code: 10001
  *         phone: 1234567890
  *         business_name: Small Biz LLC
- *         credit_score: 720,
+ *         ein: 431211532,
  *         start_date: 2020-05-15T04:00:00.000Z
  *         industry: Retail
  */

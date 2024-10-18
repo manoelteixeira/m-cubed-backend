@@ -37,9 +37,12 @@ function createBorrower() {
   ];
   return {
     business_name: name,
-    email: name.replaceAll(" ", "_").toLowerCase() + "@lender.com",
-    city: faker.location.city(),
-    street: faker.location.streetAddress(),
+    email:
+      name.replaceAll(" ", "_").toLowerCase() +
+      `${randomInt(1800, 2024)}` +
+      "@lender.com",
+    city: faker.location.city().replaceAll("'", "''"),
+    street: faker.location.streetAddress().replaceAll("'", "''"),
     state: faker.location.state(),
     zip_code: faker.location.zipCode(),
     phone: faker.phone.number({ style: "international" }).slice(2),
@@ -64,9 +67,10 @@ function borrowerFactory(num) {
 function createLoanRequest(id) {
   const date = faker.date.past({ days: 10 });
   const expiration = faker.date.future({ days: 31, refDate: date });
+  const description = faker.commerce.productDescription();
   return {
     title: `New ${faker.commerce.productAdjective()} ${faker.commerce.productName()}`,
-    description: faker.commerce.productDescription(),
+    description: description.replaceAll("'", "''"),
     value: Number(faker.commerce.price({ min: 2000, max: 10000 })),
     created_at: date.toISOString(),
     expiration_date: expiration.toISOString(),
@@ -81,7 +85,7 @@ function createLoanProposal(request, lender) {
   const description = faker.hacker.phrase();
   return {
     title: `${lender.business_name} - ${request.title}`,
-    description: description.replaceAll("'", ""),
+    description: description.replaceAll("'", "''"),
     loan_amount: request.value,
     interest_rate: randomInt(0, 12) / 100,
     repayment_term: randomInt(12, 60),
@@ -118,11 +122,18 @@ async function createUser(user, role) {
 }
 
 function loanRequestFactory(num, id) {
-  const requests = [];
-  while (requests.length < num) {
-    requests.push(createLoanRequest(id));
+  const loanRequests = [];
+  let total = 0;
+  while (loanRequests.length < num) {
+    const request = createLoanRequest(id);
+    total += request.value;
+    if (total < 200000.0) {
+      loanRequests.push(request);
+    } else {
+      break;
+    }
   }
-  return requests;
+  return loanRequests;
 }
 
 module.exports = {

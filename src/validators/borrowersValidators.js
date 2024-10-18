@@ -114,7 +114,7 @@ function validateBusinessName(req, res, next) {
   }
 }
 
-function validateCreditScore(req, res, next) {
+function validateEIN(req, res, next) {
   if (!req.body.credit_score) {
     res.status(400).json({ error: "credit_score is required." });
   } else if (typeof req.body.credit_score !== "number") {
@@ -159,7 +159,7 @@ module.exports = {
   validateZipCode,
   validatePhone,
   validateBusinessName,
-  validateCreditScore,
+  validateEIN,
   validateStartDate,
   validateIndustry,
 };
