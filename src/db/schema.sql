@@ -13,7 +13,7 @@ CREATE TABLE "users"(
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "email" VARCHAR(140) UNIQUE NOT NULL,
   "password" VARCHAR(140) NOT NULL,
-  "last_logged" DATE NOT NULL,
+  "last_logged" TIMESTAMP NOT NULL,
   "role" VARCHAR(10) NOT NULL
 );
 
@@ -42,8 +42,8 @@ CREATE TABLE "credit_reports"(
   "credit_bureau" VARCHAR(50) NOT NULL,
   "report_id" VARCHAR(15) NOT NULL,
   "score" INTEGER NOT NULL,
-  "created_at" DATE NOT NULL,
-  "expiration_date" DATE NOT NULL,
+  "created_at" TIMESTAMP NOT NULL,
+  "expire_at" TIMESTAMP NOT NULL,
   "borrower_id" uuid  REFERENCES "borrowers" ("id") ON DELETE CASCADE
 );
 
@@ -52,9 +52,10 @@ CREATE TABLE "loan_requests" (
   "title" VARCHAR(140) NOT NULL,
   "description" TEXT NOT NULL,
   "value" NUMERIC(15, 2) NOT NULL,
-  "created_at" DATE NOT NULL,
-  "expiration_date" DATE NOT NULL,
-  "funded_at" DATE DEFAULT NULL,
+  "created_at" TIMESTAMP NOT NULL,
+  "expire_at" TIMESTAMP NOT NULL,
+  "update_at" TIMESTAMP DEFAULT NULL,
+  "funded_at" TIMESTAMP DEFAULT NULL,
   "status" VARCHAR(10) DEFAULT 'pending',
   "accepted_proposal_id" uuid DEFAULT NULL,
   "borrower_id" uuid  REFERENCES "borrowers" ("id") ON DELETE CASCADE
@@ -68,8 +69,9 @@ CREATE TABLE "loan_proposals" (
   "loan_amount" NUMERIC(15, 2) NOT NULL,  -- Loan amount (e.g., $10,000.00)
   "interest_rate" NUMERIC(5, 2) NOT NULL,  -- Interest rate as a percentage (e.g., 5.00%)
   "repayment_term" INTEGER NOT NULL,  -- Repayment term in months (e.g., 24 for 2 years)
-  "created_at" DATE NOT NULL,
-  "expiration_date" DATE NOT NULL,
+  "created_at" TIMESTAMP NOT NULL,
+  "expire_at" TIMESTAMP NOT NULL,
+  "update_at" TIMESTAMP DEFAULT NULL,
   "status" VARCHAR(10) DEFAULT 'pending',
   "lender_id" uuid REFERENCES "lenders" ("id") ON DELETE CASCADE,
   "loan_request_id" uuid REFERENCES "loan_requests" ("id") ON DELETE CASCADE

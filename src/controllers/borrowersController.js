@@ -18,6 +18,7 @@ const {
   deleteBorrower,
   updateBorrower,
 } = require("../queries/borrowersQueries");
+const { getCreditReports } = require("../queries/creditReportsQueries");
 // Validators
 const {
   validateEmail,
@@ -89,7 +90,7 @@ borrowersController.get("/", async (req, res) => {
  *               zip_code: '33101'
  *               phone: '4567890123'
  *               business_name: Healthcare Hub
- *               credit_score: 740
+ *               ein: '431211532'
  *               start_date: '2022-10-05T04:00:00.000Z'
  *               industry: Healthcare
  *     responses:
@@ -114,11 +115,6 @@ borrowersController.post(
   async (req, res) => {
     try {
       const newBorrower = await createBorrower(req.body);
-      // const token = jwt.sign(
-      //   { userId: newBorrower.id, email: newBorrower.email },
-      //   secret
-      // );
-      // delete newBorrower.password;
       if (newBorrower.id) {
         const token = jwt.sign(
           { userId: newBorrower.id, email: newBorrower.email },
@@ -150,9 +146,11 @@ borrowersController.post(
  *         required: true
  *     responses:
  *       '200':
- *         description: Successful response
- *         content:
- *           application/json: {}
+ *         description: Successful response.
+ *       '404':
+ *         description: Not found - Borrower Not Found.
+ *       '500':
+ *         description: Internal Server Error.
  */
 borrowersController.get(
   "/:id",
@@ -162,7 +160,11 @@ borrowersController.get(
     try {
       const borrower = await getBorrower(id);
       if (borrower.id) {
-        res.status(200).json(borrower);
+        const reports = await getCreditReports(borrower.id);
+        console.log(reports);
+        const credit_reports = Array.isArray(reports) ? reports : [];
+        console.log(borrower);
+        res.status(200).json({ borrower, credit_reports });
       } else {
         res.status(404).json({ error: "Borrower not found." });
       }
@@ -187,9 +189,11 @@ borrowersController.get(
  *         required: true
  *     responses:
  *       '200':
- *         description: Successful response
- *         content:
- *           application/json: {}
+ *         description: Successful response.
+ *       '404':
+ *         description: Not found - Borrower Not Found.
+ *       '500':
+ *         description: Internal Server Error.
  */
 borrowersController.delete(
   "/:id",
@@ -292,7 +296,7 @@ module.exports = borrowersController;
  *        - zip_code
  *        - phone
  *        - business_name
- *        - credit_score
+ *        - ein
  *        - start_date
  *        - industry
  *       properties:
@@ -341,7 +345,7 @@ module.exports = borrowersController;
  *         zip_code: 10001
  *         phone: 1234567890
  *         business_name: Small Biz LLC
- *         ein: 431211532,
+ *         ein: 431211532
  *         start_date: 2020-05-15T04:00:00.000Z
  *         industry: Retail
  */

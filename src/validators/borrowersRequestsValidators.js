@@ -44,10 +44,22 @@ function validateCreatedAt(req, res, next) {
     next();
   }
 }
+function validateExpireAt(req, res, next) {
+  if (!req.body.expire_at) {
+    res.status(400).json({ error: "expire_at is required" });
+  } else if (typeof req.body.expire_at != "string") {
+    res.status(400).json({ error: "expire_at must be a string" });
+  } else if (new Date(req.body.expire_at) == "Invalid Date") {
+    res.status(400).json({ error: "Invalid date." });
+  } else {
+    next();
+  }
+}
 
 module.exports = {
   validateTitle,
   validateDescription,
   validateValue,
   validateCreatedAt,
+  validateExpireAt,
 };

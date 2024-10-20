@@ -41,12 +41,12 @@ async function acceptProposal(borrower_id, request_id, proposal_id) {
   const currentDate = new Date();
 
   const updateRequestQuery =
-    "UPDATE loan_requests SET funded_at=$[date], accepted_proposal_id=$[proposal_id] " +
+    "UPDATE loan_requests SET funded_at=$[date], accepted_proposal_id=$[proposal_id], status='active'" +
     "WHERE id=$[request_id] AND borrower_id=$[borrower_id] RETURNING *";
 
   const updateProposals =
     "UPDATE loan_proposals SET " +
-    "accepted = CASE WHEN id=$[proposal_id] THEN TRUE ELSE FALSE END " +
+    "status = CASE WHEN id=$[proposal_id] THEN 'active' ELSE 'rejected' END " +
     "WHERE loan_request_id=$[request_id] RETURNING *";
 
   try {
@@ -63,6 +63,7 @@ async function acceptProposal(borrower_id, request_id, proposal_id) {
       });
       return { acceptedRequest, updatedProposals };
     });
+    console.log(data);
     return data;
   } catch (err) {
     return err;

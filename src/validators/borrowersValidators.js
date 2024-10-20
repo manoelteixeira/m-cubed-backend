@@ -115,10 +115,12 @@ function validateBusinessName(req, res, next) {
 }
 
 function validateEIN(req, res, next) {
-  if (!req.body.credit_score) {
-    res.status(400).json({ error: "credit_score is required." });
-  } else if (typeof req.body.credit_score !== "number") {
-    res.status(400).json({ error: "credit_score must be a number" });
+  if (!req.body.ein) {
+    res.status(400).json({ error: "ein is required." });
+  } else if (req.body.ein.length !== 9) {
+    res.status(400).json({ error: "ein must be 9 digits" });
+  } else if (isNaN(req.body.ein)) {
+    res.status(400).json({ error: "ein must only contain 0 to 9 digits" });
   } else {
     next();
   }

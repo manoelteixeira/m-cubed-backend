@@ -1,7 +1,7 @@
 // utils/factory.jsx
 const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
-const { getRandomName, choose, randomInt } = require("./commons");
+const { getRandomName, choose, randomInt, offsetDate } = require("./commons");
 require("dotenv").config();
 const SALT = parseInt(process.env.SALT);
 
@@ -34,13 +34,19 @@ function createBorrower() {
     "Technology",
     "Manufacturing",
     "Healthcare",
+    "Agriculture",
+    "Construction",
+    "Hospitality",
+    "Renewable Energy",
+    "Technolog",
+    "Other",
   ];
   return {
     business_name: name,
     email:
       name.replaceAll(" ", "_").toLowerCase() +
       `${randomInt(1800, 2024)}` +
-      "@lender.com",
+      "@borrower.com",
     city: faker.location.city().replaceAll("'", "''"),
     street: faker.location.streetAddress().replaceAll("'", "''"),
     state: faker.location.state(),
@@ -66,22 +72,23 @@ function borrowerFactory(num) {
 
 function createLoanRequest(id) {
   const date = faker.date.past({ days: 10 });
-  const expiration = faker.date.future({ days: 31, refDate: date });
+  const expiration = offsetDate(date, { days: 30 });
+
   const description = faker.commerce.productDescription();
   return {
     title: `New ${faker.commerce.productAdjective()} ${faker.commerce.productName()}`,
     description: description.replaceAll("'", "''"),
-    value: Number(faker.commerce.price({ min: 2000, max: 10000 })),
+    value: Number(faker.commerce.price({ min: 2000, max: 100000 })),
     created_at: date.toISOString(),
-    expiration_date: expiration.toISOString(),
+    expire_at: expiration.toISOString(),
     borrower_id: id,
   };
 }
 
 function createLoanProposal(request, lender) {
-  const date = new Date(request.created_at);
-  date.setHours(date.getHours() + randomInt(1, 12));
-  const expiration = faker.date.future({ days: 31, refDate: date });
+  let date = new Date(request.created_at);
+  date = offsetDate(date, { days: randomInt(0, 3), hours: randomInt(0, 10) });
+  const expiration = offsetDate(date, { days: 30 });
   const description = faker.hacker.phrase();
   return {
     title: `${lender.business_name} - ${request.title}`,
@@ -91,33 +98,40 @@ function createLoanProposal(request, lender) {
     repayment_term: randomInt(12, 60),
     lender_id: lender.id,
     created_at: date.toISOString(),
-    expiration_date: expiration.toISOString(),
+    expire_at: expiration.toISOString(),
     loan_request_id: request.id,
   };
 }
 
 function createCreditReport(id) {
-  const created = faker.date.past({ days: 10 });
-  const end = faker.date.future({ days: 31, refDate: created });
-  const bureauList = ["Expirian", "Equifax", "Trus Me Bro"];
+  const date = faker.date.past({ days: 10 });
+  const end = offsetDate(date, { months: 1 });
+  const bureauList = [
+    "Trust Me Bro ltda",
+    "Dun & Bradstreet",
+    "Experian Business",
+    "Equifax Business",
+    "FICO SBSS",
+    "CreditSafe",
+  ];
   return {
     credit_bureau: choose(bureauList),
     report_id: `${faker.string.alphanumeric(15)}`,
     score: randomInt(550, 780),
-    created_at: created.toISOString(),
-    expiration_date: end.toISOString(),
+    created_at: date.toISOString(),
+    expire_at: end.toISOString(),
     borrower_id: id,
   };
 }
 
 async function createUser(user, role) {
   const password = await bcrypt.hash("password123", SALT);
-  const now = new Date().toISOString();
+  const now = offsetDate(new Date(), { days: -randomInt(0, 10) });
   return {
     email: user.email,
     password,
     role,
-    last_logged: now,
+    last_logged: now.toISOString(),
   };
 }
 
