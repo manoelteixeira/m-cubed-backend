@@ -1,7 +1,7 @@
 // utils/factory.jsx
 const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
-const { getRandomName, choose, randomInt, offsetDate } = require("./commons");
+const { getRandomName, choose, randomInt, offsetDate } = require("./helpers");
 require("dotenv").config();
 const SALT = parseInt(process.env.SALT);
 

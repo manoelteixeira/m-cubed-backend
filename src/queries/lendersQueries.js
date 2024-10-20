@@ -46,8 +46,8 @@ async function createLender(lender) {
   const { email, password, business_name } = lender;
   const password_hash = await bcrypt.hash(password, SALT);
   const userQuery =
-    "INSERT INTO users(email, password, role) VALUES" +
-    "($[email], $[password], 'lender') " +
+    "INSERT INTO users(email, password, role, last_logged) VALUES" +
+    "($[email], $[password], 'lender', $[last_logged]) " +
     "RETURNING *";
   const lenderQuery =
     "INSERT INTO lenders(business_name, user_id) VALUES" +
@@ -58,6 +58,7 @@ async function createLender(lender) {
       const newUser = await t.one(userQuery, {
         email,
         password: password_hash,
+        last_logged: new Date(),
       });
       const newLender = await t.one(lenderQuery, {
         business_name,
