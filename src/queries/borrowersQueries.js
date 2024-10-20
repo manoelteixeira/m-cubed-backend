@@ -1,6 +1,7 @@
 // queries/borrowersQueries.js
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig.js");
+const { da } = require("@faker-js/faker");
 require("dotenv").config();
 const SALT = Number(process.env.SALT);
 
@@ -31,7 +32,7 @@ async function getBorrower(id) {
   // const queryStr = "SELECT * FROM borrowers WHERE id=$[id]";
   const queryStr =
     "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, " +
-    "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.credit_score, borrowers.start_date, borrowers.industry " +
+    "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry " +
     "FROM users JOIN borrowers ON users.id = borrowers.user_id " +
     "WHERE borrowers.id=$1";
   try {
@@ -89,17 +90,20 @@ async function createBorrower(borrower) {
   const password_hash = await bcrypt.hash(borrower.password, SALT);
   borrower.password = password_hash;
   const userQuery =
-    "INSERT INTO users(email, password, role) VALUES" +
-    "($[email], $[password], 'borrower') " +
+    "INSERT INTO users(email, password, role, last_logged) VALUES" +
+    "($[email], $[password], 'borrower', $[last_logged]) " +
     "RETURNING *";
   const borrowerQuery =
-    "INSERT INTO borrowers (user_id, city, street, state, zip_code, phone, business_name, credit_score, start_date, industry) " +
-    "VALUES($[user_id],$[city], $[street], $[state], $[zip_code], $[phone], $[business_name], $[credit_score], $[start_date], $[industry]) " +
+    "INSERT INTO borrowers (user_id, city, street, state, zip_code, phone, business_name, ein, start_date, industry) " +
+    "VALUES($[user_id],$[city], $[street], $[state], $[zip_code], $[phone], $[business_name], $[ein], $[start_date], $[industry]) " +
     "RETURNING *";
 
   try {
     const data = await db.tx(async (t) => {
-      const newUser = await t.one(userQuery, borrower);
+      const newUser = await t.one(userQuery, {
+        ...borrower,
+        last_logged: new Date(),
+      });
       const newBorrower = await t.one(borrowerQuery, {
         ...borrower,
         user_id: newUser.id,
@@ -126,7 +130,7 @@ async function createBorrower(borrower) {
 // async function updateBorrower(id, borrower) {
 //   const queryStr =
 //     "UPDATE borrowers " +
-//     "SET email=$[email], city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], phone=$[phone], business_name=$[business_name], credit_score=$[credit_score], start_date=$[start_date], industry=$[industry] " +
+//     "SET email=$[email], city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], phone=$[phone], business_name=$[business_name], ein=$[ein], start_date=$[start_date], industry=$[industry] " +
 //     "WHERE id=$[id] RETURNING *";
 //   try {
 //     const updatedBorrower = await db.one(queryStr, { ...borrower, id: id });
@@ -142,7 +146,7 @@ async function updateBorrower(id, borrower) {
     "WHERE id=$[id] RETURNING *";
   const updateBorrowerQuery =
     "UPDATE borrowers SET city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], " +
-    "phone=$[phone], business_name=$[business_name], credit_score=$[credit_score], start_date=$[start_date], industry=$[industry] " +
+    "phone=$[phone], business_name=$[business_name], ein=$[ein], start_date=$[start_date], industry=$[industry] " +
     "WHERE id=$[id] RETURNING *";
   try {
     const data = await db.tx(async (t) => {

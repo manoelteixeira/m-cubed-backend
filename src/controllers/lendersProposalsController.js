@@ -24,7 +24,6 @@ const {
 const {
   getAllLoanProposalsByLenderID,
   getProposalByID,
-  getProposalsByRequestID,
   updateProposalByID,
   deleteProposalByID,
 } = require("../queries/lendersProposalsQueries");
@@ -53,6 +52,7 @@ proposals.get("/", async (req, res) => {
   const { lender_id } = req.params;
   try {
     const proposalsByLender = await getAllLoanProposalsByLenderID(lender_id);
+    // console.log(proposalsByLender);
     if (proposalsByLender.length > 0) {
       res.status(200).json(proposalsByLender);
     } else {
@@ -140,6 +140,7 @@ proposals.get("/:proposal_id", async (req, res) => {
  *               interest_rate: 5
  *               repayment_term: 36
  *               created_at: '2023-01-20T05:00:00.000Z'
+ *               expire_at: '2023-02-20T05:00:00.000Z'
  *        responses:
  *          '200':
  *            description: Successful response
@@ -238,7 +239,9 @@ module.exports = proposals;
  *         - interest_rate
  *         - repayment_term
  *         - created_at
- *         - accepted
+ *         - expire_at
+ *         - update_at
+ *         - status
  *         - lender_id
  *         - loan_request_id
  *       properties:
@@ -264,9 +267,13 @@ module.exports = proposals;
  *           type: string
  *           format: date
  *           description: Loan Proposal Creation Date
- *         accepted:
- *           type: boolen
- *           description: Loan Proposal Accepted Status
+ *         expire_at:
+ *           type: string
+ *           format: date
+ *           description: Loan Proposal Expiration Date
+ *         status:
+ *           type: string
+ *           description: Loan Proposal Status
  *         lender_id:
  *           type: string
  *           description: Loan Proposal Lender ID
@@ -281,7 +288,9 @@ module.exports = proposals;
  *          interest_rate: 5.00,
  *          repayment_term: 36,
  *          created_at: 2023-01-20T05:00:00.000Z,
- *          accepted: false,
+ *          expire_at: 2023-02-20T05:00:00.000Z,
+ *          update_at: 2023-01-22T05:00:00.000Z,
+ *          status: pending,
  *          lender_id: 082d54ef-635d-4ba3-b945-8b6780851d62,
  *          loan_request_id: 082d54ef-635d-4ba3-b945-8b6780851d6g
 

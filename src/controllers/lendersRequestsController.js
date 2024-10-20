@@ -167,6 +167,7 @@ requests.get("/:id", async (req, res) => {
  *                    title: Low-Interest Proposal TEST
  *                    description: Offering a low-interest loan with flexible repayment options.
  *                    created_at: '2023-01-20T05:00:00.000Z'
+ *                    expite_at: '2023-02-20T05:00:00.000Z'
  *                    loan_amount: 50000
  *                    interest_rate: 5
  *                    repayment_term: 36

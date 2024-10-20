@@ -20,6 +20,7 @@ const {
   validateDescription,
   validateValue,
   validateCreatedAt,
+  validateExpireAt,
 } = require("../validators/borrowersRequestsValidators");
 
 const requestProposalsController = require("./borrowersRequestProposalsController");
@@ -46,8 +47,8 @@ requestsController.use("/:request_id/proposals", requestProposalsController);
  *     responses:
  *       '200':
  *         description: Successful response
- *         content:
- *           application/json: {}
+ *       '500':
+ *         description: Internal server error
  */
 requestsController.get("/", async (req, res) => {
   const { borrower_id } = req.params;
@@ -55,7 +56,7 @@ requestsController.get("/", async (req, res) => {
     const requests = await getRequests(borrower_id);
     res.status(200).json(requests);
   } catch (err) {
-    res.status(400).json({ error: err });
+    res.status(500).json({ error: err });
   }
 });
 
@@ -76,6 +77,7 @@ requestsController.get("/", async (req, res) => {
  *               description: Test
  *               value: 50000
  *               created_at: '2023-01-15T05:00:00.000Z'
+ *               expire_at: '2023-02-15T05:00:00.000Z'
  *     parameters:
  *       - name: borrower_id
  *         in: path
@@ -94,6 +96,7 @@ requestsController.post(
   validateDescription,
   validateValue,
   validateCreatedAt,
+  validateExpireAt,
   async (req, res) => {
     const { borrower_id } = req.params;
     try {
@@ -105,10 +108,11 @@ requestsController.post(
       if (request.id) {
         res.status(200).json(request);
       } else {
+        console.log(request);
         res.status(400).json(request);
       }
     } catch (err) {
-      res.status(400).json({ error: err });
+      res.status(500).json({ error: "Internal Server Error." });
     }
   }
 );
@@ -197,6 +201,7 @@ requestsController.put(
         borrower_id: borrower_id,
         id: id,
       });
+      console.log(request);
       if (request.id) {
         res.status(200).json(request);
       } else if (request.error == "Loan request can no longer be updated.") {
@@ -261,6 +266,7 @@ module.exports = requestsController;
  *         - description
  *         - value
  *         - created_at
+ *         - expire_at
  *         - funded_at
  *         - accepted_proposal_id
  *         - borrower_id
@@ -279,11 +285,22 @@ module.exports = requestsController;
  *           description: Loan Request Value
  *         created_at:
  *           type: string
- *           format: date
+ *           format: date-time
  *           description: Loan Request Creation Date
+ *         expire_at:
+ *           type: string
+ *           format: date-time
+ *           description: Loan Request Expiration Date
+ *         update_at:
+ *           type: string
+ *           format: date-time
+ *           description: Loan Request Update Date
+ *         status:
+ *           type: string
+ *           description: Loan Request Status
  *         funded_at:
  *           type: string
- *           format: date
+ *           format: date-time
  *           description: Loan Request Funded Date
  *         accepted_proposal_id:
  *           type: string
@@ -297,6 +314,9 @@ module.exports = requestsController;
  *         description: The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design
  *         value: 68990.35
  *         created_at: 2024-09-08T04:00:00.000Z
+ *         expire_at: 2024-10-08T04:00:00.000Z
+ *         update_at: 2024-09-12T04:00:00.000Z
+ *         statys: pending
  *         funded_at: 2024-10-08T04:00:00.000Z
  *         accepted_proposal_id: b8f6dbb7-3b76-4b30-9b29-c4738d8ab703
  *         borrower_id: d7b3854f-7f3e-42a2-8c86-bc7a9fecea3

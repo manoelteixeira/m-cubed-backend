@@ -8,17 +8,18 @@ const db = require("../db/dbConfig.js");
  */
 async function getRequests(id) {
   const queryStr =
-    "SELECT loan_requests.id, loan_requests.title, loan_requests.description, " +
-    "loan_requests.value, loan_requests.created_at, loan_requests.funded_at, " +
-    "loan_requests.accepted_proposal_id, loan_requests.borrower_id, " +
+    "SELECT loan_requests.id, loan_requests.title, loan_requests.description, loan_requests.value, " +
+    "loan_requests.created_at, loan_requests.expire_at, loan_requests.update_at ,loan_requests.status ," +
+    "loan_requests.funded_at, loan_requests.accepted_proposal_id, loan_requests.borrower_id, " +
     "COUNT(loan_proposals.loan_request_id) as proposals " +
     "FROM loan_requests LEFT JOIN loan_proposals " +
     "ON loan_requests.id = loan_proposals.loan_request_id " +
     "WHERE borrower_id=$[id] " +
     "GROUP BY loan_requests.id " +
-    "ORDER BY created_at DESC";
+    "ORDER BY created_at";
   try {
-    const requests = await db.any(queryStr, { id: id });
+    const requests = await db.any(queryStr, { id });
+
     return requests;
   } catch (err) {
     return err;
@@ -76,8 +77,8 @@ async function createRequest(request) {
     "WHERE borrower_id=$[borrower_id] AND funded_at is NULL AND accepted_proposal_id is NULL";
 
   const requestQuery =
-    "INSERT INTO loan_requests(title, description, value, created_at, borrower_id) " +
-    "VALUES ($[title], $[description], $[value], $[created_at], $[borrower_id]) " +
+    "INSERT INTO loan_requests(title, description, value, created_at, expire_at, borrower_id) " +
+    "VALUES ($[title], $[description], $[value], $[created_at], $[expire_at], $[borrower_id]) " +
     "RETURNING *";
   try {
     const totalRequestsValue = await db.one(totalRequestsQuery, request);
@@ -89,7 +90,12 @@ async function createRequest(request) {
       return newRequest;
     }
   } catch (err) {
-    return err;
+    console.log(err);
+    if (err?.detail && err.detail.includes("borrower_id")) {
+      return { error: "Borrower not found." };
+    } else {
+      throw err;
+    }
   }
 }
 
@@ -102,13 +108,17 @@ async function updateRequest(request) {
   const requestQuery = "SELECT * FROM loan_requests WHERE id=$[id]";
   const updatedRequestQuery =
     "UPDATE loan_requests " +
-    "SET title=$[title], description=$[description], value=$[value] " +
+    "SET title=$[title], description=$[description], value=$[value], update_at=$[date] " +
     "WHERE borrower_id=$[borrower_id] AND id=$[id] " +
     "RETURNING *";
   try {
+    const date = new Date().toISOString();
     const requestData = await db.one(requestQuery, { id: request.id });
     if (!requestData.funded_at && !request.accepted_proposal_id) {
-      const updatedRequest = await db.one(queryStr, request);
+      const updatedRequest = await db.one(updatedRequestQuery, {
+        ...request,
+        date,
+      });
       return updatedRequest;
     } else {
       return { error: "Loan request can no longer be updated." };

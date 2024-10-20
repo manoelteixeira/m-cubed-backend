@@ -19,16 +19,17 @@ async function getAllLoanRequests(
     credit_score: "borrowers.credit_score",
   };
   const totalRequestsQuery =
-    "SELECT COUNT(*) as total, SUM( loan_requests.value) as value FROM loan_requests  " +
-    "WHERE funded_at is NULL AND accepted_proposal_id is null";
+    "SELECT COUNT(*), SUM( loan_requests.value) FROM loan_requests  " +
+    "WHERE status='pending' ";
 
   const baseQuery =
-    "SELECT loan_requests.id, loan_requests.title, loan_requests.description, " +
-    "loan_requests.value, loan_requests.created_at, loan_requests.borrower_id, borrowers.state, " +
-    "borrowers.credit_score, borrowers.industry " +
-    "FROM loan_requests JOIN borrowers " +
-    "ON loan_requests.borrower_id = borrowers.id " +
-    "WHERE funded_at is NULL AND accepted_proposal_id is NULL ";
+    "SELECT * FROM loan_requests JOIN ( " +
+    "SELECT borrowers.id borrower_id, borrowers.state, borrowers.industry, credit_reports.score credit_score " +
+    "FROM borrowers JOIN credit_reports  " +
+    "ON borrowers.id = credit_reports.borrower_id ) borrowers " +
+    "ON loan_requests.borrower_id = borrowers.borrower_id " +
+    "WHERE status='pending' ";
+
   let query = baseQuery;
 
   if (search) {
@@ -48,14 +49,10 @@ async function getAllLoanRequests(
   try {
     const total = await db.one(totalRequestsQuery);
     const requests = await db.manyOrNone(query, { search: `%${search}%` });
-    // return {
-    //   total: Number(total.count),
-    //   value: Number(total.value),
-    //   loan_requests: requests,
-    // };
+
     return {
       total: parseInt(total.count),
-      value: parseFloat(total.value),
+      value: parseFloat(total.sum),
       loan_requests: requests,
     };
   } catch (err) {
@@ -66,20 +63,28 @@ async function getAllLoanRequests(
 
 // Get a single loan request by loan_request_id
 async function getLoanRequestByID(loan_request_id) {
-  const query = `SELECT * FROM loan_requests WHERE id = $1`;
+  const query = `SELECT * FROM loan_requests WHERE id = $[id]`;
   const borrowerQuery =
-    "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, " +
-    "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.credit_score, borrowers.start_date, borrowers.industry " +
-    "FROM users JOIN borrowers ON users.id = borrowers.user_id " +
+    "SELECT borrowers.id , borrowers.city, borrowers.street, borrowers.state, borrowers.zip_code, " +
+    "borrowers.phONe, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry, " +
+    "users.email, borrowers.credit_score " +
+    "FROM users JOIN ( " +
+    "SELECT borrowers.id , borrowers.city, borrowers.street, borrowers.state, borrowers.zip_code, borrowers.user_id, " +
+    "borrowers.phONe, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry, credit_reports.score credit_score " +
+    "FROM borrowers JOIN credit_reports " +
+    "ON borrowers.id  = credit_reports.borrower_id) borrowers " +
+    "ON borrowers.user_id = users.id " +
     "WHERE borrowers.id=$1";
   try {
-    const loanRequest = await db.one(query, [loan_request_id]);
+    const loanRequest = await db.one(query, { id: loan_request_id });
     const borrower = await db.one(borrowerQuery, [loanRequest.borrower_id]);
     delete loanRequest.borrower_id;
     delete borrower.user_id;
     loanRequest.borrower = borrower;
+    console.log(loanRequest, borrower);
     return loanRequest;
   } catch (error) {
+    console.log(error);
     if (error.received == 0) {
       return { error: "Loan request Not found." };
     }
@@ -90,8 +95,8 @@ async function getLoanRequestByID(loan_request_id) {
 async function createProposal(proposal) {
   try {
     const query = `
-      INSERT INTO loan_proposals (lender_id, loan_request_id, title, description, loan_amount, interest_rate, repayment_term, created_at)
-      VALUES ($[lender_id], $[loan_request_id], $[title], $[description], $[loan_amount], $[interest_rate], $[repayment_term], $[created_at])
+      INSERT INTO loan_proposals (lender_id, loan_request_id, title, description, loan_amount, interest_rate, repayment_term, created_at, expire_at)
+      VALUES ($[lender_id], $[loan_request_id], $[title], $[description], $[loan_amount], $[interest_rate], $[repayment_term], $[created_at], $[expire_at])
       RETURNING *`;
     const newProposal = await db.one(query, proposal);
     return newProposal;

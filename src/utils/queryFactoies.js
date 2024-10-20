@@ -62,14 +62,14 @@ function addCreditReportsQuery(reports) {
         report_id,
         score,
         created_at,
-        expiration_date,
+        expire_at,
         borrower_id,
       } = report;
-      return `('${credit_bureau}', '${report_id}', ${score}, '${created_at}', '${expiration_date}', '${borrower_id}')`;
+      return `('${credit_bureau}', '${report_id}', ${score}, '${created_at}', '${expire_at}', '${borrower_id}')`;
     })
     .join(", ");
   const query =
-    "INSERT INTO credit_reports ( credit_bureau, report_id, score, created_at, expiration_date, borrower_id) " +
+    "INSERT INTO credit_reports ( credit_bureau, report_id, score, created_at, expire_at, borrower_id) " +
     `VALUES ${reportStr} RETURNING *`;
   return query;
 }
@@ -77,19 +77,13 @@ function addCreditReportsQuery(reports) {
 function addLoanRequestsQuery(requests) {
   const requestsStr = requests
     .map((request) => {
-      const {
-        title,
-        description,
-        value,
-        created_at,
-        expiration_date,
-        borrower_id,
-      } = request;
-      return `('${title}','${description}',${value},'${created_at}','${expiration_date}','${borrower_id}')`;
+      const { title, description, value, created_at, expire_at, borrower_id } =
+        request;
+      return `('${title}','${description}',${value},'${created_at}','${expire_at}','${borrower_id}')`;
     })
     .join(", ");
   const query =
-    "INSERT INTO loan_requests (title, description, value, created_at, expiration_date, borrower_id) " +
+    "INSERT INTO loan_requests (title, description, value, created_at, expire_at, borrower_id) " +
     `VALUES ${requestsStr} RETURNING *`;
   return query;
 }
@@ -105,14 +99,14 @@ function addLoanProposalsQuery(proposals) {
         repayment_term,
         lender_id,
         created_at,
-        expiration_date,
+        expire_at,
         loan_request_id,
       } = proposal;
-      return `('${title}', '${description}', '${loan_amount}', ${interest_rate}, ${repayment_term}, '${lender_id}', '${created_at}', '${expiration_date}', '${loan_request_id}')`;
+      return `('${title}', '${description}', '${loan_amount}', ${interest_rate}, ${repayment_term}, '${lender_id}', '${created_at}', '${expire_at}', '${loan_request_id}')`;
     })
     .join(", ");
   const query =
-    "INSERT INTO loan_proposals (title, description, loan_amount, interest_rate, repayment_term, lender_id, created_at, expiration_date, loan_request_id) " +
+    "INSERT INTO loan_proposals (title, description, loan_amount, interest_rate, repayment_term, lender_id, created_at, expire_at, loan_request_id) " +
     `VALUES ${proposalsStr} RETURNING *`;
 
   return query;
