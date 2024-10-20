@@ -5,7 +5,7 @@ const getAllLoanProposalsByLenderID = async (id) => {
   try {
     // const query = `SELECT * FROM loan_proposals WHERE lender_id = $1`;
     const query =
-      "SELECT loan_proposals.id, loan_proposals.title, loan_proposals.description, loan_proposals.loan_amount,  " +
+      "SELECT loan_proposals.id, loan_proposals.title, loan_proposals.description, loan_proposals.requirements, loan_proposals.loan_amount,  " +
       "loan_proposals.interest_rate, loan_proposals.repayment_term, loan_proposals.created_at,  " +
       "loan_proposals.expire_at , loan_proposals.update_at , loan_proposals.status , loan_proposals.lender_id, " +
       "loan_proposals.loan_request_id, loan_requests.borrower_id as borrower_id " +
@@ -63,10 +63,11 @@ const createProposalFromRequest = async (
 
 // Update a loan proposal by ID
 const updateProposalByID = async (proposal) => {
+  console.log(proposal);
   const proposalQuery = "SELECT * FROM loan_proposals WHERE id=$[id]";
   const updateProposalQuery =
     "UPDATE loan_proposals " +
-    "SET title=$[title], description=$[description], loan_amount=$[loan_amount], " +
+    "SET title=$[title], description=$[description], requirements=$[requirements], loan_amount=$[loan_amount], " +
     "interest_rate=$[interest_rate], repayment_term=$[repayment_term], created_at=$[created_at], " +
     "expire_at=$[expire_at], update_at=$[date]" +
     "WHERE lender_id=$[lender_id] AND id=$[id] RETURNING *";
@@ -79,6 +80,7 @@ const updateProposalByID = async (proposal) => {
         ...proposal,
         date,
       });
+      console.log(updatedProposal);
       return updatedProposal;
     } else {
       return { error: "Loan proposal can no longer be updated." };

@@ -12,6 +12,7 @@ const requests = express.Router({ mergeParams: true });
 const {
   validateLoanAmount,
   validateInterestRate,
+  validateRequirements,
   validateRepaymentTerm,
   validateQuerySort,
   validateQueryOrder,
@@ -153,13 +154,13 @@ requests.get("/:id", async (req, res) => {
  *      - in: path
  *        name: lender_id
  *        schema:
- *          type: number
+ *          type: string
  *        required: true
  *        description: Lender ID
  *      - in: path
  *        name: id
  *        schema:
- *          type: number
+ *          type: string
  *        required: true
  *        description: Request ID
  *    requestBody:
@@ -170,8 +171,9 @@ requests.get("/:id", async (req, res) => {
  *                  example:
  *                    title: Low-Interest Proposal TEST
  *                    description: Offering a low-interest loan with flexible repayment options.
+ *                    requirements: [Personal Garantee, Down Payment]
  *                    created_at: '2023-01-20T05:00:00.000Z'
- *                    expite_at: '2023-02-20T05:00:00.000Z'
+ *                    expire_at: '2023-02-20T05:00:00.000Z'
  *                    loan_amount: 50000
  *                    interest_rate: 5
  *                    repayment_term: 36
@@ -185,6 +187,7 @@ requests.post(
   "/:id",
   validateTitle,
   validateDescription,
+  validateRequirements,
   validateCreatedAt,
   validateExpireAt,
   validateLoanAmount,
@@ -193,8 +196,12 @@ requests.post(
   async (req, res) => {
     const { lender_id, id } = req.params;
     const proposal = req.body;
+    const { requirements } = proposal;
+    proposal.requirements = requirements.length == 0 ? null : requirements;
+
     proposal.loan_request_id = id;
     proposal.lender_id = lender_id;
+    console.log(proposal);
     try {
       const newProposal = await createProposal(proposal);
       if (newProposal.id) {

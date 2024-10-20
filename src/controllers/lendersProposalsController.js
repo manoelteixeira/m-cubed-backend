@@ -13,6 +13,7 @@ const { getLender } = require("../queries/lendersQueries");
 // Importing validators
 const {
   validateLoanAmount,
+  validateRequirements,
   validateInterestRate,
   validateRepaymentTerm,
 } = require("../validators/lendersProposalsValidators");
@@ -33,14 +34,14 @@ const {
 
 /** List All Proposals Made By the Lender
  * @swagger
- * /lenders/{lender_id}/proposals:
+ * /lenders/{lender_id}/proposals/:
  *  get:
  *    tags:
  *      - Lender Proposals
  *    summary: List All Proposals Made By the Lender
  *    parameters:
  *      - in: path
- *        name: id
+ *        name: lender_id
  *        schema:
  *          type: string
  *        required: true
@@ -53,6 +54,7 @@ const {
  */
 proposals.get("/", async (req, res) => {
   const { lender_id } = req.params;
+  console.log(lender_id);
   try {
     const proposalsByLender = await getAllLoanProposalsByLenderID(lender_id);
     // console.log(proposalsByLender);
@@ -139,6 +141,7 @@ proposals.get("/:proposal_id", async (req, res) => {
  *              example:
  *               title: Low-Interest P222roposal
  *               description: Offering a low-interest loan with flexible repayment options.
+ *               requirements: [Personal Garantee, Down Payment]
  *               loan_amount: 50000
  *               interest_rate: 5
  *               repayment_term: 36
@@ -156,6 +159,7 @@ proposals.put(
   validateDescription,
   validateTitle,
   validateDescription,
+  validateRequirements,
   validateCreatedAt,
   validateExpireAt,
   validateLoanAmount,
@@ -163,17 +167,23 @@ proposals.put(
   validateRepaymentTerm,
   async (req, res) => {
     const { lender_id, id } = req.params;
+    const proposal = req.body;
+    const { requirements } = proposal;
+    proposal.requirements = requirements.length == 0 ? null : requirements;
 
     try {
-      const proposal = await updateProposalByID({
-        ...req.body,
+      const updatedProposal = await updateProposalByID({
+        ...proposal,
         lender_id,
         id,
       });
-      if (proposal.id) {
-        res.status(200).json(proposal);
-      } else if (proposal.error == "Loan proposal can no longer be updated.") {
-        res.status(403).json({ error: proposal.error });
+      console.log(updatedProposal);
+      if (updatedProposal.id) {
+        res.status(200).json(updatedProposal);
+      } else if (
+        updatedProposal.error == "Loan proposal can no longer be updated."
+      ) {
+        res.status(403).json({ error: updatedProposal.error });
       } else {
         res.status(404).json({ error: "Request not found." });
       }
@@ -258,6 +268,11 @@ module.exports = proposals;
  *         description:
  *           type: string
  *           description: Loan Proposal Description
+ *         requirements:
+ *           type: array
+ *           description: Loan Proposal Requirements
+ *           items:
+ *             type: string
  *         loan_amount:
  *           type: number
  *           description: Loan Proposal Amount
@@ -288,6 +303,7 @@ module.exports = proposals;
  *          id: 082d54ef-635d-4ba3-b945-8b6780851d61,
  *          title: Low-Interest Proposal,
  *          description: Offering a low-interest loan with flexible repayment options.,
+ *          requirements: [Personal Garantee, Down Payment]
  *          loan_amount: 50000.00,
  *          interest_rate: 5.00,
  *          repayment_term: 36,

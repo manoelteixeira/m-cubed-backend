@@ -80,6 +80,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     const { id } = borrower;
     return createCreditReport(id);
   });
+
   reports = await db.many(addCreditReportsQuery(reports));
   console.log(reports);
 

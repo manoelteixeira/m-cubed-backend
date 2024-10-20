@@ -38,7 +38,6 @@ function createBorrower() {
     "Construction",
     "Hospitality",
     "Renewable Energy",
-    "Technolog",
     "Other",
   ];
   return {
