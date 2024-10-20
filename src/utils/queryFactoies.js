@@ -94,6 +94,7 @@ function addLoanProposalsQuery(proposals) {
       const {
         title,
         description,
+        requirements,
         loan_amount,
         interest_rate,
         repayment_term,
@@ -102,11 +103,17 @@ function addLoanProposalsQuery(proposals) {
         expire_at,
         loan_request_id,
       } = proposal;
-      return `('${title}', '${description}', '${loan_amount}', ${interest_rate}, ${repayment_term}, '${lender_id}', '${created_at}', '${expire_at}', '${loan_request_id}')`;
+
+      let req = Array.isArray(requirements)
+        ? `ARRAY[${requirements.map((item) => `'${item}'`)}]`
+        : null;
+
+      return `('${title}', '${description}', ${req},'${loan_amount}', ${interest_rate}, ${repayment_term}, '${lender_id}', '${created_at}', '${expire_at}', '${loan_request_id}')`;
     })
     .join(", ");
+
   const query =
-    "INSERT INTO loan_proposals (title, description, loan_amount, interest_rate, repayment_term, lender_id, created_at, expire_at, loan_request_id) " +
+    "INSERT INTO loan_proposals (title, description, requirements, loan_amount, interest_rate, repayment_term, lender_id, created_at, expire_at, loan_request_id) " +
     `VALUES ${proposalsStr} RETURNING *`;
 
   return query;

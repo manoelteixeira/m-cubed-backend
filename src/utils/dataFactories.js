@@ -84,14 +84,25 @@ function createLoanRequest(id) {
   };
 }
 
-function createLoanProposal(request, lender) {
+function createLoanProposal(request, report, lender) {
   let date = new Date(request.created_at);
   date = offsetDate(date, { days: randomInt(0, 3), hours: randomInt(0, 10) });
   const expiration = offsetDate(date, { days: 30 });
   const description = faker.hacker.phrase();
+  const { score } = report;
+  let requirements = null;
+  if (score < 500) {
+    requirements = ["Personal Garantee", "Down Payment", "Other"];
+  } else if (score < 600) {
+    requirements = ["Personal Garantee", "Down Payment"];
+  } else if (score < 750) {
+    requirements = ["Down Payment"];
+  }
+
   return {
     title: `${lender.business_name} - ${request.title}`,
     description: description.replaceAll("'", "''"),
+    requirements: requirements,
     loan_amount: request.value,
     interest_rate: randomInt(0, 12) / 100,
     repayment_term: randomInt(12, 60),
@@ -104,7 +115,7 @@ function createLoanProposal(request, lender) {
 
 function createCreditReport(id) {
   const date = faker.date.past({ days: 10 });
-  const end = offsetDate(date, { months: 1 });
+  const end = offsetDate(date, { months: 3 });
   const bureauList = [
     "Trust Me Bro ltda",
     "Dun & Bradstreet",
@@ -116,7 +127,7 @@ function createCreditReport(id) {
   return {
     credit_bureau: choose(bureauList),
     report_id: `${faker.string.alphanumeric(15)}`,
-    score: randomInt(550, 780),
+    score: randomInt(450, 850),
     created_at: date.toISOString(),
     expire_at: end.toISOString(),
     borrower_id: id,

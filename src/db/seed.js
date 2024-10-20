@@ -24,16 +24,17 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
   let lenders = lenderFactory(nLenders);
   for (let idx = 0; idx < lenders.length; idx++) {
     const user = await createUser(lenders[idx], "lender");
-    users.push(user);
     lenders[idx] = { ...lenders[idx], ...user };
+    users.push(user);
   }
 
   let borrowers = borrowerFactory(nBorrowers);
   for (let idx = 0; idx < borrowers.length; idx++) {
     const user = await createUser(borrowers[idx], "borrower");
-    users.push(user);
     borrowers[idx] = { ...borrowers[idx], ...user };
+    users.push(user);
   }
+  console.log(users);
 
   console.log("-=-=-    ADDING USERS    -=-=-");
   users = await db.many(addUsersQuery(users));
@@ -98,9 +99,13 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
   console.log("-=-=-    ADDING LOAN PROPOSALS    -=-=-");
   let loanProposals = loanRequests
     .map((request) => {
-      const proposal = lenders.map((lender) =>
-        createLoanProposal(request, lender)
+      const report = reports.find(
+        (item) => (request.borrower_id = item.borrower_id)
       );
+      const proposal = lenders.map((lender) =>
+        createLoanProposal(request, report, lender)
+      );
+
       return proposal;
     })
     .flat();
