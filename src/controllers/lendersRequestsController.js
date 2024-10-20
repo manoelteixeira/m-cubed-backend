@@ -186,6 +186,7 @@ requests.post(
   validateTitle,
   validateDescription,
   validateCreatedAt,
+  validateExpireAt,
   validateLoanAmount,
   validateInterestRate,
   validateRepaymentTerm,

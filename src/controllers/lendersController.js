@@ -19,19 +19,11 @@ const {
   updateLender,
 } = require("../queries/lendersQueries");
 // Validators
-// const {
-//   validateEmail,
-//   validatePassword,
-//   validateBusinessName,
-// } = require("../validators/lendersValidators");
+
 const {
   validateEmail,
   validatePassword,
   validateBusinessName,
-  // validateTitle,
-  // validateDescription,
-  // validateCreatedAt,
-  // validateExpireAt,
 } = require("../validators/validators");
 const { authenticateToken } = require("../validators/loginValidators");
 
