@@ -1,35 +1,35 @@
 // validators/borrowersValidators.js
 
-function validateEmail(req, res, next) {
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/g;
-  if (!req.body.email) {
-    res.status(400).json({ error: "email is required." });
-  } else if (typeof req.body.email !== "string") {
-    res.status(400).json({ error: "email must be a string" });
-  } else if (req.body.email.length == 0) {
-    res.status(400).json({ error: "email cannot be an empty string." });
-  } else if (req.body.email.length > 140) {
-    res.status(400).json({ error: "email exceeds 140 characters." });
-  } else if (!emailPattern.test(req.body.email)) {
-    res.status(400).json({ error: "Invalid email." });
-  } else {
-    next();
-  }
-}
+// function validateEmail(req, res, next) {
+//   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/g;
+//   if (!req.body.email) {
+//     res.status(400).json({ error: "email is required." });
+//   } else if (typeof req.body.email !== "string") {
+//     res.status(400).json({ error: "email must be a string" });
+//   } else if (req.body.email.length == 0) {
+//     res.status(400).json({ error: "email cannot be an empty string." });
+//   } else if (req.body.email.length > 140) {
+//     res.status(400).json({ error: "email exceeds 140 characters." });
+//   } else if (!emailPattern.test(req.body.email)) {
+//     res.status(400).json({ error: "Invalid email." });
+//   } else {
+//     next();
+//   }
+// }
 
-function validatePassword(req, res, next) {
-  if (!req.body.password) {
-    res.status(400).json({ error: "password is required." });
-  } else if (typeof req.body.password !== "string") {
-    res.status(400).json({ error: "password must be a string" });
-  } else if (req.body.password.length == 0) {
-    res.status(400).json({ error: "password cannot be an empty string." });
-  } else if (req.body.password.length > 140) {
-    res.status(400).json({ error: "password exceeds 140 characters." });
-  } else {
-    next();
-  }
-}
+// function validatePassword(req, res, next) {
+//   if (!req.body.password) {
+//     res.status(400).json({ error: "password is required." });
+//   } else if (typeof req.body.password !== "string") {
+//     res.status(400).json({ error: "password must be a string" });
+//   } else if (req.body.password.length == 0) {
+//     res.status(400).json({ error: "password cannot be an empty string." });
+//   } else if (req.body.password.length > 140) {
+//     res.status(400).json({ error: "password exceeds 140 characters." });
+//   } else {
+//     next();
+//   }
+// }
 
 function validateCity(req, res, next) {
   if (!req.body.city) {
@@ -102,18 +102,6 @@ function validatePhone(req, res, next) {
   }
 }
 
-function validateBusinessName(req, res, next) {
-  if (!req.body.business_name) {
-    res.status(400).json({ error: "business_name is required." });
-  } else if (typeof req.body.business_name !== "string") {
-    res.status(400).json({ error: "business_name must be a string" });
-  } else if (req.body.business_name.length == 0) {
-    res.status(400).json({ error: "business_name cannot be an empty string." });
-  } else {
-    next();
-  }
-}
-
 function validateEIN(req, res, next) {
   if (!req.body.ein) {
     res.status(400).json({ error: "ein is required." });
@@ -153,14 +141,11 @@ function validateIndustry(req, res, next) {
 }
 
 module.exports = {
-  validateEmail,
-  validatePassword,
   validateCity,
   validateStreet,
   validateState,
   validateZipCode,
   validatePhone,
-  validateBusinessName,
   validateEIN,
   validateStartDate,
   validateIndustry,

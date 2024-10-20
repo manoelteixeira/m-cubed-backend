@@ -15,13 +15,13 @@ const {
   updateRequest,
 } = require("../queries/borrowersRequestsQueries");
 
+const { validateValue } = require("../validators/borrowersRequestsValidators");
 const {
   validateTitle,
   validateDescription,
-  validateValue,
   validateCreatedAt,
   validateExpireAt,
-} = require("../validators/borrowersRequestsValidators");
+} = require("../validators/validators");
 
 const requestProposalsController = require("./borrowersRequestProposalsController");
 

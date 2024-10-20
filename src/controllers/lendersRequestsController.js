@@ -10,9 +10,6 @@ const express = require("express");
 const requests = express.Router({ mergeParams: true });
 // Importing validators
 const {
-  validateTitle,
-  validateDescription,
-  validateCreatedAt,
   validateLoanAmount,
   validateInterestRate,
   validateRepaymentTerm,
@@ -22,6 +19,13 @@ const {
   validateQueryOffset,
   validateSearch,
 } = require("../validators/lendersProposalsValidators");
+
+const {
+  validateTitle,
+  validateDescription,
+  validateCreatedAt,
+  validateExpireAt,
+} = require("../validators/validators");
 
 // Importing queries
 const {

@@ -10,10 +10,8 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const { getUsers, logInUser } = require("../queries/loginQueries");
-const {
-  validateEmail,
-  validatePassword,
-} = require("../validators/loginValidators");
+
+const { validateEmail, validatePassword } = require("../validators/validators");
 
 /* Configurations */
 require("dotenv").config();

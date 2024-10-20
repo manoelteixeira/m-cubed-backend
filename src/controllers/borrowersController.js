@@ -21,18 +21,22 @@ const {
 const { getCreditReports } = require("../queries/creditReportsQueries");
 // Validators
 const {
-  validateEmail,
-  validatePassword,
   validateCity,
   validateStreet,
   validateState,
   validateZipCode,
   validatePhone,
-  validateBusinessName,
   validateEIN,
   validateStartDate,
   validateIndustry,
 } = require("../validators/borrowersValidators");
+
+const {
+  validateEmail,
+  validatePassword,
+  validateBusinessName,
+} = require("../validators/validators");
+
 const { authenticateToken } = require("../validators/loginValidators");
 
 /* Configurations */
