@@ -36,6 +36,25 @@ function validateRepaymentTerm(req, res, next) {
   }
 }
 
+function validateRequirements(req, res, next) {
+  const checkRequirements = (arr) =>
+    arr.filter((item) => typeof item !== "string").length == 0;
+
+  const requirements = req.body.requirements;
+
+  if (!requirements) {
+    res.status(400).json({ error: "requirements is required" });
+  } else if (!Array.isArray(requirements)) {
+    res.status(400).json({ error: "requirements must be an array" });
+  } else if (requirements.length > 0 && !checkRequirements(requirements)) {
+    res
+      .status(400)
+      .json({ error: "requirements array must olny contain strings" });
+  } else {
+    next();
+  }
+}
+
 function validateQuerySort(req, res, next) {
   const validSorts = [
     "title",
@@ -73,6 +92,7 @@ function validateQueryLimit(req, res, next) {
     next();
   }
 }
+
 function validateQueryOffset(req, res, next) {
   if (req.query.offset && isNaN(req.query.offset)) {
     res.status(400).json({ error: "offset must me a number." });
@@ -85,6 +105,7 @@ module.exports = {
   validateLoanAmount,
   validateInterestRate,
   validateRepaymentTerm,
+  validateRequirements,
   validateQuerySort,
   validateQueryOrder,
   validateQueryLimit,
