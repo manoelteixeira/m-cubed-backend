@@ -12,9 +12,6 @@ const { getLender } = require("../queries/lendersQueries");
 
 // Importing validators
 const {
-  // validateTitle,
-  // validateDescription,
-  // validateCreatedAt,
   validateLoanAmount,
   validateInterestRate,
   validateRepaymentTerm,
@@ -160,6 +157,7 @@ proposals.put(
   validateTitle,
   validateDescription,
   validateCreatedAt,
+  validateExpireAt,
   validateLoanAmount,
   validateInterestRate,
   validateRepaymentTerm,
