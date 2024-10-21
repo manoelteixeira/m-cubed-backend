@@ -113,9 +113,8 @@ function createLoanProposal(request, report, lender) {
   };
 }
 
-function createCreditReport(id) {
-  const date = faker.date.past({ days: 10 });
-  const end = offsetDate(date, { months: 3 });
+function createCreditReport(id, date) {
+  const end = offsetDate(date, { months: 1 });
   const bureauList = [
     "Trust Me Bro ltda",
     "Dun & Bradstreet",

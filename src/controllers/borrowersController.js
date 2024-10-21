@@ -125,7 +125,7 @@ borrowersController.post(
           secret
         );
         delete newBorrower.password;
-        res.status(200).json({ borrower: { ...newBorrower }, token });
+        res.status(201).json({ borrower: { ...newBorrower }, token });
       } else {
         res.status(400).json({ error: newBorrower.error });
       }
