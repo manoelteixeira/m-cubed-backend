@@ -1,5 +1,5 @@
 // utils/factory.jsx
-const { faker } = require("@faker-js/faker");
+const { faker, da } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
 const { getRandomName, choose, randomInt, offsetDate } = require("./helpers");
 require("dotenv").config();
@@ -91,9 +91,9 @@ function createLoanProposal(request, report, lender) {
   const description = faker.hacker.phrase();
   const { score } = report;
   let requirements = null;
-  if (score < 500) {
+  if (score < 650) {
     requirements = ["Personal Garantee", "Down Payment", "Other"];
-  } else if (score < 600) {
+  } else if (score < 700) {
     requirements = ["Personal Garantee", "Down Payment"];
   } else if (score < 750) {
     requirements = ["Down Payment"];
@@ -123,10 +123,11 @@ function createCreditReport(id, date) {
     "FICO SBSS",
     "CreditSafe",
   ];
+
   return {
     credit_bureau: choose(bureauList),
     report_id: `${faker.string.alphanumeric(15)}`,
-    score: randomInt(450, 850),
+    score: randomInt(600, 850),
     created_at: date.toISOString(),
     expire_at: end.toISOString(),
     borrower_id: id,
