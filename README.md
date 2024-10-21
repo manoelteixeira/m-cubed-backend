@@ -52,9 +52,8 @@ Back-end for [M-Cubed](https://github.com/manoelteixeira/m-cubed-frontend) app
 | 22  | ✅ | `/lenders/:l_id/requests/` | GET | Get all pending requests (not accepted) |
 | 23  | ✅ | `/lenders/:l_id/requests/:id/` | GET | Get a single loan request |
 | 24  | ✅ | `/lenders/:l_id/requests/:id/` | POST | Create a new Proposition |
-| 24  | ❌ | `/mail-list` | GET | Get all email |
-| 24  | ❌ | `/mail-list` | POST | Create a new entry |
-
-
+| 25  | ❌ | `/mail-list` | GET | Get all email |
+| 26  | ❌ | `/mail-list` | POST | Create a new entry |
+| 27  | ❌ | `/mail-list/:id` | POST | Delete an entry |
 
 > You check the endpoints [here](https://m-cubed-backend.onrender.com/docs)
