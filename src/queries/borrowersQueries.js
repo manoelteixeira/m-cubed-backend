@@ -1,7 +1,8 @@
 // queries/borrowersQueries.js
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig.js");
-
+const { createCreditReport } = require("../utils/dataFactories.js");
+const { offsetDate, randomInt } = require("../utils/helpers.js");
 require("dotenv").config();
 const SALT = Number(process.env.SALT);
 
@@ -97,6 +98,9 @@ async function createBorrower(borrower) {
     "INSERT INTO borrowers (user_id, city, street, state, zip_code, phone, business_name, ein, start_date, industry) " +
     "VALUES($[user_id],$[city], $[street], $[state], $[zip_code], $[phone], $[business_name], $[ein], $[start_date], $[industry]) " +
     "RETURNING *";
+  const creditReportQuery =
+    "INSERT INTO credit_reports ( credit_bureau, report_id, score, created_at, expire_at, borrower_id) " +
+    `VALUES ($[credit_bureau], $[report_id], $[score], $[created_at], $[expire_at], $[borrower_id]) RETURNING *`;
 
   try {
     const data = await db.tx(async (t) => {
@@ -108,15 +112,20 @@ async function createBorrower(borrower) {
         ...borrower,
         user_id: newUser.id,
       });
-      return { newUser, newBorrower };
+      const report = createCreditReport(newBorrower.id, new Date());
+      console.log(report);
+      const newReport = await t.one(creditReportQuery, report);
+      console.log(newReport);
+      return { newUser, newBorrower, newReport };
     });
-    const { newUser, newBorrower } = data;
+    const { newUser, newBorrower, newReport } = data;
     const { id, password } = newUser;
     return {
       password_hash: password,
       email: newUser.email,
       user_id: id,
       ...newBorrower,
+      credit_report: newReport,
     };
   } catch (err) {
     if (err.detail.includes("email") && err.detail.includes("already exists"))
