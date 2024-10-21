@@ -1,7 +1,7 @@
 // queries/borrowersQueries.js
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig.js");
-const { da } = require("@faker-js/faker");
+
 require("dotenv").config();
 const SALT = Number(process.env.SALT);
 

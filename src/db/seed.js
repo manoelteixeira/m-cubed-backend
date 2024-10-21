@@ -1,5 +1,6 @@
 // repos/m-cubed-backend/src/db/seed.js
 const db = require("./dbConfig.js");
+const { faker } = require("@faker-js/faker");
 const {
   lenderFactory,
   borrowerFactory,
@@ -79,7 +80,8 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
   console.log("-=-=-    ADDING CREDIT REPORTS    -=-=-");
   let reports = borrowers.map((borrower) => {
     const { id } = borrower;
-    return createCreditReport(id);
+    const date = faker.date.past({ days: 10 });
+    return createCreditReport(id, date);
   });
 
   reports = await db.many(addCreditReportsQuery(reports));

@@ -5,8 +5,8 @@ CREATE DATABASE m3_dev;
 
 CREATE TABLE "mail_list"(
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
- "email" VARCHAR(140) UNIQUE NOT NULL,
- "role" VARCHAR(10) NOT NULL
+  "email" VARCHAR(140) UNIQUE NOT NULL,
+  "role" VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE "users"(
