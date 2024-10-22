@@ -70,7 +70,7 @@ function borrowerFactory(num) {
 }
 
 function createLoanRequest(id) {
-  const date = faker.date.past({ days: 10 });
+  const date = faker.date.past({ days: 5 });
   const expiration = offsetDate(date, { days: 30 });
 
   const description = faker.commerce.productDescription();
@@ -85,18 +85,19 @@ function createLoanRequest(id) {
 }
 
 function createLoanProposal(request, report, lender) {
+  const possibleRequirements = ["Personal Guarantee ", "Downpayment", "None"];
   let date = new Date(request.created_at);
-  date = offsetDate(date, { days: randomInt(0, 3), hours: randomInt(0, 10) });
-  const expiration = offsetDate(date, { days: 30 });
+  date = offsetDate(date, { hours: randomInt(1, 10) });
+  const expiration = offsetDate(date, { months: 1 });
   const description = faker.hacker.phrase();
   const { score } = report;
   let requirements = null;
   if (score < 650) {
-    requirements = ["Personal Garantee", "Down Payment", "Other"];
+    requirements = possibleRequirements.slice(0, 2);
   } else if (score < 700) {
-    requirements = ["Personal Garantee", "Down Payment"];
-  } else if (score < 750) {
-    requirements = ["Down Payment"];
+    requirements = possibleRequirements[1];
+  } else if (score > 750) {
+    requirements = possibleRequirements[2];
   }
 
   return {

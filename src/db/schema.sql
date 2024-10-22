@@ -66,7 +66,7 @@ CREATE TABLE "loan_proposals" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "title" VARCHAR(140) NOT NULL,
   "description" TEXT NOT NULL,
-  "requirements" TEXT[] DEFAULT NULL, -- [Personal Garantee, Down Payment, Others]
+  "requirements" TEXT[] DEFAULT ARRAY['None'], -- [Personal Garantee, Down Payment, Others]
   "loan_amount" NUMERIC(15, 2) NOT NULL,  -- Loan amount (e.g., $10,000.00)
   "interest_rate" NUMERIC(5, 2) NOT NULL,  -- Interest rate as a percentage (e.g., 5.00%)
   "repayment_term" INTEGER NOT NULL,  -- Repayment term in months (e.g., 24 for 2 years)
