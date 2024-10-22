@@ -23,20 +23,22 @@ const {
 async function seed(nLenders, nBorrowers, nLoanRequest) {
   let users = [];
 
-  let lenders = lenderFactory(nLenders);
+  let lenders = await lenderFactory(nLenders);
+  console.log(lenders);
   for (let idx = 0; idx < lenders.length; idx++) {
     const user = await createUser(lenders[idx], "lender");
     lenders[idx] = { ...lenders[idx], ...user };
     users.push(user);
   }
 
-  let borrowers = borrowerFactory(nBorrowers);
+  let borrowers = await borrowerFactory(nBorrowers);
+  console.log(borrowers);
   for (let idx = 0; idx < borrowers.length; idx++) {
     const user = await createUser(borrowers[idx], "borrower");
     borrowers[idx] = { ...borrowers[idx], ...user };
     users.push(user);
   }
-  console.log(users);
+  // console.log(users);
 
   console.log("-=-=-    ADDING USERS    -=-=-");
   users = await db.many(addUsersQuery(users));
@@ -120,9 +122,16 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
   console.log("-=-=-    ADDING DATA TO MAIL LIST    -=-=-");
   const mailList = await db.many(addToMailListQuery(users));
   console.log(mailList);
-
-  console.log("-=-=-    ALL DONE    -=-=-");
 }
 
-// console.log(seed(2, 2, 2));
-seed(10, 100, 10);
+async function run() {
+  console.log("**************************");
+  console.log("*    SEEDING DATABASE    *");
+  console.log("**************************");
+  await seed(10, 100, 10);
+  console.log("**************************");
+  console.log("*        ALL DONE        *");
+  console.log("**************************");
+}
+
+run();

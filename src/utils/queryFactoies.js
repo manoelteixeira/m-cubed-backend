@@ -16,12 +16,12 @@ function addUsersQuery(users) {
 function addLendersQuery(lenders) {
   const lendersStr = lenders
     .map((lender) => {
-      const { business_name, user_id } = lender;
-      return `('${business_name}', '${user_id}')`;
+      const { business_name, image_url, user_id } = lender;
+      return `('${business_name}', '${image_url}', '${user_id}')`;
     })
     .join(", ");
   const query =
-    "INSERT INTO lenders(business_name, user_id) " +
+    "INSERT INTO lenders(business_name, image_url, user_id) " +
     `VALUES ${lendersStr} RETURNING *`;
   return query;
 }
@@ -36,20 +36,20 @@ function addBorrowersQuery(borrowers) {
         zip_code,
         phone,
         business_name,
+        image_url,
         ein,
         start_date,
         industry,
         user_id,
       } = borrower;
-      //   console.log(borrower);
       return (
         `('${city}', '${street}', '${state}', '${zip_code}', '${phone}', ` +
-        `'${business_name}', ${ein}, '${start_date}', '${industry}', '${user_id}')`
+        `'${business_name}', '${image_url}', ${ein}, '${start_date}', '${industry}', '${user_id}')`
       );
     })
     .join(", ");
   const query =
-    "INSERT INTO borrowers( city, street, state, zip_code, phone, business_name, ein, start_date, industry, user_id) " +
+    "INSERT INTO borrowers( city, street, state, zip_code, phone, business_name, image_url, ein, start_date, industry, user_id) " +
     `VALUES ${borrowersStr} RETURNING *`;
   return query;
 }

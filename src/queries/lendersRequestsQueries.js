@@ -66,11 +66,11 @@ async function getLoanRequestByID(loan_request_id) {
   const query = `SELECT * FROM loan_requests WHERE id = $[id]`;
   const borrowerQuery =
     "SELECT borrowers.id , borrowers.city, borrowers.street, borrowers.state, borrowers.zip_code, " +
-    "borrowers.phONe, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry, " +
+    "borrowers.phone, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry, " +
     "users.email, borrowers.credit_score " +
     "FROM users JOIN ( " +
     "SELECT borrowers.id , borrowers.city, borrowers.street, borrowers.state, borrowers.zip_code, borrowers.user_id, " +
-    "borrowers.phONe, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry, credit_reports.score credit_score " +
+    "borrowers.phone, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry, credit_reports.score credit_score " +
     "FROM borrowers JOIN credit_reports " +
     "ON borrowers.id  = credit_reports.borrower_id) borrowers " +
     "ON borrowers.user_id = users.id " +

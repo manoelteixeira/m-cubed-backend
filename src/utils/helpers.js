@@ -8,20 +8,8 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function choose(arr, num = null) {
-  if (!num) {
-    return arr[randomInt(0, arr.length)];
-  } else if (num >= arr.length) {
-    return arr;
-  }
-  const choosen = [];
-  while (choosen.length < num) {
-    const item = arr[randomInt(0, arr.length)];
-    if (!choosen.includes(item)) {
-      choosen.push(item);
-    }
-  }
-  return choosen;
+function choose(arr) {
+  return arr[randomInt(0, arr.length)];
 }
 
 function getRandomName() {
@@ -45,6 +33,13 @@ function getRandomName() {
     .map((item) => capitalize(item))
     .join(" ");
   return name;
+}
+
+async function getRandomAvatar(name) {
+  const baseURL = "https://api.multiavatar.com";
+  const data = await fetch(`${baseURL}/${name}.svg`);
+
+  return data.url || "https://placehold.co/600x400";
 }
 
 /**
@@ -88,6 +83,7 @@ module.exports = {
   randomInt,
   choose,
   getRandomName,
+  getRandomAvatar,
   offsetDate,
   isExpired,
 };

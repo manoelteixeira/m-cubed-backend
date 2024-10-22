@@ -24,6 +24,7 @@ const {
   validateEmail,
   validatePassword,
   validateBusinessName,
+  validateImageURL,
 } = require("../validators/validators");
 const { authenticateToken } = require("../validators/loginValidators");
 
@@ -98,6 +99,7 @@ lenders.post(
     const lender = req.body;
     try {
       const newLender = await createLender(lender);
+
       if (newLender.id) {
         const token = jwt.sign(
           { userId: newLender.id, email: newLender.email },
@@ -108,6 +110,7 @@ lenders.post(
         res.status(400).json(newLender);
       }
     } catch (error) {
+      console.log(error);
       res.status(500).json(error);
     }
   }
@@ -223,6 +226,7 @@ lenders.put(
   validateEmail,
   validatePassword,
   validateBusinessName,
+  validateImageURL,
   // authenticateToken,
   async (req, res) => {
     const { id } = req.params;
@@ -269,10 +273,14 @@ module.exports = lenders;
  *         business_name:
  *           type: string
  *           description: The Lender business name
+ *         image_url:
+ *           type: string
+ *           description: The Lender business image
  *       example:
  *         id: ff5934c5-62b4-4c52-b933-a2ac86a2a86c
  *         user_id: ff5934c5-62b4-4c52-b933-a2ac86a2a862
  *         email: lender1@example.com
  *         password: password123
  *         business_name: Lender Corp
+ *         image_url: https://placehold.co/600x400
  */

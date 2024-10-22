@@ -91,13 +91,26 @@ function validateExpireAt(req, res, next) {
   } else if (new Date(req.body.expire_at) == "Invalid Date") {
     res.status(400).json({ error: "Invalid date." });
   } else if (new Date(req.body.expire_at) - new Date(req.body.created_at) < 0) {
-    res
-      .status(400)
-      .json({
-        error: "Invalid date. expire_at must be an date after created_at",
-      });
+    res.status(400).json({
+      error: "Invalid date. expire_at must be an date after created_at",
+    });
   } else {
     next();
+  }
+}
+
+function validateImageURL(req, res, next) {
+  if (!req.body.image_url) {
+    req.body.image_url = "https://placehold.co/600x400";
+    next();
+  }
+  try {
+    const url = new URL(req.body.image_url);
+    if (url) {
+      next;
+    }
+  } catch (err) {
+    res.status(400).json({ error: "Invalid image_url." });
   }
 }
 
@@ -109,4 +122,5 @@ module.exports = {
   validateDescription,
   validateCreatedAt,
   validateExpireAt,
+  validateImageURL,
 };

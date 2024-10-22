@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig.js");
+const { getRandomAvatar } = require("../utils/helpers.js");
 require("dotenv").config();
 const SALT = Number(process.env.SALT);
 
@@ -9,7 +10,7 @@ const SALT = Number(process.env.SALT);
  */
 const getAllLenders = async () => {
   const queryStr =
-    "SELECT lenders.id, users.id as user_id, users.email, lenders.business_name " +
+    "SELECT lenders.id, users.id as user_id, users.email, lenders.business_name, lenders.image_url " +
     "FROM users JOIN lenders ON users.id = lenders.user_id";
   try {
     const allLenders = await db.any(queryStr);
@@ -22,7 +23,7 @@ const getAllLenders = async () => {
 // Get a specific lender by ID
 const getLender = async (id) => {
   const queryStr =
-    "SELECT users.id as user_id, users.email, lenders.business_name, lenders.id " +
+    "SELECT users.id as user_id, users.email, lenders.business_name, lenders.image_url, lenders.id " +
     "FROM users JOIN lenders ON users.id = lenders.user_id " +
     "WHERE lenders.id=$1";
   try {
@@ -44,15 +45,19 @@ const getLender = async (id) => {
  */
 async function createLender(lender) {
   const { email, password, business_name } = lender;
+  const image_url = await getRandomAvatar(lender.buiness_name);
   const password_hash = await bcrypt.hash(password, SALT);
   const userQuery =
     "INSERT INTO users(email, password, role, last_logged) VALUES" +
     "($[email], $[password], 'lender', $[last_logged]) " +
     "RETURNING *";
   const lenderQuery =
-    "INSERT INTO lenders(business_name, user_id) VALUES" +
-    "($[business_name], $[user_id]) " +
+    "INSERT INTO lenders(business_name, image_url,  user_id) VALUES" +
+    "($[business_name], $[image_url], $[user_id]) " +
     "RETURNING *";
+  const addToMailListQuery =
+    "INSERT INTO mail_list (email, role) " +
+    "VALUES($[email], 'lender') RETURNING *";
   try {
     const data = await db.tx(async (t) => {
       const newUser = await t.one(userQuery, {
@@ -60,16 +65,23 @@ async function createLender(lender) {
         password: password_hash,
         last_logged: new Date(),
       });
+
       const newLender = await t.one(lenderQuery, {
         business_name,
+        image_url,
         user_id: newUser.id,
       });
+
+      await t.one(addToMailListQuery, { email });
+
       return { newUser, newLender };
     });
+    console.log(data);
     return {
       user_id: data.newUser.id,
       id: data.newLender.id,
       email: data.newUser.email,
+      image_url: data.newLender.image_url,
       business_name: data.newLender.business_name,
       password_hash: data.newUser.password,
     };
@@ -132,13 +144,14 @@ async function deleteLender(id) {
 async function updateLender(id, lender) {
   const password_hash = await bcrypt.hash(lender.password, SALT);
   const updateLenderQuery =
-    "UPDATE lenders SET business_name=$[business_name] WHERE id=$[id] RETURNING *";
+    "UPDATE lenders SET business_name=$[business_name], image_url=$[image_url] WHERE id=$[id] RETURNING *";
   const updateUserQuery =
     "UPDATE users SET email=$[email], password=$[password] WHERE id=$[id] RETURNING *";
   try {
     const data = await db.tx(async (t) => {
       const updatedLender = await t.one(updateLenderQuery, {
         business_name: lender.business_name,
+        image_url: lender.image_url,
         id,
       });
       const updatedUser = await t.one(updateUserQuery, {
@@ -153,6 +166,7 @@ async function updateLender(id, lender) {
     console.error(data);
     return data;
   } catch (err) {
+    console.log(err);
     if (err.message.includes("No data returned from the query.")) {
       return { error: "Lender not Found" };
     } else if (

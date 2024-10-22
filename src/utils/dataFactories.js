@@ -1,24 +1,31 @@
 // utils/factory.jsx
 const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
-const { getRandomName, choose, randomInt, offsetDate } = require("./helpers");
+const {
+  getRandomName,
+  choose,
+  randomInt,
+  offsetDate,
+  getRandomAvatar,
+} = require("./helpers");
 require("dotenv").config();
 const SALT = parseInt(process.env.SALT);
 
-function createLender() {
+async function createLender() {
   const name = getRandomName();
-
+  const image_url = await getRandomAvatar(name);
   return {
     business_name: name,
+    image_url: image_url,
     email: name.replaceAll(" ", "_").toLowerCase() + "@lender.com",
   };
 }
 
-function lenderFactory(num) {
+async function lenderFactory(num) {
   const emailList = [];
   const lenders = [];
   while (lenders.length < num) {
-    const lender = createLender();
+    const lender = await createLender();
     if (!emailList.includes(lender.email)) {
       lenders.push(lender);
     }
@@ -26,8 +33,9 @@ function lenderFactory(num) {
   return lenders;
 }
 
-function createBorrower() {
+async function createBorrower() {
   const name = getRandomName();
+  image_url = await getRandomAvatar(name);
   const industry_options = [
     "Retail",
     "Food Service",
@@ -42,6 +50,7 @@ function createBorrower() {
   ];
   return {
     business_name: name,
+    image_url: image_url,
     email:
       name.replaceAll(" ", "_").toLowerCase() +
       `${randomInt(1800, 2024)}` +
@@ -57,11 +66,11 @@ function createBorrower() {
   };
 }
 
-function borrowerFactory(num) {
+async function borrowerFactory(num) {
   const emailList = [];
   const borrowers = [];
   while (borrowers.length < num) {
-    const borrower = createBorrower();
+    const borrower = await createBorrower();
     if (!emailList.includes(borrower.email)) {
       borrowers.push(borrower);
     }

@@ -20,17 +20,19 @@ CREATE TABLE "users"(
 CREATE TABLE "lenders" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "business_name" TEXT UNIQUE NOT NULL,
+  "image_url" TEXT NOT NULL,
   "user_id" uuid REFERENCES "users" ("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "borrowers" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "business_name" TEXT UNIQUE NOT NULL,
+  "image_url" TEXT NOT NULL,
   "city" VARCHAR(100) NOT NULL,
   "street" VARCHAR(100) NOT NULL,
   "state" VARCHAR(100) NOT NULL,
   "zip_code" VARCHAR(11) NOT NULL,
   "phone" VARCHAR(10) NOT NULL,
-  "business_name" TEXT UNIQUE NOT NULL,
   "ein" VARCHAR(9) NOT NULL,
   "start_date" DATE NOT NULL,
   "industry" VARCHAR(100) NOT NULL,

@@ -2,7 +2,11 @@
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig.js");
 const { createCreditReport } = require("../utils/dataFactories.js");
-const { offsetDate, randomInt } = require("../utils/helpers.js");
+const {
+  offsetDate,
+  randomInt,
+  getRandomAvatar,
+} = require("../utils/helpers.js");
 require("dotenv").config();
 const SALT = Number(process.env.SALT);
 
@@ -13,7 +17,7 @@ const SALT = Number(process.env.SALT);
 async function getBorrowers() {
   const queryStr =
     "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, " +
-    "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry " +
+    "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.image_url, borrowers.ein, borrowers.start_date, borrowers.industry " +
     "FROM users JOIN borrowers ON users.id = borrowers.user_id";
   try {
     const borrowers = await db.any(queryStr);
@@ -32,7 +36,7 @@ async function getBorrowers() {
 async function getBorrower(id) {
   // const queryStr = "SELECT * FROM borrowers WHERE id=$[id]";
   const queryStr =
-    "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, " +
+    "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, , " +
     "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry " +
     "FROM users JOIN borrowers ON users.id = borrowers.user_id " +
     "WHERE borrowers.id=$1";
@@ -88,6 +92,7 @@ async function deleteBorrower(id) {
  * @returns {Object} - New borrower
  */
 async function createBorrower(borrower) {
+  const image_url = await getRandomAvatar(borrower.buiness_name);
   const password_hash = await bcrypt.hash(borrower.password, SALT);
   borrower.password = password_hash;
   const userQuery =
@@ -95,12 +100,15 @@ async function createBorrower(borrower) {
     "($[email], $[password], 'borrower', $[last_logged]) " +
     "RETURNING *";
   const borrowerQuery =
-    "INSERT INTO borrowers (user_id, city, street, state, zip_code, phone, business_name, ein, start_date, industry) " +
-    "VALUES($[user_id],$[city], $[street], $[state], $[zip_code], $[phone], $[business_name], $[ein], $[start_date], $[industry]) " +
+    "INSERT INTO borrowers (user_id, city, street, state, zip_code, phone, business_name, image_url, ein, start_date, industry) " +
+    "VALUES($[user_id],$[city], $[street], $[state], $[zip_code], $[phone], $[business_name], $[image_url], $[ein], $[start_date], $[industry]) " +
     "RETURNING *";
   const creditReportQuery =
     "INSERT INTO credit_reports ( credit_bureau, report_id, score, created_at, expire_at, borrower_id) " +
     `VALUES ($[credit_bureau], $[report_id], $[score], $[created_at], $[expire_at], $[borrower_id]) RETURNING *`;
+  const addToMailListQuery =
+    "INSERT INTO mail_list (email, role) " +
+    "VALUES($[email], 'borrower') RETURNING *";
 
   try {
     const data = await db.tx(async (t) => {
@@ -110,12 +118,12 @@ async function createBorrower(borrower) {
       });
       const newBorrower = await t.one(borrowerQuery, {
         ...borrower,
+        image_url,
         user_id: newUser.id,
       });
       const report = createCreditReport(newBorrower.id, new Date());
-      console.log(report);
       const newReport = await t.one(creditReportQuery, report);
-      console.log(newReport);
+      await t.one(addToMailListQuery, borrower);
       return { newUser, newBorrower, newReport };
     });
     const { newUser, newBorrower, newReport } = data;
@@ -155,7 +163,7 @@ async function updateBorrower(id, borrower) {
     "WHERE id=$[id] RETURNING *";
   const updateBorrowerQuery =
     "UPDATE borrowers SET city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], " +
-    "phone=$[phone], business_name=$[business_name], ein=$[ein], start_date=$[start_date], industry=$[industry] " +
+    "phone=$[phone], business_name=$[business_name], image_url=$[image_url], ein=$[ein], start_date=$[start_date], industry=$[industry] " +
     "WHERE id=$[id] RETURNING *";
   try {
     const data = await db.tx(async (t) => {
