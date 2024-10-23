@@ -36,7 +36,6 @@ const swaggerOptions = {
   },
   // apis: ["./src/controllers/*.js"],
   apis: [
-    "./src/controllers/mailListController.js",
     "./src/controllers/loginController.js",
     "./src/controllers/borrowersController.js",
     "./src/controllers/borrowersRequestsController.js",
@@ -44,6 +43,7 @@ const swaggerOptions = {
     "./src/controllers/lendersController.js",
     "./src/controllers/lendersProposalsController.js",
     "./src/controllers/lendersRequestsController.js",
+    "./src/controllers/mailListController.js",
   ],
 };
 

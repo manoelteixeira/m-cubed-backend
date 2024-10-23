@@ -1,5 +1,5 @@
 // utils/factory.jsx
-const { faker, da } = require("@faker-js/faker");
+const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
 const { getRandomName, choose, randomInt, offsetDate } = require("./helpers");
 require("dotenv").config();
@@ -70,7 +70,7 @@ function borrowerFactory(num) {
 }
 
 function createLoanRequest(id) {
-  const date = faker.date.past({ days: 5 });
+  const date = faker.date.recent({ days: 7, refDate: new Date() });
   const expiration = offsetDate(date, { days: 30 });
 
   const description = faker.commerce.productDescription();
