@@ -106,7 +106,7 @@ function addLoanProposalsQuery(proposals) {
 
       let req = Array.isArray(requirements)
         ? `ARRAY[${requirements.map((item) => `'${item}'`)}]`
-        : null;
+        : `ARRAY['None']`;
 
       return `('${title}', '${description}', ${req},'${loan_amount}', ${interest_rate}, ${repayment_term}, '${lender_id}', '${created_at}', '${expire_at}', '${loan_request_id}')`;
     })
