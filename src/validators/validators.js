@@ -107,7 +107,7 @@ function validateImageURL(req, res, next) {
   try {
     const url = new URL(req.body.image_url);
     if (url) {
-      next;
+      next();
     }
   } catch (err) {
     res.status(400).json({ error: "Invalid image_url." });

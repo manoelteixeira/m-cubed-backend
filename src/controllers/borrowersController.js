@@ -35,6 +35,7 @@ const {
   validateEmail,
   validatePassword,
   validateBusinessName,
+  validateImageURL,
 } = require("../validators/validators");
 
 const { authenticateToken } = require("../validators/loginValidators");
@@ -125,6 +126,7 @@ borrowersController.post(
           secret
         );
         delete newBorrower.password;
+        delete newBorrower.user_id;
         res.status(201).json({ borrower: { ...newBorrower }, token });
       } else {
         res.status(400).json({ error: newBorrower.error });
@@ -224,21 +226,21 @@ borrowersController.delete(
  *     tags:
  *       - Borrowers
  *     summary: Update Borrower
+ *     description: This route does not update email or password.
  *     requestBody:
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             example:
- *               email: testBorrowerTest@example.com
- *               password: password123
  *               city: Miami
  *               street: 987 Maple St
  *               state: FL
  *               zip_code: '33101'
  *               phone: '4567890123'
  *               business_name: Healthcare Hub
- *               credit_score: 740
+ *               image_url: https://placehold.co/600x400
+ *               ein: '431211532'
  *               start_date: '2022-10-05T04:00:00.000Z'
  *               industry: Healthcare
  *     parameters:
@@ -255,8 +257,6 @@ borrowersController.delete(
  */
 borrowersController.put(
   "/:id",
-  validateEmail,
-  validatePassword,
   validateCity,
   validateStreet,
   validateState,
@@ -266,8 +266,10 @@ borrowersController.put(
   validateEIN,
   validateStartDate,
   validateIndustry,
+  validateImageURL,
   // authenticateToken,
   async (req, res) => {
+    console.log("ok");
     try {
       const { id } = req.params;
       const borrower = await updateBorrower(id, req.body);
@@ -331,6 +333,9 @@ module.exports = borrowersController;
  *         business_name:
  *           type: string
  *           description: Borrower business name
+ *         image_url:
+ *           type: string
+ *           description: The Lender business image
  *         ein:
  *           type: string
  *           description: Borrower Employer Identification Number.
@@ -347,9 +352,10 @@ module.exports = borrowersController;
  *         street: 123 Main St
  *         state: NY
  *         zip_code: 10001
- *         phone: 1234567890
+ *         phone: '1234567890'
  *         business_name: Small Biz LLC
- *         ein: 431211532
+ *         image_url: https://placehold.co/600x400
+ *         ein: '431211532'
  *         start_date: 2020-05-15T04:00:00.000Z
  *         industry: Retail
  */

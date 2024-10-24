@@ -126,44 +126,13 @@ async function deleteLender(id) {
   }
 }
 
-// Update a lender by ID
-// const updateLender = async (id, lender) => {
-//   const queryStr =
-//     "UPDATE lenders " +
-//     "SET email = $[email], business_name = $[business_name] " +
-//     "WHERE id = $[id] RETURNING * ";
-
-//   try {
-//     const updatedLender = await db.one(queryStr, { ...lender, id });
-
-//     return updatedLender;
-//   } catch (error) {
-//     return error;
-//   }
-// };
 async function updateLender(id, lender) {
-  const password_hash = await bcrypt.hash(lender.password, SALT);
-  const updateLenderQuery =
-    "UPDATE lenders SET business_name=$[business_name], image_url=$[image_url] WHERE id=$[id] RETURNING *";
-  const updateUserQuery =
-    "UPDATE users SET email=$[email], password=$[password] WHERE id=$[id] RETURNING *";
+  const queryStr =
+    "UPDATE lenders SET business_name=$[business_name], image_url=$[image_url] " +
+    "WHERE id=$[id] RETURNING *";
+
   try {
-    const data = await db.tx(async (t) => {
-      const updatedLender = await t.one(updateLenderQuery, {
-        business_name: lender.business_name,
-        image_url: lender.image_url,
-        id,
-      });
-      const updatedUser = await t.one(updateUserQuery, {
-        email: lender.email,
-        password: password_hash,
-        id: updatedLender.user_id,
-      });
-      delete updatedUser.id;
-      delete updatedUser.role;
-      return { ...updatedLender, ...updatedUser };
-    });
-    console.error(data);
+    const data = await db.one(queryStr, { ...lender, id });
     return data;
   } catch (err) {
     console.log(err);

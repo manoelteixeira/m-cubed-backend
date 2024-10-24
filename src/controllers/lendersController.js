@@ -199,6 +199,7 @@ lenders.delete(
  *    tags:
  *      - Lenders
  *    summary: Update Lender
+ *    description: This route does not update email or password.
  *    parameters:
  *      - in: path
  *        name: id
@@ -212,9 +213,8 @@ lenders.delete(
  *          schema:
  *            type: object
  *            example:
- *              email: lender1@example.com
- *              password: password1233
  *              business_name: Lender Corp
+ *              image_url: https://placehold.co/600x400
  *    responses:
  *      '200':
  *        description: Successful response
@@ -223,8 +223,6 @@ lenders.delete(
  */
 lenders.put(
   "/:id",
-  validateEmail,
-  validatePassword,
   validateBusinessName,
   validateImageURL,
   // authenticateToken,

@@ -36,7 +36,7 @@ async function getBorrowers() {
 async function getBorrower(id) {
   // const queryStr = "SELECT * FROM borrowers WHERE id=$[id]";
   const queryStr =
-    "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, , " +
+    "SELECT borrowers.id, users.id as user_id, users.email, borrowers.city, borrowers.street, borrowers.state, borrowers.image_url, " +
     "borrowers.zip_code, borrowers.phone, borrowers.business_name, borrowers.ein, borrowers.start_date, borrowers.industry " +
     "FROM users JOIN borrowers ON users.id = borrowers.user_id " +
     "WHERE borrowers.id=$1";
@@ -123,7 +123,7 @@ async function createBorrower(borrower) {
       });
       const report = createCreditReport(newBorrower.id, new Date());
       const newReport = await t.one(creditReportQuery, report);
-      await t.one(addToMailListQuery, borrower);
+      await t.any(addToMailListQuery, borrower);
       return { newUser, newBorrower, newReport };
     });
     const { newUser, newBorrower, newReport } = data;
@@ -144,44 +144,14 @@ async function createBorrower(borrower) {
   }
 }
 
-// async function updateBorrower(id, borrower) {
-//   const queryStr =
-//     "UPDATE borrowers " +
-//     "SET email=$[email], city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], phone=$[phone], business_name=$[business_name], ein=$[ein], start_date=$[start_date], industry=$[industry] " +
-//     "WHERE id=$[id] RETURNING *";
-//   try {
-//     const updatedBorrower = await db.one(queryStr, { ...borrower, id: id });
-//     return updatedBorrower;
-//   } catch (err) {
-//     return err;
-//   }
-// }
 async function updateBorrower(id, borrower) {
-  const password_hash = await bcrypt.hash(borrower.password, SALT);
-  const updateUserQuery =
-    "UPDATE USERS SET email=$[email], password=$[password] " +
-    "WHERE id=$[id] RETURNING *";
-  const updateBorrowerQuery =
+  const queryStr =
     "UPDATE borrowers SET city=$[city], street=$[street], state=$[state], zip_code=$[zip_code], " +
     "phone=$[phone], business_name=$[business_name], image_url=$[image_url], ein=$[ein], start_date=$[start_date], industry=$[industry] " +
     "WHERE id=$[id] RETURNING *";
   try {
-    const data = await db.tx(async (t) => {
-      const updatedBorrower = await t.one(updateBorrowerQuery, {
-        ...borrower,
-        password: password_hash,
-        id,
-      });
-      const updatedUser = await t.one(updateUserQuery, {
-        email: borrower.email,
-        password: borrower.password,
-        id: updatedBorrower.user_id,
-      });
-      delete updatedUser.id;
-      delete updatedUser.role;
-
-      return { ...updatedBorrower, ...updatedUser };
-    });
+    const data = await db.one(queryStr, { ...borrower, id });
+    console.log(data);
     return data;
   } catch (err) {
     if (err.message.includes("No data returned from the query.")) {
