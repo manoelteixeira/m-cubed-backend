@@ -101,6 +101,26 @@ function validateQueryOffset(req, res, next) {
   }
 }
 
+function validateHide(req, res, next) {
+  if (!req.body.hide) {
+    res.status(400).json({ error: "hide is required." });
+  } else if (typeof req.body.hide !== "boolean") {
+    res.status(400).json({ error: "hide must be a boolean value." });
+  } else {
+    next();
+  }
+}
+
+function validateFavorite(req, res, next) {
+  if (!req.body.favorite) {
+    res.status(400).json({ error: "favorite is required." });
+  } else if (typeof req.body.favorite !== "boolean") {
+    res.status(400).json({ error: "favorite must be a boolean value." });
+  } else {
+    next();
+  }
+}
+
 module.exports = {
   validateLoanAmount,
   validateInterestRate,
@@ -110,4 +130,6 @@ module.exports = {
   validateQueryOrder,
   validateQueryLimit,
   validateQueryOffset,
+  validateHide,
+  validateFavorite,
 };

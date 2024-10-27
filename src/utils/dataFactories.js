@@ -86,7 +86,7 @@ function createLoanRequest(id) {
   return {
     title: `New ${faker.commerce.productAdjective()} ${faker.commerce.productName()}`,
     description: description.replaceAll("'", "''"),
-    value: Number(faker.commerce.price({ min: 2000, max: 100000 })),
+    value: Number(faker.commerce.price({ min: 2000, max: 50000 })),
     created_at: date.toISOString(),
     expire_at: expiration.toISOString(),
     borrower_id: id,
@@ -155,6 +155,25 @@ async function createUser(user, role) {
   };
 }
 
+/**
+ *
+ * @param {Object} users - keys = user type
+ *                         value = Array of users
+ * @return {Array} - users Array
+ */
+async function userFactory(users) {
+  const userTypes = Object.keys(users);
+  const output = [];
+  for (const type of userTypes) {
+    const data = users[type];
+    for (const item of data) {
+      const user = await createUser(item, type);
+      output.push(user);
+    }
+  }
+  return output;
+}
+
 function loanRequestFactory(num, id) {
   const loanRequests = [];
   let total = 0;
@@ -178,6 +197,7 @@ module.exports = {
   createLoanProposal,
   borrowerFactory,
   lenderFactory,
+  userFactory,
   loanRequestFactory,
   createCreditReport,
 };

@@ -2,38 +2,44 @@ const db = require("../db/dbConfig");
 
 // Get all pending loan requests
 async function getAllLoanRequests(
+  id,
   sortBy = "created_at",
   order = "desc",
   limit = null,
   ofsset = null,
-  search = null
+  search = null,
+  hide = true
 ) {
   console.log(search);
   const sort = {
-    title: "loan_requests.title",
-    value: "loan_requests.value",
-    created_at: "loan_requests.created_at",
-    description: "loan_requests.description",
-    industry: "borrowers.industry",
-    state: "borrowers.state",
-    credit_score: "borrowers.credit_score",
+    title: "title",
+    value: "value",
+    created_at: "created_at",
+    description: "description",
+    industry: "industry",
+    state: "rstate",
+    credit_score: "credit_score",
   };
   const totalRequestsQuery =
     "SELECT COUNT(*), SUM( loan_requests.value) FROM loan_requests  " +
     "WHERE status='pending' ";
 
   const baseQuery =
-    "SELECT * FROM loan_requests JOIN ( " +
-    "SELECT borrowers.id borrower_id, borrowers.state, borrowers.industry, credit_reports.score credit_score " +
-    "FROM borrowers JOIN credit_reports  " +
-    "ON borrowers.id = credit_reports.borrower_id ) borrowers " +
-    "ON loan_requests.borrower_id = borrowers.borrower_id " +
-    "WHERE status='pending' ";
+    "select lri.id, lri.title, lri.description, lri.value ,lri.created_at ,lri.expire_at ,lri.status, lri.id  as borrower_id, " +
+    "lri.credit_score, lri.city , lri.state , lri.business_name , lri.industry, llr.favorite, llr.hide " +
+    "from loan_requests_info as lri full join (select lender_loan_requests.lender_id, lender_loan_requests.loan_request_id, " +
+    "lender_loan_requests.favorite,lender_loan_requests.hide " +
+    "from lender_loan_requests join lenders on lender_loan_requests.lender_id = lenders.id " +
+    "where lenders.id = $[id]) as llr on lri.id = llr.loan_request_id " +
+    `where ${
+      hide == true ? "llr.hide != true or llr.hide is null and " : ""
+    }lri.id not in (select loan_request_id from loan_proposals  ` +
+    "where loan_proposals.lender_id = $[id]) ";
 
   let query = baseQuery;
 
   if (search) {
-    query += `AND loan_requests.title ilike $[search]`;
+    query += `AND requests.title ilike $[search]`;
   }
   if (sortBy) {
     query += `ORDER BY ${sort[sortBy]} ${order.toUpperCase()} `;
@@ -48,11 +54,12 @@ async function getAllLoanRequests(
 
   try {
     const total = await db.one(totalRequestsQuery);
-    const requests = await db.manyOrNone(query, { search: `%${search}%` });
+    const requests = await db.manyOrNone(query, { search: `%${search}%`, id });
 
     return {
       total: parseInt(total.count),
       value: parseFloat(total.sum),
+      requests_count: requests.length,
       loan_requests: requests,
     };
   } catch (err) {
@@ -105,8 +112,64 @@ async function createProposal(proposal) {
   }
 }
 
+async function setRequestHide(lender_id, id, hide) {
+  console.log(hide);
+  const getHideQuery =
+    "SELECT * FROM lender_loan_requests " +
+    "WHERE lender_id = $[lender_id] and loan_request_id = $[id]";
+  const createHide =
+    "INSERT INTO lender_loan_requests (lender_id, loan_request_id, hide) " +
+    "VALUES ($[lender_id], $[id], $[hide]) RETURNING *";
+  const updateHide =
+    "UPDATE lender_loan_requests SET hide=$[hide] " +
+    "WHERE lender_id = $[lender_id] and loan_request_id = $[id] RETURNING *";
+  try {
+    let data = await db.oneOrNone(getHideQuery, { lender_id, id });
+    console.log(data);
+    if (data) {
+      data = await db.one(updateHide, { lender_id, id, hide });
+    } else {
+      data = await db.one(createHide, { lender_id, id, hide });
+    }
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+}
+
+async function setRequestFavorite(lender_id, id, favorite) {
+  const getHideQuery =
+    "SELECT * FROM lender_loan_requests " +
+    "WHERE lender_id = $[lender_id] and loan_request_id = $[id]";
+  const createHide =
+    "INSERT INTO lender_loan_requests (lender_id, loan_request_id, favorite) " +
+    "VALUES ($[lender_id], $[id], $[favorite]) RETURNING *";
+  const updateHide =
+    "UPDATE lender_loan_requests SET favorite=$[favorite] " +
+    "WHERE lender_id = $[lender_id] and loan_request_id = $[id] RETURNING *";
+  try {
+    let data = await db.oneOrNone(getHideQuery, { lender_id, id });
+    console.log(data);
+    if (data) {
+      console.log("update");
+      data = await db.one(updateHide, { lender_id, id, favorite });
+    } else {
+      console.log("create");
+      data = await db.one(createHide, { lender_id, id, favorite });
+    }
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+}
+
 module.exports = {
   getAllLoanRequests,
   getLoanRequestByID,
   createProposal,
+  setRequestHide,
+  setRequestFavorite,
 };

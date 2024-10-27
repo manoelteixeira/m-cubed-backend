@@ -19,6 +19,8 @@ const {
   validateQueryLimit,
   validateQueryOffset,
   validateSearch,
+  validateHide,
+  validateFavorite,
 } = require("../validators/lendersProposalsValidators");
 
 const {
@@ -33,6 +35,8 @@ const {
   getAllLoanRequests,
   getLoanRequestByID,
   createProposal,
+  setRequestHide,
+  setRequestFavorite,
 } = require("../queries/lendersRequestsQueries");
 
 /* Routes */
@@ -84,9 +88,10 @@ requests.get(
   validateQueryOffset,
   async (req, res) => {
     const { sort, order, limit, offset, search } = req.query;
-
+    const { id } = req.params;
     try {
       const loanRequests = await getAllLoanRequests(
+        id,
         sort,
         order,
         limit,
@@ -140,6 +145,100 @@ requests.get("/:id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching loan request by ID:", error);
     res.status(500).json({ error: "Failed to fetch loan request" });
+  }
+});
+
+/** POST - Set Hide
+ * @swagger
+ * /lenders/{lender_id}/requests/{id}/hide:
+ *  post:
+ *    tags:
+ *      - Lenders Requests
+ *    summary: Set Request Hide Property
+ *    parameters:
+ *      - in: path
+ *        name: lender_id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Lender ID
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Request ID
+ *    requestBody:
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  example:
+ *                    hide: true
+ *    responses:
+ *      '200':
+ *        description: Successful response
+ *        content:
+ *          application/json: {}
+ */
+requests.post("/:id/hide", validateHide, async (req, res) => {
+  const { lender_id, id } = req.params;
+  const { hide } = req.body;
+  try {
+    const data = await setRequestHide(lender_id, id, hide);
+    if (data.lender_id) {
+      res.status(201).json(data);
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Something whent Wrong" });
+  }
+});
+
+/** POST - Set Favorite
+ * @swagger
+ * /lenders/{lender_id}/requests/{id}/favorite:
+ *  post:
+ *    tags:
+ *      - Lenders Requests
+ *    summary: Set Request Favorite Property
+ *    parameters:
+ *      - in: path
+ *        name: lender_id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Lender ID
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Request ID
+ *    requestBody:
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  example:
+ *                    favorite: true
+ *    responses:
+ *      '200':
+ *        description: Successful response
+ *        content:
+ *          application/json: {}
+ */
+requests.post("/:id/favorite", validateFavorite, async (req, res) => {
+  const { lender_id, id } = req.params;
+  const { favorite } = req.body;
+  try {
+    console.log(favorite);
+    const data = await setRequestFavorite(lender_id, id, favorite);
+    console.log(data);
+    if (data.lender_id) {
+      res.status(201).json(data);
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Something whent Wrong" });
   }
 });
 

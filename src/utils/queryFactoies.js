@@ -132,6 +132,17 @@ function addToMailListQuery(users) {
   return query;
 }
 
+function addLenderLoanProposalQuery(data) {
+  const dataStr = data.map((item) => {
+    const { lender_id, loan_request_id, favorite, hide } = item;
+    return `('${lender_id}', '${loan_request_id}', '${favorite}', '${hide}')`;
+  });
+  const query =
+    "INSERT INTO lender_loan_requests (lender_id, loan_request_id, favorite, hide) " +
+    `VALUES ${dataStr} RETURNING *`;
+  return query;
+}
+
 module.exports = {
   addUsersQuery,
   addLendersQuery,
@@ -140,4 +151,5 @@ module.exports = {
   addLoanRequestsQuery,
   addLoanProposalsQuery,
   addToMailListQuery,
+  addLenderLoanProposalQuery,
 };

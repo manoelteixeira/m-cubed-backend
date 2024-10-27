@@ -1,8 +1,11 @@
+-- src/db/schema.sql
+-- Drop Tables
 DROP DATABASE IF EXISTS m3_dev;
 CREATE DATABASE m3_dev;
 
 \c m3_dev;
 
+-- Creeate Tables
 CREATE TABLE "mail_list"(
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "email" VARCHAR(140) UNIQUE NOT NULL,
@@ -61,7 +64,14 @@ CREATE TABLE "loan_requests" (
   "status" VARCHAR(10) DEFAULT 'pending',
   "accepted_proposal_id" uuid DEFAULT NULL,
   "borrower_id" uuid  REFERENCES "borrowers" ("id") ON DELETE CASCADE
-  
+);
+
+CREATE TABLE "lender_loan_requests"(
+  "lender_id" uuid REFERENCES "lenders" ("id") ON DELETE CASCADE,
+  "loan_request_id" uuid REFERENCES "loan_requests" ("id") ON DELETE CASCADE,
+  "favorite"  BOOLEAN DEFAULT false,
+  "hide" BOOLEAN DEFAULT false,
+  PRIMARY KEY ("lender_id", "loan_request_id")
 );
 
 CREATE TABLE "loan_proposals" (
@@ -86,6 +96,13 @@ ADD CONSTRAINT fk_customer
       REFERENCES loan_proposals (id);
 
 
-
+-- Setup views
+CREATE VIEW loan_requests_info AS
+SELECT loan_requests.id, loan_requests.title, loan_requests.description, loan_requests.value ,loan_requests.created_at ,loan_requests.expire_at ,loan_requests.status,
+borrowers.id  as borrower_id, borrowers.city , borrowers.state , borrowers.business_name , borrowers.industry, borrowers.credit_score
+FROM loan_requests JOIN ( select borrowers.id , borrowers.city , borrowers.state , borrowers.business_name , borrowers.industry, credit_reports.score as credit_score 
+from borrowers join credit_reports 
+on borrowers.id = credit_reports.borrower_id ) as borrowers
+ON loan_requests.borrower_id = borrowers.id;
 
 
