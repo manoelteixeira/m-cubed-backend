@@ -30,7 +30,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
   console.log("-=-=-    ADDING USERS    -=-=-");
   users = await db.many(addUsersQuery(users));
   // console.log(users.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(users.length)} Users Added.`);
+  console.log(`${colors.yellow(users.length)} Users Added.`);
 
   console.log("-=-=-    ADDING LENDERS    -=-=-");
   lenders = lenders.map((lender) => {
@@ -49,7 +49,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     };
   });
   // console.log(lenders.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(lenders.length)} Lenders Added.`);
+  console.log(`${colors.yellow(lenders.length)} Lenders Added.`);
 
   console.log("-=-=-    ADDING BORROWERS    -=-=-");
   borrowers = borrowers.map((borrower) => {
@@ -68,7 +68,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     };
   });
   // console.log(borrowers.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(borrowers.length)} Borrowers Added.`);
+  console.log(`${colors.yellow(borrowers.length)} Borrowers Added.`);
 
   console.log("-=-=-    ADDING CREDIT REPORTS    -=-=-");
   let reports = borrowers.map((borrower) => {
@@ -80,7 +80,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
 
   reports = await db.many(addCreditReportsQuery(reports));
   // console.log(reports.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(reports.length)} Reports Added.`);
+  console.log(`${colors.yellow(reports.length)} Reports Added.`);
 
   console.log("-=-=-    ADDING LOAN REQUEST    -=-=-");
   let loanRequests = borrowers
@@ -92,7 +92,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
 
   loanRequests = await db.many(addLoanRequestsQuery(loanRequests));
   // console.log(loanRequests.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(loanRequests.length)} Loan Requests Added.`);
+  console.log(`${colors.yellow(loanRequests.length)} Loan Requests Added.`);
 
   console.log("-=-=-    ADDING LOAN PROPOSALS    -=-=-");
 
@@ -123,14 +123,18 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     }
   }
   loanProposals = await db.many(addLoanProposalsQuery(loanProposals));
-
+  lenderLoanProposal = await db.many(
+    addLenderLoanProposalQuery(lenderLoanProposal)
+  );
   // console.log(loanProposals.map((item, idx) => `${idx + 1} - ${item.id}`));
   console.log(`${colors.yellow(loanProposals.length)} Loan Proposals Added.`);
-
+  console.log(
+    `${colors.yellow(lenderLoanProposal.length)} Lender Loan Proposals Added.`
+  );
   console.log("-=-=-    ADDING DATA TO MAIL LIST    -=-=-");
   const mailList = await db.many(addToMailListQuery(users));
   // console.log(mailList.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(mailList.length)} Emails Added.`);
+  console.log(`${colors.yellow(mailList.length)} Emails Added.`);
 }
 
 async function run() {
@@ -138,7 +142,7 @@ async function run() {
   console.log("*   PREPARING DATABASE   *");
   console.log(`*       BE PATIENT       *`);
   console.log("**************************");
-  await seed(10, 100, 10);
+  await seed(10, 10, 10);
   console.log("******************");
   console.log("*    ALL DONE    *");
   console.log("******************");
