@@ -88,10 +88,11 @@ requests.get(
   validateQueryOffset,
   async (req, res) => {
     const { sort, order, limit, offset, search } = req.query;
-    const { id } = req.params;
+    const { lender_id } = req.params;
+    console.log(req.params);
     try {
       const loanRequests = await getAllLoanRequests(
-        id,
+        lender_id,
         sort,
         order,
         limit,
@@ -230,6 +231,7 @@ requests.post("/:id/hide", validateHide, async (req, res) => {
 requests.post("/:id/favorite", validateFavorite, async (req, res) => {
   const { lender_id, id } = req.params;
   const { favorite } = req.body;
+
   try {
     console.log(favorite);
     const data = await setRequestFavorite(lender_id, id, favorite);

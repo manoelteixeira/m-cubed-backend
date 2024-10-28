@@ -142,7 +142,7 @@ async function run() {
   console.log("*   PREPARING DATABASE   *");
   console.log(`*       BE PATIENT       *`);
   console.log("**************************");
-  await seed(10, 10, 10);
+  await seed(10, 100, 10);
   console.log("******************");
   console.log("*    ALL DONE    *");
   console.log("******************");

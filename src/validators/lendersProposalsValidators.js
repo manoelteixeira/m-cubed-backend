@@ -102,7 +102,7 @@ function validateQueryOffset(req, res, next) {
 }
 
 function validateHide(req, res, next) {
-  if (!req.body.hide) {
+  if (req.body.hide == undefined) {
     res.status(400).json({ error: "hide is required." });
   } else if (typeof req.body.hide !== "boolean") {
     res.status(400).json({ error: "hide must be a boolean value." });
@@ -112,7 +112,7 @@ function validateHide(req, res, next) {
 }
 
 function validateFavorite(req, res, next) {
-  if (!req.body.favorite) {
+  if (req.body.favorite == undefined) {
     res.status(400).json({ error: "favorite is required." });
   } else if (typeof req.body.favorite !== "boolean") {
     res.status(400).json({ error: "favorite must be a boolean value." });

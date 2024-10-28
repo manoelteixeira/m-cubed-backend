@@ -24,17 +24,22 @@ async function getAllLoanRequests(
     "SELECT COUNT(*), SUM( loan_requests.value) FROM loan_requests  " +
     "WHERE status='pending' ";
 
+  // const baseQuery =
+  //   "select lri.id, lri.title, lri.description, lri.value ,lri.created_at ,lri.expire_at ,lri.status, lri.id  as borrower_id, " +
+  //   "lri.credit_score, lri.city , lri.state , lri.business_name , lri.industry, llr.favorite, llr.hide " +
+  //   "from loan_requests_info as lri full join (select lender_loan_requests.lender_id, lender_loan_requests.loan_request_id, " +
+  //   "lender_loan_requests.favorite,lender_loan_requests.hide " +
+  //   "from lender_loan_requests join lenders on lender_loan_requests.lender_id = lenders.id " +
+  //   "where lenders.id = $[id]) as llr on lri.id = llr.loan_request_id " +
+  //   `where ${
+  //     hide == true ? "llr.hide != true or llr.hide is null and " : ""
+  //   }lri.id not in (select loan_request_id from loan_proposals  ` +
+  //   "where loan_proposals.lender_id = $[id]) ";
   const baseQuery =
-    "select lri.id, lri.title, lri.description, lri.value ,lri.created_at ,lri.expire_at ,lri.status, lri.id  as borrower_id, " +
-    "lri.credit_score, lri.city , lri.state , lri.business_name , lri.industry, llr.favorite, llr.hide " +
-    "from loan_requests_info as lri full join (select lender_loan_requests.lender_id, lender_loan_requests.loan_request_id, " +
-    "lender_loan_requests.favorite,lender_loan_requests.hide " +
-    "from lender_loan_requests join lenders on lender_loan_requests.lender_id = lenders.id " +
-    "where lenders.id = $[id]) as llr on lri.id = llr.loan_request_id " +
-    `where ${
-      hide == true ? "llr.hide != true or llr.hide is null and " : ""
-    }lri.id not in (select loan_request_id from loan_proposals  ` +
-    "where loan_proposals.lender_id = $[id]) ";
+    "SELECT lri.*, llr.favorite, llr.hide FROM (SELECT *, $[id]::uuid as lender_id FROM loan_requests_info " +
+    "where id not in (SELECT loan_request_id FROM loan_proposals where lender_id=$[id])) as lri  join lender_loan_requests as llr " +
+    "on lri.id=llr.loan_request_id  and lri.lender_id=llr.lender_id " +
+    "WHERE hide != $[hide] ";
 
   let query = baseQuery;
 
@@ -54,7 +59,7 @@ async function getAllLoanRequests(
 
   try {
     const total = await db.one(totalRequestsQuery);
-    const requests = await db.manyOrNone(query, { search: `%${search}%`, id });
+    const requests = await db.many(query, { search: `%${search}%`, id, hide });
 
     return {
       total: parseInt(total.count),
