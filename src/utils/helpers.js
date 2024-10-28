@@ -20,7 +20,7 @@ function choose(arr, num) {
     // if (!chosen.includes(item)) {
     //   chosen.push(item);
     // }
-    if (!choose.find((i) => JSON.stringify(i) == JSON.stringify(item))) {
+    if (!chosen.find((i) => JSON.stringify(i) == JSON.stringify(item))) {
       chosen.push(item);
     }
   }
