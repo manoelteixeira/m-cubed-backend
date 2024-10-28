@@ -36,7 +36,9 @@ async function getAllLoanRequests(
   //   }lri.id not in (select loan_request_id from loan_proposals  ` +
   //   "where loan_proposals.lender_id = $[id]) ";
   const baseQuery =
-    "SELECT lri.*, llr.favorite, llr.hide FROM (SELECT *, $[id]::uuid as lender_id FROM loan_requests_info " +
+    "select lri.id, lri.title, lri.description, lri.value, lri.created_at, lri.expire_at, lri.borrower_id, lri.city, " +
+    "lri.state, lri.business_name, lri.industry, lri.credit_score,  llr.favorite, llr.hide " +
+    "from (select *, '5dd083a7-c72e-4a5a-ac26-ccbc7be5f42f'::uuid as lender_id from loan_requests_info " +
     "where id not in (SELECT loan_request_id FROM loan_proposals where lender_id=$[id])) as lri  join lender_loan_requests as llr " +
     "on lri.id=llr.loan_request_id  and lri.lender_id=llr.lender_id " +
     "WHERE hide != $[hide] ";
@@ -130,7 +132,7 @@ async function setRequestHide(lender_id, id, hide) {
     "WHERE lender_id = $[lender_id] and loan_request_id = $[id] RETURNING *";
   try {
     let data = await db.oneOrNone(getHideQuery, { lender_id, id });
-    console.log(data);
+
     if (data) {
       data = await db.one(updateHide, { lender_id, id, hide });
     } else {
@@ -155,18 +157,15 @@ async function setRequestFavorite(lender_id, id, favorite) {
     "WHERE lender_id = $[lender_id] and loan_request_id = $[id] RETURNING *";
   try {
     let data = await db.oneOrNone(getHideQuery, { lender_id, id });
-    console.log(data);
+
     if (data) {
-      console.log("update");
       data = await db.one(updateHide, { lender_id, id, favorite });
     } else {
-      console.log("create");
       data = await db.one(createHide, { lender_id, id, favorite });
     }
-    console.log(data);
+
     return data;
   } catch (err) {
-    console.log(err);
     return err;
   }
 }

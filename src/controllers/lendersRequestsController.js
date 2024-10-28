@@ -233,9 +233,8 @@ requests.post("/:id/favorite", validateFavorite, async (req, res) => {
   const { favorite } = req.body;
 
   try {
-    console.log(favorite);
     const data = await setRequestFavorite(lender_id, id, favorite);
-    console.log(data);
+
     if (data.lender_id) {
       res.status(201).json(data);
     }
