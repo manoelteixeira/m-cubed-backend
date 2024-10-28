@@ -23,14 +23,27 @@ const {
 } = require("../utils/queryFactoies.js");
 
 async function seed(nLenders, nBorrowers, nLoanRequest) {
-  let lenders = await lenderFactory(nLenders);
-  let borrowers = await borrowerFactory(nBorrowers);
-  let users = await userFactory({ lender: lenders, borrower: borrowers });
+  let users = [];
+
+  let lenders = lenderFactory(nLenders);
+  for (let idx = 0; idx < lenders.length; idx++) {
+    const user = await createUser(lenders[idx], "lender");
+    lenders[idx] = { ...lenders[idx], ...user };
+    users.push(user);
+  }
+
+  let borrowers = borrowerFactory(nBorrowers);
+  for (let idx = 0; idx < borrowers.length; idx++) {
+    const user = await createUser(borrowers[idx], "borrower");
+    borrowers[idx] = { ...borrowers[idx], ...user };
+    users.push(user);
+  }
+  console.log(users);
 
   console.log("-=-=-    ADDING USERS    -=-=-");
   users = await db.many(addUsersQuery(users));
   // console.log(users.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(users.length)} Users Added.`);
+  console.log(`${colors.yellow(users.length)} Users Added.`);
 
   console.log("-=-=-    ADDING LENDERS    -=-=-");
   lenders = lenders.map((lender) => {
@@ -49,7 +62,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     };
   });
   // console.log(lenders.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(lenders.length)} Lenders Added.`);
+  console.log(`${colors.yellow(lenders.length)} Lenders Added.`);
 
   console.log("-=-=-    ADDING BORROWERS    -=-=-");
   borrowers = borrowers.map((borrower) => {
@@ -68,7 +81,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     };
   });
   // console.log(borrowers.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(borrowers.length)} Borrowers Added.`);
+  console.log(`${colors.yellow(borrowers.length)} Borrowers Added.`);
 
   console.log("-=-=-    ADDING CREDIT REPORTS    -=-=-");
   let reports = borrowers.map((borrower) => {
@@ -80,7 +93,7 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
 
   reports = await db.many(addCreditReportsQuery(reports));
   // console.log(reports.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(reports.length)} Reports Added.`);
+  console.log(`${colors.yellow(reports.length)} Reports Added.`);
 
   console.log("-=-=-    ADDING LOAN REQUEST    -=-=-");
   let loanRequests = borrowers
@@ -92,10 +105,23 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
 
   loanRequests = await db.many(addLoanRequestsQuery(loanRequests));
   // console.log(loanRequests.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(loanRequests.length)} Loan Requests Added.`);
+  console.log(`${colors.yellow(loanRequests.length)} Loan Requests Added.`);
 
   console.log("-=-=-    ADDING LOAN PROPOSALS    -=-=-");
+  // let loanProposals = loanRequests
+  //   .map((request) => {
+  //     const report = reports.find(
+  //       (item) => (request.borrower_id = item.borrower_id)
+  //     );
+  //     const proposal = lenders.map((lender) =>
+  //       createLoanProposal(request, report, lender)
+  //     );
 
+  //     return proposal;
+  //   })
+  //   .flat();
+
+  // loanProposals = await db.many(addLoanProposalsQuery(loanProposals));
   let loanProposals = [];
   let lenderLoanProposal = [];
   for (const lender of lenders) {
@@ -122,26 +148,25 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
       }
     }
   }
+  lenderLoanProposal = lenderLoanProposal.filter(
+    (item) => item.favorite == true && item.hide == false
+  );
+
   loanProposals = await db.many(addLoanProposalsQuery(loanProposals));
+  lenderLoanProposal = await db.many(
+    addLenderLoanProposalQuery(lenderLoanProposal)
+  );
 
   // console.log(loanProposals.map((item, idx) => `${idx + 1} - ${item.id}`));
   console.log(`${colors.yellow(loanProposals.length)} Loan Proposals Added.`);
+  console.log(`${colors.yellow(lenderLoanProposal.length)} Is Favorite.`);
 
   console.log("-=-=-    ADDING DATA TO MAIL LIST    -=-=-");
   const mailList = await db.many(addToMailListQuery(users));
-  // console.log(mailList.map((item, idx) => `${idx + 1} - ${item.id}`));
-  // console.log(`${colors.yellow(mailList.length)} Emails Added.`);
+  console.log(mailList);
+
+  console.log("-=-=-    ALL DONE    -=-=-");
 }
 
-async function run() {
-  console.log("**************************");
-  console.log("*   PREPARING DATABASE   *");
-  console.log(`*       BE PATIENT       *`);
-  console.log("**************************");
-  await seed(10, 100, 10);
-  console.log("******************");
-  console.log("*    ALL DONE    *");
-  console.log("******************");
-}
-
-run();
+// console.log(seed(2, 2, 2));
+seed(10, 100, 10);

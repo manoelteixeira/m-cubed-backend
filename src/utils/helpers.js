@@ -8,20 +8,8 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function choose(arr, num) {
-  if (!num) {
-    return arr[randomInt(0, arr.length)];
-  } else if (arr.length <= num) {
-    return arr;
-  }
-  const chosen = [];
-  while (chosen.length <= num) {
-    const item = arr[randomInt(0, arr.length)];
-    if (!chosen.includes(item)) {
-      chosen.push(item);
-    }
-  }
-  return chosen;
+function choose(arr) {
+  return arr[randomInt(0, arr.length)];
 }
 
 function getRandomName() {
