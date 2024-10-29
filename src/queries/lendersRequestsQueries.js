@@ -24,6 +24,7 @@ async function getAllLoanRequests(
   const totalRequestsQuery =
     "SELECT COUNT(*), SUM( loan_requests.value) FROM loan_requests  " +
     "WHERE status='pending' ";
+
   const proposalsQuery =
     "SELECT loan_request_id FROM loan_proposals WHERE lender_id=$[id]";
 
@@ -31,7 +32,7 @@ async function getAllLoanRequests(
     "SELECT loan_request_id as request_id, favorite, hide FROM lender_loan_requests where lender_id = $[id]";
 
   let query =
-    "SELECT * FROM loan_requests_info WHERE id  <> ALL(ARRAY[$[excluded]]::uuid[]) ";
+    "SELECT * FROM loan_requests_info WHERE status='pending' AND id  <> ALL(ARRAY[$[excluded]]::uuid[]) ";
   if (search) {
     query += `AND requests.title ilike $[search]`;
   }
