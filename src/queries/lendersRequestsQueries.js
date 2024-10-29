@@ -10,7 +10,6 @@ async function getAllLoanRequests(
   search = null,
   hide = true
 ) {
-  console.log(search);
   const sort = {
     title: "title",
     value: "value",
@@ -24,21 +23,10 @@ async function getAllLoanRequests(
     "SELECT COUNT(*), SUM( loan_requests.value) FROM loan_requests  " +
     "WHERE status='pending' ";
 
-  // const baseQuery =
-  //   "select lri.id, lri.title, lri.description, lri.value ,lri.created_at ,lri.expire_at ,lri.status, lri.id  as borrower_id, " +
-  //   "lri.credit_score, lri.city , lri.state , lri.business_name , lri.industry, llr.favorite, llr.hide " +
-  //   "from loan_requests_info as lri full join (select lender_loan_requests.lender_id, lender_loan_requests.loan_request_id, " +
-  //   "lender_loan_requests.favorite,lender_loan_requests.hide " +
-  //   "from lender_loan_requests join lenders on lender_loan_requests.lender_id = lenders.id " +
-  //   "where lenders.id = $[id]) as llr on lri.id = llr.loan_request_id " +
-  //   `where ${
-  //     hide == true ? "llr.hide != true or llr.hide is null and " : ""
-  //   }lri.id not in (select loan_request_id from loan_proposals  ` +
-  //   "where loan_proposals.lender_id = $[id]) ";
   const baseQuery =
     "select lri.id, lri.title, lri.description, lri.value, lri.created_at, lri.expire_at, lri.borrower_id, lri.city, " +
     "lri.state, lri.business_name, lri.industry, lri.credit_score,  llr.favorite, llr.hide " +
-    "from (select *, '5dd083a7-c72e-4a5a-ac26-ccbc7be5f42f'::uuid as lender_id from loan_requests_info " +
+    "from (select *, $[id]::uuid as lender_id from loan_requests_info " +
     "where id not in (SELECT loan_request_id FROM loan_proposals where lender_id=$[id])) as lri  join lender_loan_requests as llr " +
     "on lri.id=llr.loan_request_id  and lri.lender_id=llr.lender_id " +
     "WHERE hide != $[hide] ";
@@ -95,10 +83,8 @@ async function getLoanRequestByID(loan_request_id) {
     delete loanRequest.borrower_id;
     delete borrower.user_id;
     loanRequest.borrower = borrower;
-    console.log(loanRequest, borrower);
     return loanRequest;
   } catch (error) {
-    console.log(error);
     if (error.received == 0) {
       return { error: "Loan request Not found." };
     }
@@ -120,7 +106,6 @@ async function createProposal(proposal) {
 }
 
 async function setRequestHide(lender_id, id, hide) {
-  console.log(hide);
   const getHideQuery =
     "SELECT * FROM lender_loan_requests " +
     "WHERE lender_id = $[lender_id] and loan_request_id = $[id]";
@@ -140,7 +125,6 @@ async function setRequestHide(lender_id, id, hide) {
     }
     return data;
   } catch (err) {
-    console.log(err);
     return err;
   }
 }

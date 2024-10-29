@@ -89,7 +89,6 @@ requests.get(
   async (req, res) => {
     const { sort, order, limit, offset, search } = req.query;
     const { lender_id } = req.params;
-    console.log(req.params);
     try {
       const loanRequests = await getAllLoanRequests(
         lender_id,
@@ -301,7 +300,6 @@ requests.post(
 
     proposal.loan_request_id = id;
     proposal.lender_id = lender_id;
-    console.log(proposal);
     try {
       const newProposal = await createProposal(proposal);
       if (newProposal.id) {
