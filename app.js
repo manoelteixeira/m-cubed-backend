@@ -10,6 +10,7 @@ const swaggerUi = require("swagger-ui-express");
 const loginController = require("./src/controllers/loginController");
 const borrowersController = require("./src/controllers/borrowersController");
 const lendersController = require("./src/controllers/lendersController");
+const matchMessageController = require("./src/controllers/matchMessagesController");
 const mailListController = require("./src/controllers/mailListController");
 
 /* Configuration */
@@ -43,6 +44,7 @@ const swaggerOptions = {
     "./src/controllers/lendersController.js",
     "./src/controllers/lendersProposalsController.js",
     "./src/controllers/lendersRequestsController.js",
+    "./src/controllers/matchMessagesController.js",
     "./src/controllers/mailListController.js",
   ],
 };
@@ -71,6 +73,7 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.use("/login", loginController);
 app.use("/borrowers", borrowersController);
 app.use("/lenders", lendersController);
+app.use("/messages", matchMessageController);
 app.use("/mail-list", mailListController);
 
 app.get("/", (req, res) => {

@@ -93,9 +93,8 @@ CREATE TABLE "loan_proposals" (
 CREATE TABLE "loan_match_messages"(
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "loan_proposal_id" uuid REFERENCES "loan_proposals" ("id") ON DELETE CASCADE,
-  "loan_request_id" uuid REFERENCES "loan_requests" ("id") ON DELETE CASCADE,
-  "created_at" TIMESTAMP NOT NULL,
   "sender" TEXT NOT NULL,
+  "created_at" TIMESTAMP NOT NULL,
   "message" TEXT NOT NULL
 );
 
@@ -107,11 +106,21 @@ ADD CONSTRAINT fk_customer
 
 -- Setup views
 CREATE VIEW loan_requests_info AS
-SELECT loan_requests.id, loan_requests.title, loan_requests.description, loan_requests.value ,loan_requests.created_at ,loan_requests.expire_at ,loan_requests.status,
-borrowers.id  as borrower_id, borrowers.city , borrowers.state , borrowers.business_name , borrowers.industry, borrowers.credit_score
-FROM loan_requests JOIN ( select borrowers.id , borrowers.city , borrowers.state , borrowers.business_name , borrowers.industry, credit_reports.score as credit_score 
-from borrowers join credit_reports 
-on borrowers.id = credit_reports.borrower_id ) as borrowers
+SELECT loan_requests.id, loan_requests.title, loan_requests.description, loan_requests.value ,
+loan_requests.created_at ,loan_requests.expire_at ,loan_requests.status,borrowers.id  AS borrower_id, 
+borrowers.city , borrowers.state , borrowers.business_name , borrowers.industry, borrowers.credit_score
+FROM loan_requests JOIN ( SELECT borrowers.id , borrowers.city , borrowers.state , borrowers.business_name , 
+borrowers.industry, credit_reports.score AS credit_score 
+FROM borrowers JOIN credit_reports 
+ON borrowers.id = credit_reports.borrower_id ) AS borrowers
 ON loan_requests.borrower_id = borrowers.id;
 
-
+CREATE VIEW messages AS
+SELECT lmm.*, info.lender_id, info.lender_image_url ,info.borrower_id, info.borrower_image_url
+FROM (SELECT lr_info.*, lenders.image_url AS lender_image_url, borrowers.image_url AS borrower_image_url
+FROM (SELECT loan_proposals.id, lender_id, loan_requests.borrower_id
+FROM loan_proposals JOIN loan_requests 
+ON loan_proposals.loan_request_id=loan_requests.id) AS lr_info
+JOIN lenders ON lr_info.lender_id=lenders.id
+JOIN borrowers ON lr_info.borrower_id=borrowers.id) AS info
+JOIN loan_match_messages AS lmm ON lmm.loan_proposal_id=info.id;

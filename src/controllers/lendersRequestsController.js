@@ -43,37 +43,39 @@ const {
 
 /** GET - Get All Available Loan Requests
  * @swagger
- * /lenders/{id}/requests:
+ * /lenders/{lender_id}/requests:
  *  get:
  *    tags:
  *      - Lenders Requests
  *    summary: List All Available Loan Requests
  *    parameters:
- *           - name: search
- *             in: query
- *             schema:
- *               type: string
- *           - name: sort
- *             in: query
- *             schema:
- *               type: string
- *           - name: order
- *             in: query
- *             schema:
- *               type: string
- *           - name: limit
- *             in: query
- *             schema:
- *               type: integer
- *           - name: offset
- *             in: query
- *             schema:
- *               type: integer
- *           - name: lender_id
- *             in: path
+ *           - in: path
+ *             name: lender_id
  *             schema:
  *               type: string
  *             required: true
+ *             description: Lender ID
+ *           - in: query
+ *             name: search
+ *             schema:
+ *               type: string
+ *           - in: query
+ *             name: sort
+ *             schema:
+ *               type: string
+ *           - in: query
+ *             name: order
+ *             schema:
+ *               type: string
+ *           - in: query
+ *             name: limit
+ *             schema:
+ *               type: integer
+ *           - in: query
+ *             name: offset
+ *             schema:
+ *               type: integer
+
  *    responses:
  *      '200':
  *        description: Successful response

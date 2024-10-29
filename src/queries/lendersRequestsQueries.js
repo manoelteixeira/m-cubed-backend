@@ -16,7 +16,7 @@ async function getAllLoanRequests(
     created_at: "created_at",
     description: "description",
     industry: "industry",
-    state: "rstate",
+    state: "state",
     credit_score: "credit_score",
   };
   const totalRequestsQuery =
