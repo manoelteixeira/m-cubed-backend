@@ -40,7 +40,7 @@ matchMessagesController = express.Router();
 matchMessagesController.get("/", async (req, res) => {
   try {
     const messages = await getAllMessages();
-    res.status(200).json({ messages: messages });
+    res.status(200).json(messages);
   } catch (err) {
     res.status(400).json({ error: "Something went wrong." });
   }
@@ -74,7 +74,7 @@ matchMessagesController.get(
     const { id } = req.params;
     try {
       const messages = await getMessages(id);
-      res.status(200).json({ messages: messages });
+      res.status(200).json(messages);
     } catch (err) {
       res.status(500).json(err);
       //   res.status(500).json({error: "Something whent wrong"});
@@ -82,6 +82,35 @@ matchMessagesController.get(
   }
 );
 
+/** Create New Borrower
+ * @swagger
+ * /messages/{proposal_id}/:
+ *    post:
+ *      tags:
+ *        - Loan Match Messages
+ *      summary: Create New Loan Match Message
+ *      parameters:
+ *        - in: path
+ *          name: proposal_id
+ *          schema:
+ *              type: string
+ *              format: uuid
+ *              required: true
+ *              description: Accepted Loan Proposal ID
+ *      requestBody:
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example:
+ *                sender: lender
+ *                message: hey there
+ *      responses:
+ *        '200':
+ *          description: Successful response
+ *          content:
+ *            application/json: {}
+ */
 matchMessagesController.post(
   "/:id",
   validateSender,
@@ -121,9 +150,6 @@ module.exports = matchMessagesController;
  *         loan_proposal_id:
  *           type: string
  *           description: id of the loan proposal accepted
- *         loan_request_id:
- *           type: string
- *           description: id of the loan request
  *         created_at:
  *           type: string
  *           description: date of the message
@@ -136,7 +162,6 @@ module.exports = matchMessagesController;
  *       example:
  *         id: "uuidStrin012312341"
  *         loan_proposal_id: "uuidLoanProposal"
- *         loan_request_id: "uuidLoanRequest"
  *         created_at: 2020-05-15T04:00:00.000Z
  *         sender: sender_business_name
  *         message: message

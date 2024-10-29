@@ -27,12 +27,14 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
   let borrowers = await borrowerFactory(nBorrowers);
   let users = await userFactory({ lender: lenders, borrower: borrowers });
 
-  console.log("-=-=-    ADDING USERS    -=-=-");
+  console.log(colors.magenta("-=-=-    ADDING USERS    -=-=-\n"));
   users = await db.many(addUsersQuery(users));
   // console.log(users.map((item, idx) => `${idx + 1} - ${item.id}`));
-  console.log(`${colors.yellow(users.length)} Users Added.`);
+  console.log(
+    `${colors.red("=>")} ${colors.yellow(users.length)} Users Added.`
+  );
 
-  console.log("-=-=-    ADDING LENDERS    -=-=-");
+  console.log(colors.magenta("\n-=-=-    ADDING LENDERS    -=-=-\n"));
   lenders = lenders.map((lender) => {
     const user = users.find((user) => user.email == lender.email);
     return { ...lender, user_id: user.id };
@@ -49,9 +51,11 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     };
   });
   // console.log(lenders.map((item, idx) => `${idx + 1} - ${item.id}`));
-  console.log(`${colors.yellow(lenders.length)} Lenders Added.`);
+  console.log(
+    `${colors.red("=>")} ${colors.yellow(lenders.length)} Lenders Added.`
+  );
 
-  console.log("-=-=-    ADDING BORROWERS    -=-=-");
+  console.log(colors.magenta("\n-=-=-    ADDING BORROWERS    -=-=-\n"));
   borrowers = borrowers.map((borrower) => {
     const user = users.find((user) => user.email == borrower.email);
     return { ...borrower, user_id: user.id };
@@ -68,9 +72,11 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     };
   });
   // console.log(borrowers.map((item, idx) => `${idx + 1} - ${item.id}`));
-  console.log(`${colors.yellow(borrowers.length)} Borrowers Added.`);
+  console.log(
+    `${colors.red("=>")} ${colors.yellow(borrowers.length)} Borrowers Added.`
+  );
 
-  console.log("-=-=-    ADDING CREDIT REPORTS    -=-=-");
+  console.log(colors.magenta("\n-=-=-    ADDING CREDIT REPORTS    -=-=-\n"));
   let reports = borrowers.map((borrower) => {
     const { id } = borrower;
     // const date = faker.date.past({ days: 10 });
@@ -80,9 +86,11 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
 
   reports = await db.many(addCreditReportsQuery(reports));
   // console.log(reports.map((item, idx) => `${idx + 1} - ${item.id}`));
-  console.log(`${colors.yellow(reports.length)} Reports Added.`);
+  console.log(
+    `${colors.red("=>")} ${colors.yellow(reports.length)} Reports Added.`
+  );
 
-  console.log("-=-=-    ADDING LOAN REQUEST    -=-=-");
+  console.log(colors.magenta("\n-=-=-    ADDING LOAN REQUEST    -=-=-\n"));
   let loanRequests = borrowers
     .map((borrower) => {
       const { id } = borrower;
@@ -92,9 +100,13 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
 
   loanRequests = await db.many(addLoanRequestsQuery(loanRequests));
   // console.log(loanRequests.map((item, idx) => `${idx + 1} - ${item.id}`));
-  console.log(`${colors.yellow(loanRequests.length)} Loan Requests Added.`);
+  console.log(
+    `${colors.red("=>")} ${colors.yellow(
+      loanRequests.length
+    )} Loan Requests Added.`
+  );
 
-  console.log("-=-=-    ADDING LOAN PROPOSALS    -=-=-");
+  console.log(colors.magenta("\n-=-=-    ADDING LOAN PROPOSALS    -=-=-\n"));
 
   let loanProposals = [];
   let lenderLoanProposal = [];
@@ -127,25 +139,31 @@ async function seed(nLenders, nBorrowers, nLoanRequest) {
     addLenderLoanProposalQuery(lenderLoanProposal)
   );
   // console.log(loanProposals.map((item, idx) => `${idx + 1} - ${item.id}`));
-  console.log(`${colors.yellow(loanProposals.length)} Loan Proposals Added.`);
+  console.log(
+    `${colors.red("=>")} ${colors.yellow(
+      loanProposals.length
+    )} Loan Proposals Added.`
+  );
   console.log(
     `${colors.yellow(lenderLoanProposal.length)} Lender Loan Proposals Added.`
   );
-  console.log("-=-=-    ADDING DATA TO MAIL LIST    -=-=-");
+  console.log(colors.magenta("\n-=-=-    ADDING DATA TO MAIL LIST    -=-=-\n"));
   const mailList = await db.many(addToMailListQuery(users));
   // console.log(mailList.map((item, idx) => `${idx + 1} - ${item.id}`));
-  console.log(`${colors.yellow(mailList.length)} Emails Added.`);
+  console.log(
+    `${colors.red("=>")} ${colors.yellow(mailList.length)} Emails Added.`
+  );
 }
 
 async function run() {
-  console.log("**************************");
-  console.log("*   PREPARING DATABASE   *");
-  console.log(`*       BE PATIENT       *`);
-  console.log("**************************");
+  console.log(colors.red("\n**************************"));
+  console.log(colors.red("*   PREPARING DATABASE   *"));
+  console.log(colors.red(`*       BE PATIENT       *`));
+  console.log(colors.red("**************************\n"));
   await seed(10, 100, 10);
-  console.log("******************");
-  console.log("*    ALL DONE    *");
-  console.log("******************");
+  console.log(colors.green("\n******************"));
+  console.log(colors.green("*    ALL DONE    *"));
+  console.log(colors.green("******************\n"));
 }
 
 run();

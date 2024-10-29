@@ -12,7 +12,8 @@ async function getAllMessages() {
 }
 
 async function getMessages(id) {
-  const queryStr = "SELECT * FROM messages WHERE loan_proposal_id=$[id]";
+  const queryStr =
+    "SELECT * FROM messages WHERE loan_proposal_id=$[id] ORDER BY created_at asc";
   try {
     const messages = await db.manyOrNone(queryStr, { id });
     return messages;
