@@ -90,6 +90,15 @@ CREATE TABLE "loan_proposals" (
   "loan_request_id" uuid REFERENCES "loan_requests" ("id") ON DELETE CASCADE
 );
 
+CREATE TABLE "loan_match_messages"(
+  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "loan_proposal_id" uuid REFERENCES "loan_proposals" ("id") ON DELETE CASCADE,
+  "loan_request_id" uuid REFERENCES "loan_requests" ("id") ON DELETE CASCADE,
+  "created_at" TIMESTAMP NOT NULL,
+  "sender" TEXT NOT NULL,
+  "message" TEXT NOT NULL
+);
+
 ALTER TABLE loan_requests
 ADD CONSTRAINT fk_customer
       FOREIGN KEY (accepted_proposal_id)
