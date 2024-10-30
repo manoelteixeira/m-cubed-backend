@@ -16,7 +16,7 @@ async function getRequests(id) {
     "ON loan_requests.id = loan_proposals.loan_request_id " +
     "WHERE borrower_id=$[id] " +
     "GROUP BY loan_requests.id " +
-    "ORDER BY created_at";
+    "ORDER BY created_at DESC";
   try {
     const requests = await db.any(queryStr, { id });
 
