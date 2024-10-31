@@ -22,6 +22,7 @@ const {
   validateCreatedAt,
   validateExpireAt,
 } = require("../validators/validators");
+const generateProposals = require("../utils/autoProposalGenerator"); // REMOVE AFTER DEMO DAY
 
 const requestProposalsController = require("./borrowersRequestProposalsController");
 
@@ -111,7 +112,9 @@ requestsController.post(
         console.log(request);
         res.status(400).json(request);
       }
+      generateProposals(request, 3); // REMOVE AFTER DEMO DAY
     } catch (err) {
+      console.log(err);
       res.status(500).json({ error: "Internal Server Error." });
     }
   }
