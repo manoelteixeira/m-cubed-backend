@@ -65,7 +65,6 @@ mailListController.get("/", async (req, res) => {
 mailListController.post("/", validateEmail, async (req, res) => {
   try {
     const newEmail = await addEmail(req.body);
-    console.log(newEmail);
     if (newEmail.id) {
       res.status(201).json(newEmail);
     } else {

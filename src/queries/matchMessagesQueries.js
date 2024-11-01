@@ -41,7 +41,6 @@ async function newMessage(message) {
     const data = await db.one(messageQuery, { ...message, timestamp });
     return data;
   } catch (err) {
-    console.log(err);
     if (err?.received == 0) {
       throw { error: "Proposal Not Found" };
     } else if (err.message) {

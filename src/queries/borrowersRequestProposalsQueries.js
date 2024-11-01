@@ -63,7 +63,6 @@ async function acceptProposal(borrower_id, request_id, proposal_id) {
       });
       return { acceptedRequest, updatedProposals };
     });
-    console.log(data);
     return data;
   } catch (err) {
     return err;

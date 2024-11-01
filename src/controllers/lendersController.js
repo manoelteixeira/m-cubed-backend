@@ -110,7 +110,6 @@ lenders.post(
         res.status(400).json(newLender);
       }
     } catch (error) {
-      console.log(error);
       res.status(500).json(error);
     }
   }

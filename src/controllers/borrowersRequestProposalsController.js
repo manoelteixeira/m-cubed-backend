@@ -59,7 +59,6 @@ requestProposalsController.get("/", async (req, res) => {
         .json({ error: "Proposal not found", message: proposals.error });
     }
   } catch (err) {
-    console.log(err);
     res.status(400).json({ error: err });
   }
 });

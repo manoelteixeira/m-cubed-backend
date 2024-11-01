@@ -90,7 +90,6 @@ async function createRequest(request) {
       return newRequest;
     }
   } catch (err) {
-    console.log(err);
     if (err?.detail && err.detail.includes("borrower_id")) {
       return { error: "Borrower not found." };
     } else {

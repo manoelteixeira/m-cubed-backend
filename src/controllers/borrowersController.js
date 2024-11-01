@@ -167,9 +167,8 @@ borrowersController.get(
       const borrower = await getBorrower(id);
       if (borrower.id) {
         const reports = await getCreditReports(borrower.id);
-        console.log(reports);
         const credit_reports = Array.isArray(reports) ? reports : [];
-        console.log(borrower);
+
         res.status(200).json({ borrower, credit_reports });
       } else {
         res.status(404).json({ error: "Borrower not found." });
@@ -269,7 +268,6 @@ borrowersController.put(
   validateImageURL,
   // authenticateToken,
   async (req, res) => {
-    console.log("ok");
     try {
       const { id } = req.params;
       const borrower = await updateBorrower(id, req.body);

@@ -76,7 +76,6 @@ async function createLender(lender) {
 
       return { newUser, newLender };
     });
-    console.log(data);
     return {
       user_id: data.newUser.id,
       id: data.newLender.id,
@@ -135,7 +134,6 @@ async function updateLender(id, lender) {
     const data = await db.one(queryStr, { ...lender, id });
     return data;
   } catch (err) {
-    console.log(err);
     if (err.message.includes("No data returned from the query.")) {
       return { error: "Lender not Found" };
     } else if (

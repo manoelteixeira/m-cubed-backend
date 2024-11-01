@@ -54,10 +54,8 @@ const {
  */
 proposals.get("/", async (req, res) => {
   const { lender_id } = req.params;
-  console.log(lender_id);
   try {
     const proposalsByLender = await getAllLoanProposalsByLenderID(lender_id);
-    // console.log(proposalsByLender);
     if (proposalsByLender.length > 0) {
       res.status(200).json(proposalsByLender);
     } else {
@@ -177,7 +175,6 @@ proposals.put(
         lender_id,
         id,
       });
-      console.log(updatedProposal);
       if (updatedProposal.id) {
         res.status(200).json(updatedProposal);
       } else if (

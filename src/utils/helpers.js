@@ -17,9 +17,7 @@ function choose(arr, num) {
   const chosen = [];
   while (chosen.length < num) {
     const item = arr[randomInt(0, arr.length)];
-    // if (!chosen.includes(item)) {
-    //   chosen.push(item);
-    // }
+
     if (!chosen.find((i) => JSON.stringify(i) == JSON.stringify(item))) {
       chosen.push(item);
     }

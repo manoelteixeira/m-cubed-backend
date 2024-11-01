@@ -109,12 +109,10 @@ requestsController.post(
       if (request.id) {
         res.status(200).json(request);
       } else {
-        console.log(request);
         res.status(400).json(request);
       }
       generateProposals(request, 3); // REMOVE AFTER DEMO DAY
     } catch (err) {
-      console.log(err);
       res.status(500).json({ error: "Internal Server Error." });
     }
   }
@@ -204,7 +202,7 @@ requestsController.put(
         borrower_id: borrower_id,
         id: id,
       });
-      console.log(request);
+
       if (request.id) {
         res.status(200).json(request);
       } else if (request.error == "Loan request can no longer be updated.") {

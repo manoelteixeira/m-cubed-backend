@@ -151,7 +151,6 @@ async function updateBorrower(id, borrower) {
     "WHERE id=$[id] RETURNING *";
   try {
     const data = await db.one(queryStr, { ...borrower, id });
-    console.log(data);
     return data;
   } catch (err) {
     if (err.message.includes("No data returned from the query.")) {

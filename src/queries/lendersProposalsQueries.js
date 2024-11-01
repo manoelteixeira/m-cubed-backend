@@ -63,7 +63,6 @@ const createProposalFromRequest = async (
 
 // Update a loan proposal by ID
 const updateProposalByID = async (proposal) => {
-  console.log(proposal);
   const proposalQuery = "SELECT * FROM loan_proposals WHERE id=$[id]";
   const updateProposalQuery =
     "UPDATE loan_proposals " +
@@ -80,7 +79,6 @@ const updateProposalByID = async (proposal) => {
         ...proposal,
         date,
       });
-      console.log(updatedProposal);
       return updatedProposal;
     } else {
       return { error: "Loan proposal can no longer be updated." };
