@@ -31,49 +31,57 @@ async function getAllLoanRequests(
   const lenderRequestSettings =
     "SELECT loan_request_id as request_id, favorite, hide FROM lender_loan_requests where lender_id = $[id]";
 
-  let query =
-    "SELECT * FROM loan_requests_info WHERE status='pending' AND id  <> ALL(ARRAY[$[excluded]]::uuid[]) ";
-  if (search) {
-    query += `AND requests.title ilike $[search]`;
-  }
-  if (sortBy) {
-    query += `ORDER BY ${sort[sortBy]} ${order.toUpperCase()} `;
-  }
-  if (limit) {
-    query += `LIMIT ${limit} `;
-  }
-  if (ofsset) {
-    query += `OFFSET ${ofsset} `;
-  }
+  let query = "SELECT * FROM loan_requests_info WHERE status='pending' ";
 
   try {
     const total = await db.one(totalRequestsQuery);
+    // Get Lender Proposals
     let proposals = await db.manyOrNone(proposalsQuery, { id });
-    proposals = proposals.map((item) => item["loan_request_id"]);
-    const requestSettings = await db.manyOrNone(lenderRequestSettings, { id });
+    if (proposals.length > 0) {
+      proposals = proposals.map((item) => item["loan_request_id"]);
+      query += "AND id  <> ALL(ARRAY[$[excluded]]::uuid[]) ";
+    }
+    // Add Query Params
+    if (search) {
+      query += `AND requests.title ilike $[search]`;
+    }
+    if (sortBy) {
+      query += `ORDER BY ${sort[sortBy]} ${order.toUpperCase()} `;
+    }
+    if (limit) {
+      query += `LIMIT ${limit} `;
+    }
+    if (ofsset) {
+      query += `OFFSET ${ofsset} `;
+    }
+    // Get Requests
     let requests = await db.many(query, {
       search: `%${search}%`,
       excluded: proposals,
     });
-    requests = requests.map((item) => {
-      const settings = requestSettings.find((i) => i.request_id === item.id);
-      if (!settings) {
-        return { ...item, favorite: null, hide: null };
-      } else {
-        const { favorite, hide } = settings;
-        return { ...item, favorite, hide };
-      }
-    });
-    requests = requests.filter((item) => item.hide != hide);
-
-    return {
+    // Get All requests settings for a given lender
+    const requestSettings = await db.manyOrNone(lenderRequestSettings, { id });
+    if (requestSettings.length > 0) {
+      requests = requests.map((item) => {
+        const settings = requestSettings.find((i) => i.request_id === item.id);
+        if (!settings) {
+          return { ...item, favorite: null, hide: null };
+        } else {
+          const { favorite, hide } = settings;
+          return { ...item, favorite, hide };
+        }
+      });
+      requests = requests.filter((item) => item.hide != hide);
+    }
+    const data = {
       total: parseInt(total.count),
       value: parseFloat(total.sum),
       requests_count: requests.length,
       loan_requests: requests,
     };
+
+    return data;
   } catch (err) {
-    console.error(err);
     return err;
   }
 }

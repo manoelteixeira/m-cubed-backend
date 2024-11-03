@@ -142,13 +142,14 @@ lenders.get(
     const { id } = req.params;
     try {
       const lender = await getLender(id);
-      if (lender.id) {
-        res.status(200).json(lender);
+
+      res.status(200).json(lender);
+    } catch (err) {
+      if (err.message) {
+        res.status(404).json({ error: err.message });
       } else {
-        res.status(404).json({ error: lender.error });
+        res.status(500).json({ error: err.error });
       }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
     }
   }
 );

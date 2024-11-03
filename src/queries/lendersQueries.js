@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const db = require("../db/dbConfig.js");
 const { getRandomAvatar } = require("../utils/helpers.js");
+
 require("dotenv").config();
 const SALT = Number(process.env.SALT);
 
@@ -31,9 +32,11 @@ const getLender = async (id) => {
     return oneLender;
   } catch (err) {
     if (err.message == "No data returned from the query.") {
-      return { error: "Lender not found." };
+      throw { message: "Lender not found." };
+    } else if (err.message.includes("uuid")) {
+      throw { message: "Invalid Lender ID." };
     } else {
-      return err;
+      throw { error: "Something went wrong." };
     }
   }
 };
