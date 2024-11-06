@@ -160,7 +160,7 @@ async function run() {
   console.log(colors.red("*   PREPARING DATABASE   *"));
   console.log(colors.red(`*       BE PATIENT       *`));
   console.log(colors.red("**************************\n"));
-  await seed(10, 100, 10);
+  await seed(5, 10, 10);
   console.log(colors.green("\n******************"));
   console.log(colors.green("*    ALL DONE    *"));
   console.log(colors.green("******************\n"));

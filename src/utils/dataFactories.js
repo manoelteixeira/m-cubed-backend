@@ -86,7 +86,7 @@ function createLoanRequest(id) {
   return {
     title: `New ${faker.commerce.productAdjective()} ${faker.commerce.productName()}`,
     description: description.replaceAll("'", "''"),
-    value: Number(faker.commerce.price({ min: 2000, max: 50000 })),
+    value: Number(faker.commerce.price({ min: 2000, max: 150000 })),
     created_at: date.toISOString(),
     expire_at: expiration.toISOString(),
     borrower_id: id,
@@ -101,9 +101,9 @@ function createLoanProposal(request, report, lender) {
   const description = faker.hacker.phrase();
   const { score } = report;
   let requirements = null;
-  if (score < 650) {
+  if (score < 700) {
     requirements = possibleRequirements.slice(0, 2);
-  } else if (score < 700) {
+  } else if (score < 750) {
     requirements = possibleRequirements[1];
   } else if (score > 750) {
     requirements = possibleRequirements[2];
