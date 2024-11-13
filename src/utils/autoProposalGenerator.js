@@ -9,7 +9,8 @@ const { createLoanProposal } = require("./dataFactories.js");
 const { addLoanProposalsQuery } = require("./queryFactoies.js");
 
 async function getLenders(num) {
-  const queryStr = "SELECT * FROM lenders";
+  const queryStr =
+    "SELECT * FROM lenders where business_name != 'Japaneese Lending Firm'";
   try {
     const lenders = await db.many(queryStr);
     return choose(lenders, num);
