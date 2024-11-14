@@ -10,7 +10,7 @@ const { addLoanProposalsQuery } = require("./queryFactoies.js");
 
 async function getLenders(num) {
   const queryStr =
-    "SELECT * FROM lenders where business_name != 'Japaneese Lending Firm'";
+    "SELECT * FROM lenders where business_name != 'Japanese Lending Firm'";
   try {
     const lenders = await db.many(queryStr);
     return choose(lenders, num);
